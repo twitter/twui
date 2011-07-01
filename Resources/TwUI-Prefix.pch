@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'TwUI' target in the 'TwUI' project
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+#endif
