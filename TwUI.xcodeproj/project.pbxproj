@@ -62,7 +62,7 @@
 		CB5B265A13BE6DA200579B1E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB5B265813BE6DA200579B1E /* InfoPlist.strings */; };
 		CB5B266313BE6DA300579B1E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B266213BE6DA300579B1E /* SenTestingKit.framework */; };
 		CB5B266413BE6DA300579B1E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264F13BE6DA200579B1E /* Cocoa.framework */; };
-		CB5B266713BE6DA300579B1E /* Framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264C13BE6DA200579B1E /* Framework.framework */; };
+		CB5B266713BE6DA300579B1E /* TwUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264C13BE6DA200579B1E /* TwUI.framework */; };
 		CB5B266D13BE6DA300579B1E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB5B266B13BE6DA300579B1E /* InfoPlist.strings */; };
 		CB5B266F13BE6DA300579B1E /* TwUITests.h in Resources */ = {isa = PBXBuildFile; fileRef = CB5B266E13BE6DA300579B1E /* TwUITests.h */; };
 		CB5B267113BE6DA300579B1E /* TwUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5B267013BE6DA300579B1E /* TwUITests.m */; };
@@ -217,7 +217,7 @@
 /* Begin PBXFileReference section */
 		5EE9839C13BE7650005F430D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		5EE983B713BE7809005F430D /* libtwui.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libtwui.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB5B264C13BE6DA200579B1E /* Framework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Framework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB5B264C13BE6DA200579B1E /* TwUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TwUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB5B264F13BE6DA200579B1E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		CB5B265213BE6DA200579B1E /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		CB5B265313BE6DA200579B1E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -349,7 +349,7 @@
 			files = (
 				CB5B266313BE6DA300579B1E /* SenTestingKit.framework in Frameworks */,
 				CB5B266413BE6DA300579B1E /* Cocoa.framework in Frameworks */,
-				CB5B266713BE6DA300579B1E /* Framework.framework in Frameworks */,
+				CB5B266713BE6DA300579B1E /* TwUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,7 +380,7 @@
 		CB5B264D13BE6DA200579B1E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CB5B264C13BE6DA200579B1E /* Framework.framework */,
+				CB5B264C13BE6DA200579B1E /* TwUI.framework */,
 				CB5E321813BE7098004B7899 /* libtwui.dylib */,
 				CB5B266113BE6DA300579B1E /* TwUITests.octest */,
 				5EE983B713BE7809005F430D /* libtwui.a */,
@@ -659,7 +659,7 @@
 			);
 			name = Framework;
 			productName = TwUI;
-			productReference = CB5B264C13BE6DA200579B1E /* Framework.framework */;
+			productReference = CB5B264C13BE6DA200579B1E /* TwUI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		CB5B266013BE6DA300579B1E /* Tests */ = {
@@ -1046,7 +1046,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = TwUI;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
@@ -1065,7 +1065,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = TwUI;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
