@@ -103,7 +103,7 @@ static void patternRelease(void *info)
 		
 		[image retain]; // released in patternRelease
 		
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+		CGColorSpaceRef colorSpace = CGColorSpaceCreatePattern(NULL);
 		CGPatternRef pattern = CGPatternCreate(image, bounds, CGAffineTransformIdentity, bounds.size.width, bounds.size.height, kCGPatternTilingConstantSpacing, YES, &callbacks);
 		CGFloat components[] = {1.0, 1.0, 1.0, 1.0};
 		_cgColor = CGColorCreateWithPattern(colorSpace, pattern, components);
