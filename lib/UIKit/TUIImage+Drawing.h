@@ -25,6 +25,7 @@
 - (TUIImage *)crop:(CGRect)cropRect;
 - (TUIImage *)upsideDownCrop:(CGRect)cropRect;
 - (TUIImage *)scale:(CGSize)size;
+- (TUIImage *)thumbnail:(CGSize)size;
 - (TUIImage *)pad:(CGFloat)padding; // can be negative (to crop to center)
 - (TUIImage *)roundImage:(CGFloat)radius;
 - (TUIImage *)invertedMask;

@@ -78,6 +78,23 @@
 	return [self crop:cropRect];
 }
 
+- (TUIImage *)thumbnail:(CGSize)newSize 
+{
+	CGSize s = self.size;
+  float oldProp = s.width / s.height;
+  float newProp = newSize.width / newSize.height;  
+  CGRect cropRect;
+  if (oldProp > newProp) {
+    cropRect.size.height = s.height;
+    cropRect.size.width = s.height * newProp;
+  } else {
+    cropRect.size.width = s.width;
+    cropRect.size.height = s.width / newProp;
+  }
+  cropRect.origin = CGPointMake((s.width - cropRect.size.width) / 2.0, (s.height - cropRect.size.height) / 2.0);
+  return [[self crop:cropRect] scale:newSize];
+}
+
 - (TUIImage *)pad:(CGFloat)padding
 {
 	CGSize s = self.size;
