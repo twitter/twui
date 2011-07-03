@@ -37,4 +37,8 @@
 @property(nonatomic, readonly) NSUInteger section;
 @property(nonatomic, readonly) NSUInteger row;
 
+- (NSComparisonResult)compare:(TUIFastIndexPath *)i;
+- (BOOL)isEqual:(TUIFastIndexPath *)i;
+
+
 @end
