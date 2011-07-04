@@ -114,7 +114,16 @@
 
 - (void)setSelected:(BOOL)s animated:(BOOL)animated
 {
+	if(animated) {
+		[TUIView beginAnimations:NSStringFromSelector(_cmd) context:nil];
+	}
+	
 	_tableViewCellFlags.selected = s;
+	
+	if(animated) {
+		[self redraw];
+		[TUIView commitAnimations];
+	}
 }
 
 - (TUIView *)derepeaterView
