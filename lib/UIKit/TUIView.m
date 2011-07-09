@@ -259,7 +259,8 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	CGRect b = self.bounds; \
 	CGContextRef context = [self _CGContext]; \
 	TUIGraphicsPushContext(context); \
-	CGContextClearRect(context, b); \
+	if(self.clearsContextBeforeDrawing) \
+		CGContextClearRect(context, b); \
 	CGContextScaleCTM(context, Screen_Scale, Screen_Scale); \
 	CGContextSetAllowsAntialiasing(context, true); \
 	CGContextSetShouldAntialias(context, true); \
@@ -810,6 +811,14 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	if(color.alphaComponent < 1.0)
 		self.opaque = NO;
 	[self setNeedsDisplay];
+}
+
+- (BOOL)clearsContextBeforeDrawing {
+	return _viewFlags.clearsContextBeforeDrawing;
+}
+
+- (void)setClearsContextBeforeDrawing:(BOOL)newValue {
+	_viewFlags.clearsContextBeforeDrawing = newValue;
 }
 
 @end
