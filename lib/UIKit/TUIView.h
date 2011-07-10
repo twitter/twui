@@ -81,6 +81,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		NSInteger lastHeight;
 		BOOL lastOpaque;
 		CGContextRef context;
+		CGRect dirtyRect;
 	} _context;
 	
 	struct {
@@ -314,7 +315,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 @property (nonatomic,getter=isHidden) BOOL hidden;
 
 /**
- default is YES.
+ default is YES. if set to NO, the view must fill its entire bounds, otherwise the view may contain graphical garbage.
  */
 @property (nonatomic) BOOL clearsContextBeforeDrawing;
 
