@@ -20,6 +20,7 @@
 
 - (CFIndex)stringIndexForPoint:(CGPoint)p;
 - (void)resetSelection;
+- (CGRect)rectForCurrentSelection;
 
 - (void)copy:(id)sender;
 

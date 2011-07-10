@@ -128,6 +128,8 @@
 
 - (void)mouseDown:(NSEvent *)event
 {
+	CGRect previousSelectionRect = [self rectForCurrentSelection];
+	
 	switch([event clickCount]) {
 		case 4:
 			_selectionAffinity = TUITextSelectionAffinityParagraph;
@@ -180,13 +182,16 @@ normal:
 		self.hitRange = hitActiveRange;
 	}
 	
-	[view setNeedsDisplay];
+	CGRect totalRect = CGRectUnion(previousSelectionRect, [self rectForCurrentSelection]);
+	[view setNeedsDisplayInRect:totalRect];
 	if([self acceptsFirstResponder])
 		[[view nsWindow] tui_makeFirstResponder:self];
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
+	CGRect previousSelectionRect = [self rectForCurrentSelection];
+	
 	CFIndex i = [self stringIndexForEvent:event];
 	_selectionEnd = i;
 	
@@ -204,14 +209,43 @@ normal:
 	
 	_selectionAffinity = TUITextSelectionAffinityCharacter; // reset affinity
 	
-	[view setNeedsDisplay];
+	CGRect totalRect = CGRectUnion(previousSelectionRect, [self rectForCurrentSelection]);
+	[view setNeedsDisplayInRect:totalRect];
 }
 
 - (void)mouseDragged:(NSEvent *)event
 {
+	CGRect previousSelectionRect = [self rectForCurrentSelection];
+	
 	CFIndex i = [self stringIndexForEvent:event];
 	_selectionEnd = i;
-	[view setNeedsDisplay];
+	
+	CGRect totalRect = CGRectUnion(previousSelectionRect, [self rectForCurrentSelection]);
+	[view setNeedsDisplayInRect:totalRect];
+}
+
+- (CGRect)rectForCurrentSelection {
+	CTFrameRef textFrame = [self ctFrame];
+	CGRect totalRect = CGRectNull;
+	CFRange selectedRange = [self _selectedRange];
+	if(selectedRange.length > 0) {
+		CFIndex rectCount = 100;
+		CGRect rects[rectCount];
+		AB_CTFrameGetRectsForRange(textFrame, selectedRange, rects, &rectCount);
+		
+		for(CFIndex i = 0; i < rectCount; ++i) {
+			CGRect rect = rects[i];
+			rect = CGRectIntegral(rect);
+			
+			if(CGRectEqualToRect(totalRect, CGRectNull)) {
+				totalRect = rect;
+			} else {
+				totalRect = CGRectUnion(rect, totalRect);
+			}
+		}
+	}
+	
+	return totalRect;
 }
 
 - (void)resetSelection
