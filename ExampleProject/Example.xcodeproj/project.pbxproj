@@ -65,6 +65,7 @@
 		5ED56727139DC35100031CDF /* TUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566F2139DC35100031CDF /* TUIView.m */; };
 		5ED56728139DC35100031CDF /* TUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566F4139DC35100031CDF /* TUIViewController.m */; };
 		5ED56736139DC35800031CDF /* CoreText+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56732139DC35800031CDF /* CoreText+Additions.m */; };
+		D3CE671313C6646B00D47B2D /* ExampleSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -177,6 +178,8 @@
 		5ED566F5139DC35100031CDF /* TUIViewNSViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIViewNSViewContainer.h; sourceTree = "<group>"; };
 		5ED56731139DC35800031CDF /* CoreText+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoreText+Additions.h"; path = "../Support/CoreText+Additions.h"; sourceTree = "<group>"; };
 		5ED56732139DC35800031CDF /* CoreText+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoreText+Additions.m"; path = "../Support/CoreText+Additions.m"; sourceTree = "<group>"; };
+		D3CE671113C6646B00D47B2D /* ExampleSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleSectionHeaderView.h; sourceTree = "<group>"; };
+		D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleSectionHeaderView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +259,8 @@
 				5C90DB9C13A7C08D00ECDD14 /* ExampleTabBar.m */,
 				5C55D83513A66BD5000ED768 /* ExampleTableViewCell.h */,
 				5C55D83613A66BD5000ED768 /* ExampleTableViewCell.m */,
+				D3CE671113C6646B00D47B2D /* ExampleSectionHeaderView.h */,
+				D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */,
 				5ED5668C139DC30300031CDF /* MainMenu.xib */,
 				5ED5667E139DC30300031CDF /* Supporting Files */,
 			);
@@ -477,6 +482,7 @@
 				5C55D83413A667A0000ED768 /* ExampleView.m in Sources */,
 				5C55D83713A66BD5000ED768 /* ExampleTableViewCell.m in Sources */,
 				5C90DB9D13A7C08E00ECDD14 /* ExampleTabBar.m in Sources */,
+				D3CE671313C6646B00D47B2D /* ExampleSectionHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,6 +16,7 @@
 
 #import "ExampleView.h"
 #import "ExampleTableViewCell.h"
+#import "ExampleSectionHeaderView.h"
 
 #define TAB_HEIGHT 60
 
@@ -116,14 +117,28 @@
 	NSLog(@"selected tab %ld", index);
 }
 
+- (NSInteger)numberOfSectionsInTableView:(TUITableView *)tableView
+{
+	return 8;
+}
+
 - (NSInteger)tableView:(TUITableView *)table numberOfRowsInSection:(NSInteger)section
 {
-	return 200;
+	return 25;
 }
 
 - (CGFloat)tableView:(TUITableView *)tableView heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 {
 	return 50.0;
+}
+
+-(TUIView *)tableView:(TUITableView *)tableView headerViewForSection:(NSInteger)section {
+  ExampleSectionHeaderView *view = [[ExampleSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
+  TUIAttributedString *title = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"Example Section %d", section]];
+	title.color = [TUIColor blackColor];
+	title.font = exampleFont2;
+  view.labelRenderer.attributedString = title;
+  return [view autorelease];
 }
 
 - (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath
