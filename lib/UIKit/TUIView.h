@@ -93,6 +93,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		unsigned int pasteboardDraggingEnabled:1;
 		unsigned int pasteboardDraggingIsDragging:1;
 		unsigned int dragDistanceLock:1;
+		unsigned int clearsContextBeforeDrawing:1;
 		
 		unsigned int delegateMouseEntered:1;
 		unsigned int delegateMouseExited:1;
@@ -311,6 +312,11 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  default is NO. doesn't check superviews
  */
 @property (nonatomic,getter=isHidden) BOOL hidden;
+
+/**
+ default is YES.
+ */
+@property (nonatomic) BOOL clearsContextBeforeDrawing;
 
 @end
 
