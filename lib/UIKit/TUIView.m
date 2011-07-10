@@ -272,15 +272,21 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	layer.contents = (id)image.CGImage; \
 	TUIGraphicsPopContext();
 	
+	CGRect rectToDraw = self.bounds;
+	if(!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
+		rectToDraw = _context.dirtyRect;
+		_context.dirtyRect = CGRectZero;
+	}
+	
 	if(drawRect) {
 		// drawRect is implemented via a block
 		PRE_DRAW
-		drawRect(self, self.bounds);
+		drawRect(self, rectToDraw);
 		POST_DRAW
 	} else if((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
 		// drawRect is overridden by subclass
 		PRE_DRAW
-		drawRectIMP(self, drawRectSEL, self.bounds);
+		drawRectIMP(self, drawRectSEL, rectToDraw);
 		POST_DRAW
 	} else {
 		// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
@@ -757,6 +763,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 
 - (void)setNeedsDisplayInRect:(CGRect)rect
 {
+	_context.dirtyRect = rect;
 	[self.layer setNeedsDisplayInRect:rect];
 }
 
