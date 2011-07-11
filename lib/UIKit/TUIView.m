@@ -103,6 +103,7 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 {
 	if((self = [super init]))
 	{
+		_viewFlags.clearsContextBeforeDrawing = 1;
 		self.frame = frame;
 		toolTipDelay = 1.5;
 	}
@@ -259,7 +260,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	CGRect b = self.bounds; \
 	CGContextRef context = [self _CGContext]; \
 	TUIGraphicsPushContext(context); \
-	if(self.clearsContextBeforeDrawing) \
+	if(_viewFlags.clearsContextBeforeDrawing) \
 		CGContextClearRect(context, b); \
 	CGContextScaleCTM(context, Screen_Scale, Screen_Scale); \
 	CGContextSetAllowsAntialiasing(context, true); \
@@ -820,11 +821,13 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	[self setNeedsDisplay];
 }
 
-- (BOOL)clearsContextBeforeDrawing {
+- (BOOL)clearsContextBeforeDrawing
+{
 	return _viewFlags.clearsContextBeforeDrawing;
 }
 
-- (void)setClearsContextBeforeDrawing:(BOOL)newValue {
+- (void)setClearsContextBeforeDrawing:(BOOL)newValue
+{
 	_viewFlags.clearsContextBeforeDrawing = newValue;
 }
 
