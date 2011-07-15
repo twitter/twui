@@ -41,8 +41,10 @@ typedef enum {
 @optional
 
 - (void)tableView:(TUITableView *)tableView willDisplayCell:(TUITableViewCell *)cell forRowAtIndexPath:(TUIFastIndexPath *)indexPath; // not implemented yet
-- (void)tableView:(TUITableView *)tableView didSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath; // happens on mouse down
+- (void)tableView:(TUITableView *)tableView didMouseDownAtIndexPath:(TUIFastIndexPath *)indexPath; // happens on mouse down
 - (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event; // happens on mouse up (can look at clickCount)
+- (void)tableView:(TUITableView *)tableView didSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath; // Tells the delegate that the specified row is now selected, whether by clicking or key action
+- (void)tableView:(TUITableView *)tableView didDeselectRowAtIndexPath:(TUIFastIndexPath *)indexPath; // Tells the delegate that the specified row is now deselected
 
 @end
 

@@ -599,6 +599,8 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 		[cell setSelected:YES animated:animated];
 		[_selectedIndexPath release]; // should already be nil
 		_selectedIndexPath = [indexPath retain];
+		if([self.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)])
+			[self.delegate tableView:self didSelectRowAtIndexPath:_selectedIndexPath];
 		[cell setNeedsDisplay];
 	}
 	[self _makeRowAtIndexPathFirstResponder:indexPath];
@@ -612,6 +614,8 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 		[cell setSelected:NO animated:animated];
 		[_selectedIndexPath release];
 		_selectedIndexPath = nil;
+		if([self.delegate respondsToSelector:@selector(tableView:didDeselectRowAtIndexPath:)])
+			[self.delegate tableView:self didDeselectRowAtIndexPath:indexPath];
 		[cell setNeedsDisplay];
 	}
 }

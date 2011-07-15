@@ -76,8 +76,8 @@
 {
 	TUITableView *tableView = self.tableView;
 	[tableView selectRowAtIndexPath:self.indexPath animated:YES scrollPosition:TUITableViewScrollPositionNone];
-	if([tableView.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)])
-		[tableView.delegate tableView:tableView didSelectRowAtIndexPath:self.indexPath];
+	if([tableView.delegate respondsToSelector:@selector(tableView:didMouseDownAtIndexPath:)])
+		[tableView.delegate tableView:tableView didMouseDownAtIndexPath:self.indexPath];
 	
 	[super mouseDown:event]; // may make the text renderer first responder, so we want to do the selection before this
 	_tableViewCellFlags.highlighted = 1;
