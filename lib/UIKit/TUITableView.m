@@ -498,17 +498,8 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 }
 
 - (void)reloadData
-{
-	// Store the rects of the current selection to restore its position
-	// after the reload
-	CGRect visibleRect = CGRectZero;
-	CGRect selectedRect = CGRectZero;
-	
-	if (_selectedIndexPath) {
-		visibleRect = [self visibleRect];
-		selectedRect = [self rectForRowAtIndexPath:_selectedIndexPath];
-	}
-	
+{	
+
 	// need to recycle all visible cells, have them be regenerated on layoutSubviews
 	// because the same cells might have different content
 	for(TUIFastIndexPath *i in _visibleItems) {
@@ -536,20 +527,6 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 			[self deselectRowAtIndexPath:_selectedIndexPath animated:NO];
 		}
 		
-		// If the new selection is still valid, try to keep the position of the selected
-		// item in the same position as before the reload take place
-		else {			
-			// Get the rect of the selected row after reload
-			CGRect newVisibleRect = [self rectForRowAtIndexPath:_selectedIndexPath];
-			newVisibleRect.size = self.frame.size;
-			
-			// Adjust the newRect until its relative position to the table view
-			// is similar to where it was before the update
-			newVisibleRect.origin.y -= (selectedRect.origin.y - visibleRect.origin.y);
-			
-			[self scrollRectToVisible:newVisibleRect animated:NO];
-		}
-
 	}
 
 }
