@@ -53,6 +53,7 @@ typedef enum {
 	
 	struct {
 		unsigned int drawMaskDragSelection:1;
+		unsigned int backgroundDrawingEnabled:1;
 	} _flags;
 }
 
@@ -63,10 +64,12 @@ typedef enum {
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
 @property (nonatomic, retain) TUIColor *shadowColor; // default = nil for no shadow
+@property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
 
 - (void)draw;
 - (void)drawInContext:(CGContextRef)context;
 - (CGSize)size; // calculates vertical size based on frame width
+- (CGSize)sizeConstrainedToWidth:(CGFloat)width;
 - (void)reset;
 
 - (NSRange)selectedRange;

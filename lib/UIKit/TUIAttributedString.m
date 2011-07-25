@@ -18,6 +18,9 @@
 #import "TUIFont.h"
 #import "TUIColor.h"
 
+NSString * const TUIAttributedStringBackgroundColorAttributeName = @"TUIAttributedStringBackgroundColorAttributeName";
+NSString * const TUIAttributedStringBackgroundFillStyleName = @"TUIAttributedStringBackgroundFillStyleName";
+
 @implementation TUIAttributedString
 
 + (TUIAttributedString *)stringWithString:(NSString *)string
@@ -62,6 +65,26 @@
 - (void)setColor:(TUIColor *)color
 {
 	[self setColor:color inRange:[self _stringRange]];
+}
+
+- (void)setBackgroundColor:(TUIColor *)color
+{
+	[self setBackgroundColor:color inRange:[self _stringRange]];
+}
+
+- (void)setBackgroundColor:(TUIColor *)color inRange:(NSRange)range
+{
+	[self addAttribute:TUIAttributedStringBackgroundColorAttributeName value:(id)[color CGColor] range:range];
+}
+
+- (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle
+{
+	[self setBackgroundFillStyle:fillStyle inRange:[self _stringRange]];
+}
+
+- (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle inRange:(NSRange)range
+{
+	[self addAttribute:TUIAttributedStringBackgroundFillStyleName value:[NSNumber numberWithInteger:fillStyle] range:range];
 }
 
 - (void)setShadow:(NSShadow *)shadow
@@ -199,6 +222,15 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 - (CGFloat)lineHeight
 {
 	return 0.0;
+}
+
+- (TUIColor *)backgroundColor
+{
+	return nil;
+}
+
+- (TUIBackgroundFillStyle)backgroundFillStyle {
+	return TUIBackgroundFillStyleInline;
 }
 
 @end

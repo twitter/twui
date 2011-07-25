@@ -16,6 +16,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const TUIAttributedStringBackgroundColorAttributeName;
+extern NSString * const TUIAttributedStringBackgroundFillStyleName;
+
 @class TUIFont;
 @class TUIColor;
 
@@ -41,6 +44,11 @@ typedef enum {
 	TUITextAlignmentJustified,
 } TUITextAlignment;
 
+typedef enum {
+	TUIBackgroundFillStyleInline = 0,
+	TUIBackgroundFillStyleBlock,
+} TUIBackgroundFillStyle;
+
 @interface TUIAttributedString : NSMutableAttributedString
 
 + (TUIAttributedString *)stringWithString:(NSString *)string;
@@ -52,6 +60,8 @@ typedef enum {
 // write-only properties, reading will return nil
 @property (nonatomic, retain) TUIFont *font;
 @property (nonatomic, retain) TUIColor *color;
+@property (nonatomic, retain) TUIColor *backgroundColor;
+@property (nonatomic, assign) TUIBackgroundFillStyle backgroundFillStyle;
 @property (nonatomic, retain) NSShadow *shadow;
 @property (nonatomic, assign) TUITextAlignment alignment; // setting this will set lineBreakMode to word wrap, use setAlignment:lineBreakMode: for more control
 @property (nonatomic, assign) CGFloat kerning;
@@ -62,6 +72,8 @@ typedef enum {
 - (NSRange)_stringRange;
 - (void)setFont:(TUIFont *)font inRange:(NSRange)range;
 - (void)setColor:(TUIColor *)color inRange:(NSRange)range;
+- (void)setBackgroundColor:(TUIColor *)color inRange:(NSRange)range;
+- (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle inRange:(NSRange)range;
 - (void)setShadow:(NSShadow *)shadow inRange:(NSRange)range;
 - (void)setKerning:(CGFloat)f inRange:(NSRange)range;
 - (void)setLineHeight:(CGFloat)f inRange:(NSRange)range;

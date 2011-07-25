@@ -177,6 +177,31 @@
 		
 		CTFrameRef f = [self ctFrame];
 		
+		if(self.backgroundDrawingEnabled && !_flags.drawMaskDragSelection) {
+			CGContextSaveGState(context);
+			
+			[self.attributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+				if(value == NULL) return;
+				
+				CGColorRef color = (CGColorRef) value;
+				CGContextSetFillColorWithColor(context, color);
+				
+				CFIndex rectCount = 100;
+				CGRect rects[rectCount];
+				CFRange r = {range.location, range.length};
+				AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
+				for(CFIndex i = 0; i < rectCount; ++i) {
+					CGRect r = rects[i];
+					r = CGRectInset(r, -2, -1);
+					r = CGRectIntegral(r);
+					if(r.size.width > 1)
+						CGContextFillRect(context, r);
+				}
+			}];
+			
+			CGContextRestoreGState(context);
+		}
+		
 		if(hitRange && !_flags.drawMaskDragSelection) {
 			// draw highlight
 			CGContextSaveGState(context);
@@ -239,6 +264,15 @@
 	return CGSizeZero;
 }
 
+- (CGSize)sizeConstrainedToWidth:(CGFloat)width
+{
+	if(attributedString) {
+		// height needs to be something big but not CGFLOAT_MAX big
+		return [attributedString ab_sizeConstrainedToSize:CGSizeMake(width, 1000000.0f)];
+	}
+	return CGSizeZero;
+}
+
 - (void)setAttributedString:(NSAttributedString *)a
 {
 	[a retain];
@@ -268,6 +302,16 @@
 		return rects[0];
 	}
 	return CGRectZero;
+}
+
+- (BOOL)backgroundDrawingEnabled
+{
+	return _flags.backgroundDrawingEnabled;
+}
+
+- (void)setBackgroundDrawingEnabled:(BOOL)enabled
+{
+	_flags.backgroundDrawingEnabled = enabled;
 }
 
 @end

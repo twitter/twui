@@ -33,9 +33,26 @@ CGSize AB_CTFrameGetSize(CTFrameRef frame)
 		CGSize s = AB_CTLineGetSize((CTLineRef)line);
 		if(s.width > w)
 			w = s.width;
-		h += s.height;
 	}
-	return CGSizeMake(w, h);
+	
+	// Mostly based off http://lists.apple.com/archives/quartz-dev/2008/Mar/msg00079.html
+	CTLineRef lastLine = (CTLineRef)[lines lastObject];
+	if(lastLine != NULL) {
+		// Get the origin of the last line. We add the descent to this
+		// (below) to get the bottom edge of the last line of text.
+		CGPoint lastLineOrigin;
+		CTFrameGetLineOrigins(frame, CFRangeMake(lines.count - 1, 1), &lastLineOrigin);
+		
+		CGPathRef framePath = CTFrameGetPath(frame);
+		CGRect frameRect = CGPathGetBoundingBox(framePath);
+		// The height needed to draw the text is from the bottom of the last line
+		// to the top of the frame.
+		CGFloat ascent, descent, leading;
+		CTLineGetTypographicBounds(lastLine, &ascent, &descent, &leading);
+		h = CGRectGetMaxY(frameRect) - lastLineOrigin.y + descent;
+	}
+	
+	return CGSizeMake(ceil(w), ceil(h));
 }
 
 CGFloat AB_CTFrameGetHeight(CTFrameRef f)
@@ -122,6 +139,11 @@ static inline BOOL RangeContainsIndex(CFRange range, CFIndex index)
 
 void AB_CTFrameGetRectsForRange(CTFrameRef frame, CFRange range, CGRect rects[], CFIndex *rectCount)
 {
+	AB_CTFrameGetRectsForRangeWithAggregationType(frame, range, AB_CTLineRectAggregationTypeInline, rects, rectCount);
+}
+
+void AB_CTFrameGetRectsForRangeWithAggregationType(CTFrameRef frame, CFRange range, AB_CTLineRectAggregationType aggregationType, CGRect rects[], CFIndex *rectCount)
+{
 	CGRect bounds;
 	CGPathIsRect(CTFrameGetPath(frame), &bounds);
 	
@@ -156,6 +178,10 @@ void AB_CTFrameGetRectsForRange(CTFrameRef frame, CFRange range, CGRect rects[],
 			CGFloat startOffset = CTLineGetOffsetForStringIndex(line, startIndex, NULL);
 			CGFloat endOffset = CTLineGetOffsetForStringIndex(line, endIndex, NULL);
 			CGRect r = CGRectMake(bounds.origin.x + lineOrigin.x + startOffset, line_y, endOffset - startOffset, lineHeight);
+			if(aggregationType == AB_CTLineRectAggregationTypeBlock) {
+				r.size.width = bounds.size.width - startOffset;
+			}
+			
 			if(rectIndex < maxRects)
 				rects[rectIndex++] = r;
 			goto end;
@@ -169,6 +195,10 @@ void AB_CTFrameGetRectsForRange(CTFrameRef frame, CFRange range, CGRect rects[],
 		} else if(containsEndIndex) {
 			CGFloat endOffset = CTLineGetOffsetForStringIndex(line, endIndex, NULL);
 			CGRect r = CGRectMake(bounds.origin.x + lineOrigin.x, line_y, endOffset, lineHeight);
+			if(aggregationType == AB_CTLineRectAggregationTypeBlock) {
+				r.size.width = bounds.size.width;
+			}
+			
 			if(rectIndex < maxRects)
 				rects[rectIndex++] = r;
 		} else if(RangeContainsIndex(range, lineRange.location)) {
