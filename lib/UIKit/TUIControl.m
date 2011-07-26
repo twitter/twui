@@ -15,6 +15,7 @@
  */
 
 #import "TUIControl.h"
+#import "TUIControl+Private.h"
 
 @implementation TUIControl
 
@@ -64,14 +65,18 @@
 - (void)mouseDown:(NSEvent *)event
 {
 	[super mouseDown:event];
+	[self _stateWillChange];
 	_controlFlags.tracking = 1;
+	[self _stateDidChange];
 	[self setNeedsDisplay];
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
 	[super mouseUp:event];
+	[self _stateWillChange];
 	_controlFlags.tracking = 0;
+	[self _stateDidChange];
 	[self setNeedsDisplay];
 }
 
