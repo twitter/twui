@@ -92,6 +92,9 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 	[drawRect release];
 	[layout release];
 	[toolTip release];
+	[accessibilityHint release];
+	[accessibilityLabel release];
+	[accessibilityValue release];
 	if(_context.context) {
 		CGContextRelease(_context.context);
 		_context.context = NULL;
@@ -106,6 +109,8 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 		_viewFlags.clearsContextBeforeDrawing = 1;
 		self.frame = frame;
 		toolTipDelay = 1.5;
+		self.isAccessibilityElement = YES;
+		self.accessibilityLabel = @"blah";
 	}
 	return self;
 }

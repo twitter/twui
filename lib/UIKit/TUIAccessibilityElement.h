@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TUIAccessibilityElement : NSObject
+
+// implements the TUIAccessibility informal protocol
+@interface TUIAccessibilityElement : NSObject {
+	id accessibilityContainer;
+	NSString *accessibilityLabel;
+}
+
+@property (nonatomic, assign) id accessibilityContainer;
+@property (nonatomic, copy) NSString *accessibilityLabel;
 
 @end
