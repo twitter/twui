@@ -8,14 +8,28 @@
 
 #import "TUIAccessibilityElement.h"
 
+
 @implementation TUIAccessibilityElement
 
-- (id)init
+@synthesize accessibilityContainer;
+@synthesize accessibilityLabel;
+
+- (void)dealloc
+{
+	[accessibilityLabel release];
+	
+	[super dealloc];
+}
+
+- (id)initWithAccessibilityContainer:(id)container
 {
     self = [super init];
-    if (self) {
-        // Initialization code here.
-    }
+    if(self == nil) {
+		[self release];
+		return nil;
+	}
+	
+	self.accessibilityContainer = container;
     
     return self;
 }
