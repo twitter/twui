@@ -8,16 +8,16 @@
 
 #import "TUIControl+Private.h"
 
-@implementation TUIControl_Private
+@implementation TUIControl (Private)
 
-- (id)init
+- (void)_stateWillChange
 {
-    self = [super init];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
+	
+}
+
+- (void)_stateDidChange
+{
+	
 }
 
 @end

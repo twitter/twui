@@ -6,8 +6,11 @@
 //  Copyright 2011 Maybe Apps, LLC. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "TUIControl.h"
 
-@interface TUIControl_Private : NSObject
+@interface TUIControl (Private)
+
+- (void)_stateWillChange;
+- (void)_stateDidChange;
 
 @end

@@ -44,6 +44,7 @@ typedef enum {
     struct {
 		unsigned int dimsInBackground:1;
         unsigned int buttonType:8;
+		unsigned int firstDraw:1;
     } _buttonFlags;
 }
 

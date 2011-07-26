@@ -18,6 +18,13 @@
 #import "TUIButton.h"
 #import "TUILabel.h"
 #import "TUINSView.h"
+#import "TUIControl+Private.h"
+
+@interface TUIButton ()
+
+- (void)_update;
+
+@end
 
 @implementation TUIButton
 
@@ -31,6 +38,7 @@
 		self.opaque = NO; // won't matter unless image is set
 		_buttonFlags.buttonType = TUIButtonTypeCustom;
 		_buttonFlags.dimsInBackground = 1;
+		_buttonFlags.firstDraw = 1;
 	}
 	return self;
 }
@@ -155,6 +163,11 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 
 - (void)drawRect:(CGRect)r
 {
+	if(_buttonFlags.firstDraw) {
+		[self _update];
+		_buttonFlags.firstDraw = 0;
+	}
+	
 	CGRect bounds = self.bounds;
 
 	BOOL key = [self.nsWindow isKeyWindow];
@@ -164,11 +177,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		alpha = key?alpha:0.5;
 	
 	TUIImage *backgroundImage = self.currentBackgroundImage;
-	if(!backgroundImage)
-		backgroundImage = [self backgroundImageForState:TUIControlStateNormal];
 	TUIImage *image = self.currentImage;
-	if(!image)
-		image = [self imageForState:TUIControlStateNormal];
 	
 	[backgroundImage drawInRect:[self backgroundRectForBounds:bounds] blendMode:kCGBlendModeNormal alpha:1.0];
 	
@@ -234,7 +243,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 - (void)mouseUp:(NSEvent *)event
 {
 	[super mouseUp:event];
-	if([event clickCount] < 2) {
+//	if([event clickCount] < 2) {
 		if([self eventInside:event]) {
 			if(![self didDrag]) {
 				[self sendActionsForControlEvents:TUIControlEventTouchUpInside];
@@ -242,7 +251,20 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		} else {
 			[self sendActionsForControlEvents:TUIControlEventTouchUpOutside];
 		}
-	}
+//	}
+}
+
+- (void)_update {
+	_titleView.text = self.currentTitle;
+	_titleView.textColor = self.currentTitleColor;
+}
+
+- (void)_stateDidChange {
+	[super _stateDidChange];
+	
+	[self _update];
+	
+	[self setNeedsDisplay];
 }
 
 @end
