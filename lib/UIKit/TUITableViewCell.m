@@ -75,10 +75,7 @@
 - (void)mouseDown:(NSEvent *)event
 {
 	TUITableView *tableView = self.tableView;
-	[tableView selectRowAtIndexPath:self.indexPath animated:YES scrollPosition:TUITableViewScrollPositionNone];
-	if([tableView.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)])
-		[tableView.delegate tableView:tableView didSelectRowAtIndexPath:self.indexPath];
-	
+	[tableView selectRowAtIndexPath:self.indexPath animated:tableView.animateSelectionChanges scrollPosition:TUITableViewScrollPositionNone];
 	[super mouseDown:event]; // may make the text renderer first responder, so we want to do the selection before this
 	_tableViewCellFlags.highlighted = 1;
 	[self setNeedsDisplay];
@@ -92,8 +89,9 @@
 	
 	if([self eventInside:event]) {
 		TUITableView *tableView = self.tableView;
-		if([tableView.delegate respondsToSelector:@selector(tableView:didClickRowAtIndexPath:withEvent:)])
+		if([tableView.delegate respondsToSelector:@selector(tableView:didClickRowAtIndexPath:withEvent:)]){
 			[tableView.delegate tableView:tableView didClickRowAtIndexPath:self.indexPath withEvent:event];
+		}
 	}
 }
 

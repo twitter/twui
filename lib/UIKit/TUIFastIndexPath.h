@@ -21,6 +21,9 @@
 #define TUIFastIndexPath_DANGEROUS_ISEQUAL 1
 #endif
 
+#define TUIFastIndexPathFromNSIndexPath(indexPath)  (((indexPath) != nil) ? [TUIFastIndexPath indexPathForRow:(indexPath).row inSection:(indexPath).section] : nil)
+#define NSIndexPathFromTUIFastIndexPath(indexPath)  (((indexPath) != nil) ? [NSIndexPath indexPathForRow:(indexPath).row inSection:(indexPath).section] : nil)
+
 /**
  Note TUITableView uses this extensively, if you use want to use NSIndexPath to talk to table views you should turn TUIFastIndexPath_DANGEROUS_ISEQUAL to 0
  */
