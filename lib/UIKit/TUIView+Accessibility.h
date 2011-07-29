@@ -17,7 +17,7 @@
 @property (nonatomic, copy) NSString *accessibilityHint;
 @property (nonatomic, copy) NSString *accessibilityValue;
 @property (nonatomic, assign) TUIAccessibilityTraits accessibilityTraits;
-@property (nonatomic, assign) CGRect accessibilityFrame;
+@property (nonatomic, assign) CGRect accessibilityFrame; // accessibilityFrame should be in screen coordinates
 
 - (NSArray *)accessibleSubviews;
 

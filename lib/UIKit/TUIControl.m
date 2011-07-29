@@ -16,8 +16,23 @@
 
 #import "TUIControl.h"
 #import "TUIControl+Private.h"
+#import "TUIView+Accessibility.h"
+#import "TUIAccessibility.h"
 
 @implementation TUIControl
+
+- (id)initWithFrame:(CGRect)rect
+{
+	self = [super initWithFrame:rect];
+	if(self == nil) {
+		[self release];
+		return nil;
+	}
+	
+	self.accessibilityTraits |= TUIAccessibilityTraitButton;
+	
+	return self;
+}
 
 - (void)dealloc
 {

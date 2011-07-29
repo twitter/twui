@@ -23,11 +23,10 @@ TUIAccessibilityTraits TUIAccessibilityTraitSearchField = 1 << 3;
 TUIAccessibilityTraits TUIAccessibilityTraitImage = 1 << 4;
 TUIAccessibilityTraits TUIAccessibilityTraitSelected = 1 << 5;
 TUIAccessibilityTraits TUIAccessibilityTraitPlaysSound = 1 << 6;
-TUIAccessibilityTraits TUIAccessibilityTraitKeyboardKey = 1 << 7;
-TUIAccessibilityTraits TUIAccessibilityTraitStaticText = 1 << 8;
-TUIAccessibilityTraits TUIAccessibilityTraitSummaryElement = 1 << 9;
-TUIAccessibilityTraits TUIAccessibilityTraitNotEnabled = 1 << 10;
-TUIAccessibilityTraits TUIAccessibilityTraitUpdatesFrequently = 1 << 11;
+TUIAccessibilityTraits TUIAccessibilityTraitStaticText = 1 << 7;
+TUIAccessibilityTraits TUIAccessibilityTraitSummaryElement = 1 << 8;
+TUIAccessibilityTraits TUIAccessibilityTraitNotEnabled = 1 << 9;
+TUIAccessibilityTraits TUIAccessibilityTraitUpdatesFrequently = 1 << 10;
 
 @implementation NSObject (TUIAccessibility)
 

@@ -8,6 +8,11 @@
 
 #import "TUIView+Accessibility.h"
 
+@interface TUIView ()
+- (NSString *)accessibilityTraitsToRole;
+- (NSString *)accessibilityTraitsToRoleDescription;
+@end
+
 
 @implementation TUIView (Accessibility)
 
@@ -72,24 +77,19 @@
 
 - (CGRect)accessibilityFrame
 {
-    return accessibilityFrame;
+	// nothing set so use the view's frame converted to screen coordinates
+	if(CGRectEqualToRect(accessibilityFrame, CGRectNull)) {
+		CGRect frame = self.frame;
+		frame.origin = [[(NSView *) self.nsView window] convertBaseToScreen:[self frameInNSView].origin];
+		return frame;
+	} else {
+		return accessibilityFrame;
+	}
 }
 
 - (void)setAccessibilityFrame:(CGRect)frame
 {
 	accessibilityFrame = frame;
-}
-
-- (NSArray *)accessibleSubviews
-{
-	NSMutableArray *accessibleSubviews = [NSMutableArray array];
-	for(TUIView *view in self.subviews) {
-//		if([view isAccessibilityElement]) {
-			[accessibleSubviews addObject:view];
-//		}
-	}
-	
-	return [[accessibleSubviews copy] autorelease];
 }
 
 
@@ -105,25 +105,12 @@
 {
     return NO;
 }
-//
-//- (id)accessibilityAttributeValue:(NSString *)attribute 
-//{
-//    if([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-//		return NSAccessibilityGroupRole;
-//    } else if([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-//		return NSAccessibilityRoleDescriptionForUIElement(self);
-//	} else if([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
-//		return [self.rootView accessibleSubviews];
-//	} else {
-//		return [super accessibilityAttributeValue:attribute];
-//	}
-//}
 
 - (NSArray *)accessibilityAttributeNames
 {
     static NSArray *attributes = nil;
     if(attributes == nil) {
-		attributes = [[NSArray alloc] initWithObjects:NSAccessibilityRoleAttribute, NSAccessibilityRoleDescriptionAttribute, NSAccessibilityFocusedAttribute, NSAccessibilityChildrenAttribute, NSAccessibilityParentAttribute, NSAccessibilityWindowAttribute, NSAccessibilityTopLevelUIElementAttribute, NSAccessibilityPositionAttribute, NSAccessibilitySizeAttribute, nil];
+		attributes = [[NSArray alloc] initWithObjects:NSAccessibilityRoleAttribute, NSAccessibilityRoleDescriptionAttribute, NSAccessibilityFocusedAttribute, NSAccessibilityChildrenAttribute, NSAccessibilityParentAttribute, NSAccessibilityWindowAttribute, NSAccessibilityTopLevelUIElementAttribute, NSAccessibilityPositionAttribute, NSAccessibilitySizeAttribute, NSAccessibilityDescriptionAttribute, NSAccessibilityValueAttribute, NSAccessibilityTitleAttribute, nil];
     }
 	
     return attributes;
@@ -131,25 +118,32 @@
 
 - (id)accessibilityAttributeValue:(NSString *)attribute
 {
+	id practicalSuperview = (id) self.superview ? : self.nsView;
     if([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-		return NSAccessibilityGroupRole;
+		return [self accessibilityTraitsToRole];
     } else if([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-		return NSAccessibilityRoleDescriptionForUIElement(self);
+		return [self accessibilityTraitsToRoleDescription];
     } else if([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
 		id focusedElement = [NSApp accessibilityAttributeValue:NSAccessibilityFocusedUIElementAttribute];
 		return [NSNumber numberWithBool:[focusedElement isEqual:self]];
     } else if([attribute isEqualToString:NSAccessibilityParentAttribute]) {
-		return NSAccessibilityUnignoredAncestor((id) self.superview ? : self.nsView);
+		return NSAccessibilityUnignoredAncestor(practicalSuperview);
     } else if([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
-		return [self.superview accessibilityAttributeValue:NSAccessibilityWindowAttribute];
+		return [practicalSuperview accessibilityAttributeValue:NSAccessibilityWindowAttribute];
     } else if([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
-		return [self.superview accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
+		return [practicalSuperview accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
     } else if([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-		return [NSValue valueWithPoint:[[(NSView *)self.nsView window] convertBaseToScreen:[self frameInNSView].origin]];
+		return [NSValue valueWithPoint:[self accessibilityFrame].origin];
     } else if([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-		return [NSValue valueWithSize:self.bounds.size];
+		return [NSValue valueWithSize:[self accessibilityFrame].size];
     } else if([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
 		return [self accessibleSubviews];
+	} else if([attribute isEqualToString:NSAccessibilityDescriptionAttribute]) {
+		return self.accessibilityHint;
+	} else if([attribute isEqualToString:NSAccessibilityValueAttribute]) {
+		return self.accessibilityValue;
+	} else if([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
+		return self.accessibilityLabel;
 	} else {
 		return nil;
     }
@@ -176,19 +170,43 @@
     return [NSArray array];
 }
 
-- (NSString *)accessibilityActionDescription:(NSString *)action
-{
-    return nil;
-}
-
-- (void)accessibilityPerformAction:(NSString *)action
-{
-	
-}
-
 - (id)accessibilityFocusedUIElement
 {
     return NSAccessibilityUnignoredAncestor(self);
+}
+
+
+#pragma mark API
+
+- (NSString *)accessibilityTraitsToRole
+{
+	if((self.accessibilityTraits & TUIAccessibilityTraitButton) != 0) {
+		return NSAccessibilityButtonRole;
+	} else if((self.accessibilityTraits & TUIAccessibilityTraitLink) != 0) {
+		return NSAccessibilityLinkRole;
+	} else if((self.accessibilityTraits & TUIAccessibilityTraitStaticText) != 0) {
+		return NSAccessibilityStaticTextRole;
+	} else {
+		return NSAccessibilityUnknownRole;
+	}
+}
+
+- (NSString *)accessibilityTraitsToRoleDescription
+{
+	// use this handy function for now--might want to customize this more later on
+	return NSAccessibilityRoleDescriptionForUIElement(self);
+}
+
+- (NSArray *)accessibleSubviews
+{
+	NSMutableArray *accessibleSubviews = [NSMutableArray array];
+	for(TUIView *view in self.subviews) {
+		if([view isAccessibilityElement]) {
+			[accessibleSubviews addObject:view];
+		}
+	}
+	
+	return [[accessibleSubviews copy] autorelease];
 }
 
 @end
