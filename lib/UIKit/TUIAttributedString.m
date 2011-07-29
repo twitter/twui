@@ -20,6 +20,7 @@
 
 NSString * const TUIAttributedStringBackgroundColorAttributeName = @"TUIAttributedStringBackgroundColorAttributeName";
 NSString * const TUIAttributedStringBackgroundFillStyleName = @"TUIAttributedStringBackgroundFillStyleName";
+NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreDrawBlockName";
 
 @implementation TUIAttributedString
 
@@ -85,6 +86,11 @@ NSString * const TUIAttributedStringBackgroundFillStyleName = @"TUIAttributedStr
 - (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle inRange:(NSRange)range
 {
 	[self addAttribute:TUIAttributedStringBackgroundFillStyleName value:[NSNumber numberWithInteger:fillStyle] range:range];
+}
+
+- (void)setPreDrawBlock:(TUIAttributedStringPreDrawBlock)block inRange:(NSRange)range
+{
+	[self addAttribute:TUIAttributedStringPreDrawBlockName value:[[block copy] autorelease] range:range];
 }
 
 - (void)setShadow:(NSShadow *)shadow

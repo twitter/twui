@@ -177,28 +177,47 @@
 		
 		CTFrameRef f = [self ctFrame];
 		
-		CGContextSaveGState(context);
+		if(_flags.preDrawBlocksEnabled && !_flags.drawMaskDragSelection) {
+			[self.attributedString enumerateAttribute:TUIAttributedStringPreDrawBlockName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+				if(value == NULL) return;
+				
+				CGContextSaveGState(context);
+				
+				CFIndex rectCount = 100;
+				CGRect rects[rectCount];
+				CFRange r = {range.location, range.length};
+				AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
+				TUIAttributedStringPreDrawBlock block = value;
+				block(self.attributedString, range, rects, rectCount);
+				
+				CGContextRestoreGState(context);
+			}];
+		}
 		
-		[self.attributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
-			if(value == NULL) return;
+		if(_flags.backgroundDrawingEnabled && !_flags.drawMaskDragSelection) {
+			CGContextSaveGState(context);
 			
-			CGColorRef color = (CGColorRef) value;
-			CGContextSetFillColorWithColor(context, color);
-									
-			CFIndex rectCount = 100;
-			CGRect rects[rectCount];
-			CFRange r = {range.location, range.length};
-			AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
-			for(CFIndex i = 0; i < rectCount; ++i) {
-				CGRect r = rects[i];
-				r = CGRectInset(r, -2, -1);
-				r = CGRectIntegral(r);
-				if(r.size.width > 1)
-					CGContextFillRect(context, r);
-			}
-		}];
-		
-		CGContextRestoreGState(context);
+			[self.attributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+				if(value == NULL) return;
+				
+				CGColorRef color = (CGColorRef) value;
+				CGContextSetFillColorWithColor(context, color);
+				
+				CFIndex rectCount = 100;
+				CGRect rects[rectCount];
+				CFRange r = {range.location, range.length};
+				AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
+				for(CFIndex i = 0; i < rectCount; ++i) {
+					CGRect r = rects[i];
+					r = CGRectInset(r, -2, -1);
+					r = CGRectIntegral(r);
+					if(r.size.width > 1)
+						CGContextFillRect(context, r);
+				}
+			}];
+			
+			CGContextRestoreGState(context);
+		}
 		
 		if(hitRange && !_flags.drawMaskDragSelection) {
 			// draw highlight
@@ -300,6 +319,40 @@
 		return rects[0];
 	}
 	return CGRectZero;
+}
+
+- (NSArray *)rectsForCharacterRange:(CFRange)range
+{
+	CFIndex rectCount = 100;
+	CGRect rects[rectCount];
+	AB_CTFrameGetRectsForRange([self ctFrame], range, rects, &rectCount);
+	
+	NSMutableArray *wrappedRects = [NSMutableArray arrayWithCapacity:rectCount];
+	for(CFIndex i = 0; i < rectCount; i++) {
+		[wrappedRects addObject:[NSValue valueWithRect:rects[i]]];
+	}
+	
+	return [[wrappedRects copy] autorelease];
+}
+
+- (BOOL)backgroundDrawingEnabled
+{
+	return _flags.backgroundDrawingEnabled;
+}
+
+- (void)setBackgroundDrawingEnabled:(BOOL)enabled
+{
+	_flags.backgroundDrawingEnabled = enabled;
+}
+
+- (BOOL)preDrawBlocksEnabled
+{
+	return _flags.preDrawBlocksEnabled;
+}
+
+- (void)setPreDrawBlocksEnabled:(BOOL)enabled
+{
+	_flags.preDrawBlocksEnabled = enabled;
 }
 
 @end
