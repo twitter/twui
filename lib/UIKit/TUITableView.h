@@ -42,32 +42,35 @@ typedef enum {
 
 - (void)tableView:(TUITableView *)tableView willDisplayCell:(TUITableViewCell *)cell forRowAtIndexPath:(TUIFastIndexPath *)indexPath; // not implemented yet
 - (void)tableView:(TUITableView *)tableView didSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath; // happens on mouse down
+- (void)tableView:(TUITableView *)tableView didDeselectRowAtIndexPath:(TUIFastIndexPath *)indexPath;
 - (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event; // happens on mouse up (can look at clickCount)
 
 @end
 
 @interface TUITableView : TUIScrollView
 {
-	TUITableViewStyle				 _style;
-	id <TUITableViewDataSource>	 _dataSource; // weak
-	NSArray							*_sectionInfo;
-
-	TUIView						*_pullDownView;
+	TUITableViewStyle             _style;
+	id <TUITableViewDataSource>	  _dataSource; // weak
+	NSArray                     * _sectionInfo;
+	
+	TUIView                     * _pullDownView;
 	TUIView							*_headerView;
-
-	CGSize							_lastSize;
-	CGFloat							_contentHeight;
 	
-	NSMutableDictionary				*_visibleItems;
-	NSMutableDictionary				*_reusableTableCells;
+	CGSize                        _lastSize;
+	CGFloat                       _contentHeight;
 	
-	TUIFastIndexPath				*_selectedIndexPath;
-	TUIFastIndexPath				*_indexPathShouldBeFirstResponder;
-	NSInteger						_futureMakeFirstResponderToken;
-	TUIFastIndexPath				*_keepVisibleIndexPathForReload;
-	CGFloat							_relativeOffsetForReload;
+	NSMutableIndexSet           * _visibleSectionHeaders;
+	NSMutableDictionary         * _visibleItems;
+	NSMutableDictionary         * _reusableTableCells;
+	
+	TUIFastIndexPath            * _selectedIndexPath;
+	TUIFastIndexPath            * _indexPathShouldBeFirstResponder;
+	NSInteger                     _futureMakeFirstResponderToken;
+	TUIFastIndexPath            * _keepVisibleIndexPathForReload;
+	CGFloat                       _relativeOffsetForReload;
 	
 	struct {
+		unsigned int animateSelectionChanges:1;
 		unsigned int forceSaveScrollPosition:1;
 		unsigned int derepeaterEnabled:1;
 		unsigned int layoutSubviewsReentrancyGuard:1;
@@ -79,8 +82,10 @@ typedef enum {
 
 - (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style;                // must specify style at creation. -initWithFrame: calls this with UITableViewStylePlain
 
-@property (nonatomic,assign) id <TUITableViewDataSource> dataSource;
-@property (nonatomic,assign) id <TUITableViewDelegate>   delegate;
+@property (nonatomic,assign) id <TUITableViewDataSource>  dataSource;
+@property (nonatomic,assign) id <TUITableViewDelegate>    delegate;
+
+@property (readwrite, assign) BOOL                        animateSelectionChanges;
 
 - (void)reloadData;
 
@@ -92,8 +97,11 @@ typedef enum {
 - (NSInteger)numberOfSections;
 - (NSInteger)numberOfRowsInSection:(NSInteger)section;
 
+- (CGRect)rectForHeaderOfSection:(NSInteger)section;
 - (CGRect)rectForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
 
+- (NSIndexSet *)indexesOfSectionsInRect:(CGRect)rect;
+- (NSIndexSet *)indexesOfSectionHeadersInRect:(CGRect)rect;
 - (TUIFastIndexPath *)indexPathForCell:(TUITableViewCell *)cell;                      // returns nil if cell is not visible
 - (NSArray *)indexPathsForRowsInRect:(CGRect)rect;                              // returns nil if rect not valid 
 
@@ -136,6 +144,8 @@ typedef enum {
 - (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
 
 @optional
+
+- (TUITableViewCell *)tableView:(TUITableView *)tableView headerViewForSection:(NSInteger)section;
 
 /**
  Default is 1 if not implemented
