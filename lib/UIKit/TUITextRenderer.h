@@ -65,7 +65,6 @@ typedef enum {
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
 @property (nonatomic, retain) TUIColor *shadowColor; // default = nil for no shadow
-@property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
 
 // These are both advanced features that carry with them a potential performance hit.
 @property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
