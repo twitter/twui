@@ -101,7 +101,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		unsigned int delegateMouseExited:1;
 		unsigned int delegateWillDisplayLayer:1;
 	} _viewFlags;
-	
+
 	BOOL isAccessibilityElement;
 	NSString *accessibilityLabel;
 	NSString *accessibilityHint;

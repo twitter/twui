@@ -21,27 +21,14 @@
 
 - (BOOL)accessibilityIsIgnored
 {
-    return NO;
+    return YES;
 }
-//
-//- (id)accessibilityAttributeValue:(NSString *)attribute 
-//{
-//    if([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-//		return NSAccessibilityGroupRole;
-//    } else if([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-//		return NSAccessibilityRoleDescriptionForUIElement(self);
-//	} else if([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
-//		return [self.rootView accessibleSubviews];
-//	} else {
-//		return [super accessibilityAttributeValue:attribute];
-//	}
-//}
 
 - (NSArray *)accessibilityAttributeNames
 {
     static NSArray *attributes = nil;
     if(attributes == nil) {
-		attributes = [[NSArray alloc] initWithObjects:NSAccessibilityRoleAttribute, NSAccessibilityRoleDescriptionAttribute, NSAccessibilityFocusedAttribute, NSAccessibilityChildrenAttribute, NSAccessibilityParentAttribute, NSAccessibilityWindowAttribute, NSAccessibilityTopLevelUIElementAttribute, NSAccessibilityPositionAttribute, NSAccessibilitySizeAttribute, nil];
+		attributes = [[NSArray alloc] initWithObjects:NSAccessibilityChildrenAttribute, NSAccessibilityParentAttribute, NSAccessibilityWindowAttribute, NSAccessibilityTopLevelUIElementAttribute, NSAccessibilityPositionAttribute, NSAccessibilitySizeAttribute, nil];
     }
 	
     return attributes;
@@ -49,14 +36,9 @@
 
 - (id)accessibilityAttributeValue:(NSString *)attribute
 {
-    if([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-		return NSAccessibilityGroupRole;
-    } else if([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-		return NSAccessibilityRoleDescriptionForUIElement(self);
-    } else if([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-		id focusedElement = [NSApp accessibilityAttributeValue:NSAccessibilityFocusedUIElementAttribute];
-		return [NSNumber numberWithBool:[focusedElement isEqual:self]];
-    } else if([attribute isEqualToString:NSAccessibilityParentAttribute]) {
+    if([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
+		return [NSArray arrayWithObject:self.rootView];
+	} else if([attribute isEqualToString:NSAccessibilityParentAttribute]) {
 		return NSAccessibilityUnignoredAncestor(self.superview);
     } else if([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
 		return [self.superview accessibilityAttributeValue:NSAccessibilityWindowAttribute];
@@ -66,42 +48,19 @@
 		return [NSValue valueWithPoint:[[self window] convertBaseToScreen:[self convertPoint:self.bounds.origin toView:nil]]];
     } else if([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
 		return [NSValue valueWithSize:self.bounds.size];
-    } else if([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
-		return [NSArray arrayWithObject:self.rootView];
-	} else {
+    } else {
 		return nil;
     }
 }
 
 - (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute
 {
-    if([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-		return NO; // TODO: should this be settable?
-    } else {
-		return NO;
-    }
-}
-
-- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute
-{
-    if([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-		// TODO: should we set this?
-    }
+    return NO;
 }
 
 - (NSArray *)accessibilityActionNames
 {
     return [NSArray array];
-}
-
-- (NSString *)accessibilityActionDescription:(NSString *)action
-{
-    return nil;
-}
-
-- (void)accessibilityPerformAction:(NSString *)action
-{
-	
 }
 
 - (id)accessibilityFocusedUIElement
