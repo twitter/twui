@@ -53,6 +53,8 @@ typedef enum {
 	
 	struct {
 		unsigned int drawMaskDragSelection:1;
+		unsigned int backgroundDrawingEnabled:1;
+		unsigned int preDrawBlocksEnabled:1;
 	} _flags;
 }
 
@@ -63,6 +65,10 @@ typedef enum {
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
 @property (nonatomic, retain) TUIColor *shadowColor; // default = nil for no shadow
+
+// These are both advanced features that carry with them a potential performance hit.
+@property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
+@property (nonatomic, assign) BOOL preDrawBlocksEnabled; // default = NO
 
 - (void)draw;
 - (void)drawInContext:(CGContextRef)context;
@@ -75,6 +81,7 @@ typedef enum {
 - (NSString *)selectedString;
 
 - (CGRect)firstRectForCharacterRange:(CFRange)range;
+- (NSArray *)rectsForCharacterRange:(CFRange)range;
 
 @property (nonatomic, retain) id<ABActiveTextRange> hitRange;
 

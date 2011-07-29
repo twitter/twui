@@ -25,6 +25,7 @@
 - (CTFrameRef)ctFrame;
 - (CGPathRef)ctPath;
 - (CFRange)_selectedRange;
+- (CGRect)rectForRange:(CFRange)range;
 @end
 
 @implementation TUITextRenderer (Event)
@@ -214,24 +215,34 @@ normal:
 }
 
 - (void)mouseDragged:(NSEvent *)event
-{
-	CGRect previousSelectionRect = [self rectForCurrentSelection];
-	
+{	
+	CFIndex changeAnchor = _selectionEnd;
 	CFIndex i = [self stringIndexForEvent:event];
+	CFIndex selectionDelta = i - _selectionEnd;
 	_selectionEnd = i;
+
+	// selection delta needs to be positive so move the change anchor back to offset
+	if(selectionDelta < 0) {
+		changeAnchor = changeAnchor + selectionDelta;
+		selectionDelta = -selectionDelta;
+	}
 	
-	CGRect totalRect = CGRectUnion(previousSelectionRect, [self rectForCurrentSelection]);
-	[view setNeedsDisplayInRect:totalRect];
+	CFRange changedRange = CFRangeMake(changeAnchor, selectionDelta);
+	
+	[view setNeedsDisplayInRect:[self rectForRange:changedRange]];
 }
 
 - (CGRect)rectForCurrentSelection {
+	return [self rectForRange:[self _selectedRange]];
+}
+
+- (CGRect)rectForRange:(CFRange)range {
 	CTFrameRef textFrame = [self ctFrame];
 	CGRect totalRect = CGRectNull;
-	CFRange selectedRange = [self _selectedRange];
-	if(selectedRange.length > 0) {
+	if(range.length > 0) {
 		CFIndex rectCount = 100;
 		CGRect rects[rectCount];
-		AB_CTFrameGetRectsForRange(textFrame, selectedRange, rects, &rectCount);
+		AB_CTFrameGetRectsForRangeWithAggregationType(textFrame, range, AB_CTLineRectAggregationTypeBlock, rects, &rectCount);
 		
 		for(CFIndex i = 0; i < rectCount; ++i) {
 			CGRect rect = rects[i];
