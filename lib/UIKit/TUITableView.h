@@ -77,6 +77,7 @@ typedef enum {
 		unsigned int didFirstLayout:1;
 		unsigned int dataSourceNumberOfSectionsInTableView:1;
 		unsigned int delegateTableViewWillDisplayCellForRowAtIndexPath:1;
+		unsigned int maintainContentOffsetAfterReload:1;
 	} _tableFlags;
 }
 
@@ -86,6 +87,7 @@ typedef enum {
 @property (nonatomic,assign) id <TUITableViewDelegate>    delegate;
 
 @property (readwrite, assign) BOOL                        animateSelectionChanges;
+@property (nonatomic, assign) BOOL maintainContentOffsetAfterReload;
 
 - (void)reloadData;
 
