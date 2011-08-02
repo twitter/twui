@@ -177,7 +177,24 @@
 		
 		CTFrameRef f = [self ctFrame];
 		
-		if(self.backgroundDrawingEnabled && !_flags.drawMaskDragSelection) {
+		if(_flags.preDrawBlocksEnabled && !_flags.drawMaskDragSelection) {
+			[self.attributedString enumerateAttribute:TUIAttributedStringPreDrawBlockName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+				if(value == NULL) return;
+				
+				CGContextSaveGState(context);
+				
+				CFIndex rectCount = 100;
+				CGRect rects[rectCount];
+				CFRange r = {range.location, range.length};
+				AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
+				TUIAttributedStringPreDrawBlock block = value;
+				block(self.attributedString, range, rects, rectCount);
+				
+				CGContextRestoreGState(context);
+			}];
+		}
+		
+		if(_flags.backgroundDrawingEnabled && !_flags.drawMaskDragSelection) {
 			CGContextSaveGState(context);
 			
 			[self.attributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
@@ -304,6 +321,20 @@
 	return CGRectZero;
 }
 
+- (NSArray *)rectsForCharacterRange:(CFRange)range
+{
+	CFIndex rectCount = 100;
+	CGRect rects[rectCount];
+	AB_CTFrameGetRectsForRange([self ctFrame], range, rects, &rectCount);
+	
+	NSMutableArray *wrappedRects = [NSMutableArray arrayWithCapacity:rectCount];
+	for(CFIndex i = 0; i < rectCount; i++) {
+		[wrappedRects addObject:[NSValue valueWithRect:rects[i]]];
+	}
+	
+	return [[wrappedRects copy] autorelease];
+}
+
 - (BOOL)backgroundDrawingEnabled
 {
 	return _flags.backgroundDrawingEnabled;
@@ -312,6 +343,16 @@
 - (void)setBackgroundDrawingEnabled:(BOOL)enabled
 {
 	_flags.backgroundDrawingEnabled = enabled;
+}
+
+- (BOOL)preDrawBlocksEnabled
+{
+	return _flags.preDrawBlocksEnabled;
+}
+
+- (void)setPreDrawBlocksEnabled:(BOOL)enabled
+{
+	_flags.preDrawBlocksEnabled = enabled;
 }
 
 @end

@@ -15,8 +15,24 @@
  */
 
 #import "TUIControl.h"
+#import "TUIControl+Private.h"
+#import "TUIView+Accessibility.h"
+#import "TUIAccessibility.h"
 
 @implementation TUIControl
+
+- (id)initWithFrame:(CGRect)rect
+{
+	self = [super initWithFrame:rect];
+	if(self == nil) {
+		[self release];
+		return nil;
+	}
+	
+	self.accessibilityTraits |= TUIAccessibilityTraitButton;
+	
+	return self;
+}
 
 - (void)dealloc
 {
@@ -64,14 +80,18 @@
 - (void)mouseDown:(NSEvent *)event
 {
 	[super mouseDown:event];
+	[self _stateWillChange];
 	_controlFlags.tracking = 1;
+	[self _stateDidChange];
 	[self setNeedsDisplay];
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
 	[super mouseUp:event];
+	[self _stateWillChange];
 	_controlFlags.tracking = 0;
+	[self _stateDidChange];
 	[self setNeedsDisplay];
 }
 

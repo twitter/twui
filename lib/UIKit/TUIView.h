@@ -16,6 +16,7 @@
 
 #import "TUIResponder.h"
 #import "TUIColor.h"
+#import "TUIAccessibility.h"
 
 enum {
 	TUIViewAutoresizingNone                 = 0,
@@ -100,6 +101,13 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		unsigned int delegateMouseExited:1;
 		unsigned int delegateWillDisplayLayer:1;
 	} _viewFlags;
+
+	BOOL isAccessibilityElement;
+	NSString *accessibilityLabel;
+	NSString *accessibilityHint;
+	NSString *accessibilityValue;
+	TUIAccessibilityTraits accessibilityTraits;
+	CGRect accessibilityFrame;
 }
 
 /**

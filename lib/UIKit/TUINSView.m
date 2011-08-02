@@ -287,15 +287,6 @@
 	}
 }
 
-#if 0
-- (id)accessibilityHitTest:(NSPoint)point
-{
-	NSPoint windowPoint = [[self window] convertScreenToBase:point];
-	NSPoint localPoint = [self convertPoint:windowPoint fromView:nil];
-	return [rootView accessibilityHitTest:localPoint];
-}
-#endif
-
 - (BOOL)performKeyEquivalent:(NSEvent *)event
 {
 	return [rootView performKeyEquivalent:event];
