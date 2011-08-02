@@ -54,8 +54,8 @@
 	[super drawRect:rect];
 	if (_image == nil)
 		return;
-	CGContextRef ctx = TUIGraphicsGetCurrentContext();
-	CGContextDrawImage(ctx, rect, _image.CGImage);
+    
+    [_image drawInRect:rect];
 }
 
 @end
