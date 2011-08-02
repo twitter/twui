@@ -125,27 +125,52 @@
 
 - (NSString *)currentTitle
 {
-	return [self titleForState:self.state];
+	NSString *title = [self titleForState:self.state];
+	if(title == nil) {
+		title = [self titleForState:TUIControlStateNormal];
+	}
+	
+	return title;
 }
 
 - (TUIColor *)currentTitleColor
 {
-	return [self titleColorForState:self.state];
+	TUIColor *color = [self titleColorForState:self.state];
+	if(color == nil) {
+		color = [self titleColorForState:TUIControlStateNormal];
+	}
+	
+	return color;
 }
 
 - (TUIColor *)currentTitleShadowColor
 {
-	return [self titleShadowColorForState:self.state];
+	TUIColor *color = [self titleShadowColorForState:self.state];
+	if(color == nil) {
+		color = [self titleShadowColorForState:TUIControlStateNormal];
+	}
+	
+	return color;
 }
 
 - (TUIImage *)currentImage
 {
-	return [self imageForState:self.state];
+	TUIImage *image = [self imageForState:self.state];
+	if(image == nil) {
+		image = [self imageForState:TUIControlStateNormal];
+	}
+	
+	return image;
 }
 
 - (TUIImage *)currentBackgroundImage
 {
-	return [self backgroundImageForState:self.state];
+	TUIImage *image = [self backgroundImageForState:self.state];
+	if(image == nil) {
+		image = [self backgroundImageForState:TUIControlStateNormal];
+	}
+	
+	return image;
 }
 
 @end
