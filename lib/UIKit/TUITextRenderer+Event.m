@@ -25,6 +25,7 @@
 - (CTFrameRef)ctFrame;
 - (CGPathRef)ctPath;
 - (CFRange)_selectedRange;
+- (CGRect)rectForRange:(CFRange)range;
 @end
 
 @implementation TUITextRenderer (Event)
@@ -225,13 +226,16 @@ normal:
 }
 
 - (CGRect)rectForCurrentSelection {
+	return [self rectForRange:[self _selectedRange]];
+}
+
+- (CGRect)rectForRange:(CFRange)range {
 	CTFrameRef textFrame = [self ctFrame];
 	CGRect totalRect = CGRectNull;
-	CFRange selectedRange = [self _selectedRange];
-	if(selectedRange.length > 0) {
+	if(range.length > 0) {
 		CFIndex rectCount = 100;
 		CGRect rects[rectCount];
-		AB_CTFrameGetRectsForRange(textFrame, selectedRange, rects, &rectCount);
+		AB_CTFrameGetRectsForRangeWithAggregationType(textFrame, range, AB_CTLineRectAggregationTypeBlock, rects, &rectCount);
 		
 		for(CFIndex i = 0; i < rectCount; ++i) {
 			CGRect rect = rects[i];
