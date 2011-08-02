@@ -456,26 +456,31 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 	CGRect bounds = self.bounds;
 
 	if(!_sectionInfo || !CGSizeEqualToSize(bounds.size, _lastSize)) {
-		
 		// save scroll position
+		CGFloat previousOffset = 0.0f;
 		TUIFastIndexPath *savedIndexPath = nil;
 		CGFloat relativeOffset = 0.0;
-		if(_tableFlags.forceSaveScrollPosition || [self.nsView inLiveResize]) {
-			_tableFlags.forceSaveScrollPosition = 0;
-			NSArray *a = [INDEX_PATHS_FOR_VISIBLE_ROWS sortedArrayUsingSelector:@selector(compare:)];
-			if([a count]) {
-				savedIndexPath = [[a objectAtIndex:0] retain];
-				CGRect v = [self visibleRect];
-				CGRect r = [self rectForRowAtIndexPath:savedIndexPath];
-				relativeOffset = ((v.origin.y + v.size.height) - (r.origin.y + r.size.height));
-				relativeOffset += (_lastSize.height - bounds.size.height);
+		if(_tableFlags.maintainContentOffsetAfterReload) {
+			previousOffset = self.contentSize.height + self.contentOffset.y;
+		} else {
+			if(_tableFlags.forceSaveScrollPosition || [self.nsView inLiveResize]) {
+				_tableFlags.forceSaveScrollPosition = 0;
+				NSArray *a = [INDEX_PATHS_FOR_VISIBLE_ROWS sortedArrayUsingSelector:@selector(compare:)];
+				if([a count]) {
+					savedIndexPath = [[a objectAtIndex:0] retain];
+					CGRect v = [self visibleRect];
+					CGRect r = [self rectForRowAtIndexPath:savedIndexPath];
+					relativeOffset = ((v.origin.y + v.size.height) - (r.origin.y + r.size.height));
+					relativeOffset += (_lastSize.height - bounds.size.height);
+				}
+			} else if(_keepVisibleIndexPathForReload) {
+				savedIndexPath = [_keepVisibleIndexPathForReload retain];
+				relativeOffset = _relativeOffsetForReload;
+				[_keepVisibleIndexPathForReload release];
+				_keepVisibleIndexPathForReload = nil;
 			}
-		} else if(_keepVisibleIndexPathForReload) {
-			savedIndexPath = [_keepVisibleIndexPathForReload retain];
-			relativeOffset = _relativeOffsetForReload;
-			[_keepVisibleIndexPathForReload release];
-			_keepVisibleIndexPathForReload = nil;
 		}
+		
 		
 		[_sectionInfo release];
 		_sectionInfo = [[self _freshSectionInfo] retain]; // calculates new contentHeight here
@@ -489,16 +494,21 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 		}
 		
 		// restore scroll position
-		if(savedIndexPath) {
-			CGRect v = [self visibleRect];
-			CGRect r = [self rectForRowAtIndexPath:savedIndexPath];
-			r.origin.y -= (v.size.height - r.size.height);
-			r.size.height += (v.size.height - r.size.height);
-			
-			r.origin.y += relativeOffset;
-			
-			[self scrollRectToVisible:r animated:NO];
-			[savedIndexPath release];
+		if(_tableFlags.maintainContentOffsetAfterReload) {
+			CGFloat newOffset = previousOffset - self.contentSize.height;
+			self.contentOffset = CGPointMake(self.contentOffset.x, newOffset);
+		} else {
+			if(savedIndexPath) {
+				CGRect v = [self visibleRect];
+				CGRect r = [self rectForRowAtIndexPath:savedIndexPath];
+				r.origin.y -= (v.size.height - r.size.height);
+				r.size.height += (v.size.height - r.size.height);
+				
+				r.origin.y += relativeOffset;
+				
+				[self scrollRectToVisible:r animated:NO];
+				[savedIndexPath release];
+			}
 		}
 		
 		return YES; // needs visible cells to be redisplayed
@@ -900,6 +910,16 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 	}
 	
 	return [super performKeyAction:event];
+}
+
+- (BOOL)maintainContentOffsetAfterReload
+{
+	return _tableFlags.maintainContentOffsetAfterReload;
+}
+
+- (void)setMaintainContentOffsetAfterReload:(BOOL)newValue
+{
+	_tableFlags.maintainContentOffsetAfterReload = newValue;
 }
 
 @end
