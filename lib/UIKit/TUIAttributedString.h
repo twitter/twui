@@ -18,9 +18,12 @@
 
 extern NSString * const TUIAttributedStringBackgroundColorAttributeName;
 extern NSString * const TUIAttributedStringBackgroundFillStyleName;
+extern NSString * const TUIAttributedStringPreDrawBlockName;
 
 @class TUIFont;
 @class TUIColor;
+
+typedef void (^TUIAttributedStringPreDrawBlock)(NSAttributedString *attributedString, NSRange substringRange, CGRect rects[], CFIndex rectCount);
 
 typedef enum {		
 	TUILineBreakModeWordWrap = 0,
@@ -74,6 +77,7 @@ typedef enum {
 - (void)setColor:(TUIColor *)color inRange:(NSRange)range;
 - (void)setBackgroundColor:(TUIColor *)color inRange:(NSRange)range;
 - (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle inRange:(NSRange)range;
+- (void)setPreDrawBlock:(TUIAttributedStringPreDrawBlock)block inRange:(NSRange)range; // the pre-draw block is called before the text or text background has been drawn
 - (void)setShadow:(NSShadow *)shadow inRange:(NSRange)range;
 - (void)setKerning:(CGFloat)f inRange:(NSRange)range;
 - (void)setLineHeight:(CGFloat)f inRange:(NSRange)range;

@@ -230,7 +230,7 @@ static CAAnimation *ThrobAnimation()
 		
 		CGRect r = [renderer firstRectForCharacterRange:ABCFRangeFromNSRange(selection)];
 		r.size.width = 2.0;
-		r.size.height = round(r.size.height) - 2; // fudge
+		r.size.height = round(r.size.height) - 0; // fudge
 		r.origin.x = roundf(r.origin.x);
 		r.origin.y = roundf(r.origin.y);
 		
