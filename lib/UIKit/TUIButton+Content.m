@@ -15,6 +15,7 @@
  */
 
 #import "TUIButton.h"
+#import "TUIControl+Private.h"
 
 @interface TUIButtonContent : NSObject
 {
@@ -70,32 +71,42 @@
 
 - (void)setTitle:(NSString *)title forState:(TUIControlState)state
 {
+	[self _stateWillChange];
 	[[self _contentForState:state] setTitle:title];
 	[self setNeedsDisplay];
+	[self _stateDidChange];
 }
 
 - (void)setTitleColor:(TUIColor *)color forState:(TUIControlState)state
 {
+	[self _stateWillChange];
 	[[self _contentForState:state] setTitleColor:color];
 	[self setNeedsDisplay];
+	[self _stateDidChange];
 }
 
 - (void)setTitleShadowColor:(TUIColor *)color forState:(TUIControlState)state
 {
+	[self _stateWillChange];
 	[[self _contentForState:state] setShadowColor:color];
 	[self setNeedsDisplay];
+	[self _stateDidChange];
 }
 
 - (void)setImage:(TUIImage *)i forState:(TUIControlState)state
 {
+	[self _stateWillChange];
 	[[self _contentForState:state] setImage:i];
 	[self setNeedsDisplay];
+	[self _stateDidChange];
 }
 
 - (void)setBackgroundImage:(TUIImage *)i forState:(TUIControlState)state
 {
+	[self _stateWillChange];
 	[[self _contentForState:state] setBackgroundImage:i];
 	[self setNeedsDisplay];
+	[self _stateDidChange];
 }
 
 - (NSString *)titleForState:(TUIControlState)state
