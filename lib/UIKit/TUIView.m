@@ -376,15 +376,15 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	[self.layer setAffineTransform:t];
 }
 
-- (NSArray *)sortedSubviews // front to back order
+- (NSArray *)sortedSubviews // back to front order
 {
 	return [self.subviews sortedArrayWithOptions:NSSortStable usingComparator:(NSComparator)^NSComparisonResult(TUIView *a, TUIView *b) {
 		CGFloat x = a.layer.zPosition;
 		CGFloat y = b.layer.zPosition;
 		if(x > y)
-			return NSOrderedAscending;
-		else if(x < y)
 			return NSOrderedDescending;
+		else if(x < y)
+			return NSOrderedAscending;
 		return NSOrderedSame;
 	}];
 }
@@ -396,7 +396,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	
 	if([self pointInside:point withEvent:event]) {
 		NSArray *s = [self sortedSubviews];
-		for(TUIView *v in s) {
+		for(TUIView *v in [s reverseObjectEnumerator]) {
 			TUIView *hit = [v hitTest:[self convertPoint:point toView:v] withEvent:event];
 			if(hit)
 				return hit;
