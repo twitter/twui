@@ -18,11 +18,13 @@
 
 @implementation TUITableView (Additions)
 
-- (TUITableViewCell *)ab_reusableCellOfClass:(Class)cellClass identifier:(NSString *)identifier
+- (TUITableViewCell *)ab_reusableCellOfClass:(Class)cellClass identifier:(NSString *)identifier initializationBlock:(TUITableViewInitializationBlock)block
 {
 	TUITableViewCell *cell = [self dequeueReusableCellWithIdentifier:identifier];
-	if(!cell)
+	if(!cell) {
 		cell = [[[cellClass alloc] initWithStyle:TUITableViewCellStyleDefault reuseIdentifier:identifier] autorelease];
+		if(block != nil) block(cell);
+	}
 	return cell;
 }
 
