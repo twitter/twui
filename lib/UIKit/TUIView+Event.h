@@ -25,6 +25,8 @@
 - (void)mouseDown:(NSEvent *)event onSubview:(TUIView *)subview;
 - (void)mouseDragged:(NSEvent *)event onSubview:(TUIView *)subview;
 - (void)mouseUp:(NSEvent *)event fromSubview:(TUIView *)subview;
+- (void)rightMouseDown:(NSEvent *)event onSubview:(TUIView *)subview;
+- (void)rightMouseUp:(NSEvent *)event fromSubview:(TUIView *)subview;
 - (void)mouseEntered:(NSEvent *)event onSubview:(TUIView *)subview;
 - (void)mouseExited:(NSEvent *)event fromSubview:(TUIView *)subview;
 

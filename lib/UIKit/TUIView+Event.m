@@ -57,6 +57,16 @@
 	[self.superview mouseUp:event fromSubview:self];
 }
 
+- (void)rightMouseDown:(NSEvent *)event
+{
+	[self.superview rightMouseDown:event onSubview:self];
+}
+
+- (void)rightMouseUp:(NSEvent *)event
+{
+	[self.superview rightMouseUp:event fromSubview:self];	
+}
+
 - (void)mouseDragged:(NSEvent *)event
 {
 	[_currentTextRenderer mouseDragged:event];
@@ -188,6 +198,17 @@
 	// going with specific subview, can always query isDescendent (lose less information)
 	[self.superview mouseUp:event fromSubview:subview];
 //	[self.superview mouseUp:event fromSubview:self];
+}
+
+- (void)rightMouseDown:(NSEvent *)event onSubview:(TUIView *)subview
+{
+	
+}
+
+- (void)rightMouseUp:(NSEvent *)event fromSubview:(TUIView *)subview
+{
+	// same question here as for mouseUp:fromSubview:
+	[self.superview rightMouseUp:event fromSubview:subview];
 }
 
 - (void)mouseEntered:(NSEvent *)event onSubview:(TUIView *)subview

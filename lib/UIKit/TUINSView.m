@@ -244,6 +244,24 @@
 	[self _updateHoverViewWithEvent:event];
 }
 
+- (void)rightMouseDown:(NSEvent *)event
+{
+	[_trackingView release];
+	_trackingView = [[self viewForEvent:event] retain];
+	[_trackingView rightMouseDown:event];
+	[TUITooltipWindow endTooltip];
+}
+
+- (void)rightMouseUp:(NSEvent *)event
+{
+	TUIView *lastTrackingView = [[_trackingView retain] autorelease];
+	
+	[_trackingView release];
+	_trackingView = nil;
+	
+	[lastTrackingView rightMouseUp:event]; // after _trackingView set to nil, will call mouseUp:fromSubview:
+}
+
 - (void)scrollWheel:(NSEvent *)event
 {
 	[[self viewForEvent:event] scrollWheel:event];

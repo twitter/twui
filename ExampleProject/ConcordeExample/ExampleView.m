@@ -160,6 +160,10 @@
 	if([event clickCount] == 1) {
 		// do something cool
 	}
+	
+	if(event.type == NSRightMouseUp){
+		NSLog(@"right mouse up");
+	}
 }
 
 @end

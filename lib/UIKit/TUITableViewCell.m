@@ -95,6 +95,16 @@
 	}
 }
 
+- (void)rightMouseUp:(NSEvent *)event{
+	[super rightMouseUp:event];
+	if([self eventInside:event]) {
+		TUITableView *tableView = self.tableView;
+		if([tableView.delegate respondsToSelector:@selector(tableView:didClickRowAtIndexPath:withEvent:)]){
+			[tableView.delegate tableView:tableView didClickRowAtIndexPath:self.indexPath withEvent:event];
+		}
+	}	
+}
+
 - (BOOL)isHighlighted
 {
 	return _tableViewCellFlags.highlighted;
