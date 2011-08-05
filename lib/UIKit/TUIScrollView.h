@@ -92,6 +92,8 @@ typedef enum {
 		BOOL pulling; // horizontal pulling not done yet, this flag should be split
 	} _pull;
 	
+	CGPoint _dragScrollLocation;
+	
 	BOOL x;
 	
 	struct {
@@ -103,7 +105,7 @@ typedef enum {
 		unsigned int scrollDisabled:1;
 		unsigned int indicatorStyle:2;
 		unsigned int showsHorizontalScrollIndicator:1;
-        unsigned int showsVerticalScrollIndicator:1;
+		unsigned int showsVerticalScrollIndicator:1;
 		unsigned int delegateScrollViewDidScroll:1;
 		unsigned int delegateScrollViewWillBeginDragging:1;
 		unsigned int delegateScrollViewDidEndDragging:1;
@@ -125,6 +127,9 @@ typedef enum {
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated;
 - (void)scrollToTopAnimated:(BOOL)animated;
 - (void)scrollToBottomAnimated:(BOOL)animated;
+
+- (void)beginContinuousScrollForDragAtPoint:(CGPoint)dragLocation animated:(BOOL)animated;
+- (void)endContinuousScrollAnimated:(BOOL)animated;
 
 @property (nonatomic, readonly) CGRect visibleRect;
 

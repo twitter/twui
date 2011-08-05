@@ -38,3 +38,18 @@ static inline BOOL TUIEdgeInsetsEqualToEdgeInsets(TUIEdgeInsets insets1, TUIEdge
 }
 
 extern const TUIEdgeInsets TUIEdgeInsetsZero;
+
+/**
+ * @brief Constrain a point to a rectangular region
+ * 
+ * If the provided @p point lies outside the @p rect, it is adjusted to the
+ * nearest point that lies inside the @p rect.
+ * 
+ * @param point a point
+ * @param rect the constraining rect
+ * @return constrained point
+ */
+static inline CGPoint CGPointConstrainToRect(CGPoint point, CGRect rect) {
+  return CGPointMake(MAX(rect.origin.x, MIN((rect.origin.x + rect.size.width), point.x)), MAX(rect.origin.y, MIN((rect.origin.y + rect.size.height), point.y)));
+}
+

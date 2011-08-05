@@ -23,6 +23,9 @@
 
 #define FORCE_ENABLE_BOUNCE 1
 
+#define TUIScrollViewContinuousScrollDragBoundary 25.0
+#define TUIScrollViewContinuousScrollRate         10.0
+
 enum {
 	ScrollPhaseNormal = 0,
 	ScrollPhaseThrowingBegan = 1,
@@ -33,6 +36,7 @@ enum {
 enum {
 	AnimationModeThrow,
 	AnimationModeScrollTo,
+	AnimationModeScrollContinuous,
 };
 
 @interface TUIScrollView (Private)
@@ -407,6 +411,40 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 	}
 }
 
+/**
+ * @brief Begin scrolling continuously for a drag
+ * 
+ * Content is continuously scrolled in the direction of the drag until the end
+ * of the content is reached or the operation is cancelled via
+ * #endContinuousScrollAnimated:.
+ * 
+ * @param dragLocation the drag location
+ * @param animated animate the scroll or not (this is currently ignored and the scroll is always animated)
+ */
+- (void)beginContinuousScrollForDragAtPoint:(CGPoint)dragLocation animated:(BOOL)animated {
+  if(dragLocation.y <= TUIScrollViewContinuousScrollDragBoundary || dragLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
+    // note the drag offset
+    _dragScrollLocation = dragLocation;
+    // begin a continuous scroll
+    [self _startTimer:AnimationModeScrollContinuous];
+  }else{
+    [self endContinuousScrollAnimated:animated];
+  }
+}
+
+/**
+ * @brief Stop scrolling continuously for a drag
+ * 
+ * This method is the counterpart to #beginContinuousScrollForDragAtPoint:animated:
+ * 
+ * @param animated animate the scroll or not (this is currently ignored and the scroll is always animated)
+ */
+- (void)endContinuousScrollAnimated:(BOOL)animated {
+  if(_scrollViewFlags.animationMode == AnimationModeScrollContinuous){
+    [self _stopTimer];
+  }
+}
+
 static float clampBounce(float x) {
 	x *= 0.4;
 	float m = 60 * 60;
@@ -468,7 +506,7 @@ static float clampBounce(float x) {
 - (void)tick:(NSTimer *)timer
 {
 	[self _updateBounce]; // can't do after _startBounce otherwise dt will be crazy
-
+	
 	if(self.nsWindow == nil) {
 		NSLog(@"Warning: no window %d (should be 1)", x);
 		[self _stopTimer];
@@ -522,6 +560,28 @@ static float clampBounce(float x) {
 			
 			break;
 		}
+    case AnimationModeScrollContinuous: {
+      CGFloat direction;
+      CGFloat distance;
+      
+      if(_dragScrollLocation.y <= TUIScrollViewContinuousScrollDragBoundary){
+        distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, _dragScrollLocation.y));
+        direction = 1;
+      }else if(_dragScrollLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
+        distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, self.bounds.size.height - _dragScrollLocation.y));
+        direction = -1;
+      }else{
+        return; // no scrolling; outside drag boundary
+      }
+      
+			CGPoint offset = _unroundedContentOffset;
+      CGFloat step = (1.0 - (distance / TUIScrollViewContinuousScrollDragBoundary)) * TUIScrollViewContinuousScrollRate;
+			CGPoint dest = CGPointMake(offset.x, offset.y + (step * direction));
+      
+			[self setContentOffset:dest];
+			
+      break;
+    }
 	}
 }
 

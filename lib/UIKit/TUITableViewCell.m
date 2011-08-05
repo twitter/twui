@@ -16,6 +16,7 @@
 
 #import "TUITableViewCell.h"
 #import "TUITableView.h"
+#import "TUITableView+Cell.h"
 
 @implementation TUITableViewCell
 
@@ -74,16 +75,35 @@
 
 - (void)mouseDown:(NSEvent *)event
 {
+  
+  // note the initial mouse location for dragging
+  _mouseOffset = [self localPointForLocationInWindow:[event locationInWindow]];
+  // notify our table view of the event
+  [self.tableView __mouseDownInCell:self offset:_mouseOffset event:event];
+  
 	TUITableView *tableView = self.tableView;
 	[tableView selectRowAtIndexPath:self.indexPath animated:tableView.animateSelectionChanges scrollPosition:TUITableViewScrollPositionNone];
 	[super mouseDown:event]; // may make the text renderer first responder, so we want to do the selection before this
+	
 	_tableViewCellFlags.highlighted = 1;
 	[self setNeedsDisplay];
+	
+}
+
+/**
+ * @brief The table cell was dragged
+ */
+-(void)mouseDragged:(NSEvent *)event {
+  // notify our table view of the event
+  [self.tableView __mouseDraggedCell:self offset:_mouseOffset event:event];
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
 	[super mouseUp:event];
+  // notify our table view of the event
+  [self.tableView __mouseUpInCell:self offset:_mouseOffset event:event];
+  
 	_tableViewCellFlags.highlighted = 0;
 	[self setNeedsDisplay];
 	

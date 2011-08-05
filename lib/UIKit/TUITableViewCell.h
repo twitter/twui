@@ -25,12 +25,15 @@ typedef enum {
 
 @interface TUITableViewCell : TUIView
 {
-	NSString *_reuseIdentifier;
+  
+  NSString  * _reuseIdentifier;
+  CGPoint     _mouseOffset;
 	
 	struct {
 		unsigned int highlighted:1;
 		unsigned int selected:1;
 	} _tableViewCellFlags;
+	
 }
 
 - (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
