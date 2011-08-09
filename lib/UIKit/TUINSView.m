@@ -131,7 +131,8 @@
 	}
 }
 
-- (void)viewDidMoveToWindow {
+- (void)viewDidMoveToWindow
+{
 	if(self.window != nil && rootView.layer.superlayer != [self layer]) {
 		[[self layer] addSublayer:rootView.layer];
 	}
