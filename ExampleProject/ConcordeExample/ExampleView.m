@@ -162,8 +162,16 @@
 	}
 	
 	if(event.type == NSRightMouseUp){
-		NSLog(@"right mouse up");
+		// show context menu
 	}
+}
+- (BOOL)tableView:(TUITableView *)tableView shouldSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath forEvent:(NSEvent *)event{
+	switch (event.type) {
+		case NSRightMouseDown:
+			return NO;
+	}
+
+	return YES;
 }
 
 @end
