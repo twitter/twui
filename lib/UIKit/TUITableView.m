@@ -255,7 +255,7 @@ typedef struct {
 	NSMutableArray *sections = [NSMutableArray arrayWithCapacity:numberOfSections];
 	
 	int s;
-	CGFloat offset = [_headerView bounds].size.height;
+	CGFloat offset = [_headerView bounds].size.height - self.contentInset.top;
 	for(s = 0; s < numberOfSections; ++s) {
 		TUITableViewSection *section = [[TUITableViewSection alloc] initWithNumberOfRows:[_dataSource tableView:self numberOfRowsInSection:s] sectionIndex:s tableView:self];
 		[section _setupRowHeights];
@@ -265,7 +265,7 @@ typedef struct {
 		[section release];
 	}
 	
-	_contentHeight = offset;
+	_contentHeight = offset - self.contentInset.bottom;
 	
 	return sections;
 }
