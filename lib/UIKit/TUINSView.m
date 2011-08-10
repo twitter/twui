@@ -131,6 +131,13 @@
 	}
 }
 
+- (void)viewDidMoveToWindow
+{
+	if(self.window != nil && rootView.layer.superlayer != [self layer]) {
+		[[self layer] addSublayer:rootView.layer];
+	}
+}
+
 - (TUIView *)viewForLocalPoint:(NSPoint)p
 {
 	return [rootView hitTest:p withEvent:nil];
