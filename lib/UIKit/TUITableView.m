@@ -17,6 +17,9 @@
 #import "TUITableView.h"
 #import "TUINSView.h"
 
+// header views need to be above the cells at all times
+#define HEADER_Z_POSITION 1000 
+
 typedef struct {
 	CGFloat offset; // from beginning of section
 	CGFloat height;
@@ -130,6 +133,7 @@ typedef struct {
 		if(_tableView.dataSource != nil && [_tableView.dataSource respondsToSelector:@selector(tableView:headerViewForSection:)]){
 			_headerView = [[_tableView.dataSource tableView:_tableView headerViewForSection:sectionIndex] retain];
 			_headerView.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
+			_headerView.layer.zPosition = HEADER_Z_POSITION;
 		}
 	}
 	return _headerView;
@@ -217,6 +221,17 @@ typedef struct {
 - (NSInteger)numberOfRowsInSection:(NSInteger)section
 {
 	return [[_sectionInfo objectAtIndex:section] numberOfRows];
+}
+
+- (CGRect)rectForSection:(NSInteger)section {
+	if(section >= 0 && section < [_sectionInfo count]){
+		TUITableViewSection *s = [_sectionInfo objectAtIndex:section];
+		CGFloat offset = [s sectionOffset];
+		CGFloat height = [s sectionHeight];
+		CGFloat y = _contentHeight - offset - height;
+		return CGRectMake(0, y, self.bounds.size.width, height);
+	}
+	return CGRectZero;
 }
 
 - (CGRect)rectForHeaderOfSection:(NSInteger)section {
@@ -359,7 +374,7 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 	NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
 	
 	for(int i = 0; i < [_sectionInfo count]; i++) {
-		if(CGRectIntersectsRect([self rectForHeaderOfSection:i], rect)){
+		if(CGRectIntersectsRect([self rectForSection:i], rect)){
 			[indexes addIndex:i];
 		}
 	}
@@ -522,29 +537,44 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
  */
 - (void)_layoutSectionHeaders:(BOOL)visibleHeadersNeedRelayout
 {
-	if(visibleHeadersNeedRelayout) {
-		if(_visibleSectionHeaders != nil){
-			[_visibleSectionHeaders enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
-				if(index < [_sectionInfo count]) {
-					TUITableViewSection *section = [_sectionInfo objectAtIndex:index];
-					if(section.headerView != nil) {
-						section.headerView.frame = [self rectForHeaderOfSection:index];
-						[section.headerView setNeedsLayout];
-					}
-				}
-			}];
-		}
-	}
-  
 	CGRect visible = [self visibleRect];
-	
 	NSIndexSet *oldIndexes = _visibleSectionHeaders;
-	NSIndexSet *newIndexes = [self indexesOfSectionHeadersInRect:visible];
+	NSIndexSet *newIndexes = [self indexesOfSectionsInRect:visible];
 	
 	NSMutableIndexSet *toRemove = [[oldIndexes mutableCopy] autorelease];
 	[toRemove removeIndexes:newIndexes];
 	NSMutableIndexSet *toAdd = [[newIndexes mutableCopy] autorelease];
 	[toAdd removeIndexes:oldIndexes];
+	
+	// update the placement of all visible headers
+	__block TUIView *pinnedHeader = nil;
+	[newIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+		if(index < [_sectionInfo count]) {
+			TUITableViewSection *section = [_sectionInfo objectAtIndex:index];
+			if(section.headerView != nil) {
+				CGRect headerFrame = [self rectForHeaderOfSection:index];
+
+				// check if this header needs to be pinned
+				if(CGRectGetMaxY(headerFrame) > CGRectGetMaxY(visible)) {
+					headerFrame.origin.y = CGRectGetMaxY(visible) - headerFrame.size.height;
+					pinnedHeader = section.headerView;
+				}
+				else if((pinnedHeader != nil) && (CGRectGetMaxY(headerFrame) > pinnedHeader.frame.origin.y)) {
+					// this header is intersecting with the pinned header, so we push the pinned header upwards.
+					CGRect pinnedHeaderFrame = pinnedHeader.frame;
+					pinnedHeaderFrame.origin.y = CGRectGetMaxY(headerFrame);
+					pinnedHeader.frame = pinnedHeaderFrame;
+				}
+				
+				section.headerView.frame = headerFrame;
+				[section.headerView setNeedsLayout];
+				
+				if (section.headerView.superview == nil)
+					[self addSubview:section.headerView];
+			}
+		}
+		[_visibleSectionHeaders addIndex:index];
+	}];
 	
 	// remove offscreen headers
 	[toRemove enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
@@ -555,19 +585,6 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 			}
 		}
 		[_visibleSectionHeaders removeIndex:index];
-	}];
-	
-	// add new headers
-	[toAdd enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
-		if(index < [_sectionInfo count]){
-			TUITableViewSection *section = [_sectionInfo objectAtIndex:index];
-			if(section.headerView != nil) {
-				section.headerView.frame = [self rectForHeaderOfSection:index];
-				[section.headerView setNeedsLayout];
-				[self addSubview:section.headerView];
-			}
-		}
-		[_visibleSectionHeaders addIndex:index];
 	}];
 }
 
