@@ -83,10 +83,10 @@
 	return [s ab_sizeConstrainedToSize:size];
 }
 
-- (CGSize)drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
-{
-	return [self ab_drawInRect:rect withFont:font lineBreakMode:lineBreakMode alignment:alignment];
-}
+//- (CGSize)drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
+//{
+//	return [self ab_drawInRect:rect withFont:font lineBreakMode:lineBreakMode alignment:alignment];
+//}
 
 #endif
 

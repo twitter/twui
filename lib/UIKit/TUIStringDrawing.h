@@ -38,7 +38,7 @@
 
 #if TARGET_OS_MAC
 // for ABRowView
-- (CGSize)drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
+//- (CGSize)drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
 #endif
 
 - (CGSize)ab_drawInRect:(CGRect)rect color:(TUIColor *)color font:(TUIFont *)font;
