@@ -227,12 +227,14 @@ static CAAnimation *ThrobAnimation()
 			renderer.attributedString = fake;
 			selection = NSMakeRange(0, 0);
 		}
-		
-		CGRect r = [renderer firstRectForCharacterRange:ABCFRangeFromNSRange(selection)];
-		r.size.width = 2.0;
-		r.size.height = round(r.size.height) - 2; // fudge
-		r.origin.x = roundf(r.origin.x);
-		r.origin.y = roundf(r.origin.y);
+
+		// Ugh. So this seems to be a decent approximation for the height of the cursor. It doesn't always match the native cursor but what ev.
+		CGRect r = CGRectIntegral([renderer firstRectForCharacterRange:ABCFRangeFromNSRange(selection)]);
+		r.size.width = 2.0f;
+		CGRect fontBoundingBox = CTFontGetBoundingBox(self.font.ctFont);
+		r.size.height = round(fontBoundingBox.origin.y + fontBoundingBox.size.height);
+		r.origin.y += floor(self.font.leading);
+//		NSLog(@"ascent: %f, descent: %f, leading: %f, cap height: %f, x-height: %f, bounding: %@", self.font.ascender, self.font.descender, self.font.leading, self.font.capHeight, self.font.xHeight, NSStringFromRect(CTFontGetBoundingBox(self.font.ctFont)));
 		
 		[TUIView setAnimationsEnabled:NO block:^{
 			cursor.frame = r;
