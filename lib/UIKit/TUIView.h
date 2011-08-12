@@ -167,6 +167,11 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 @property (nonatomic, assign) NSTimeInterval toolTipDelay;
 
+/**
+ Make this view the first responder. Returns NO if it fails.
+ */
+- (BOOL)makeFirstResponder;
+
 @end
 
 @interface TUIView (TUIViewGeometry)

@@ -132,6 +132,11 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 	_layer = [l retain];
 }
 
+- (BOOL)makeFirstResponder
+{
+	return [[self nsWindow] tui_makeFirstResponder:self];
+}
+
 - (NSInteger)tag
 {
 	return _tag;
