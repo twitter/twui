@@ -257,6 +257,7 @@
 	_trackingView = [[self viewForEvent:event] retain];
 	[_trackingView rightMouseDown:event];
 	[TUITooltipWindow endTooltip];
+	[super rightMouseDown:event]; // we need to send this up the responder chain so that -menuForEvent: will get called for two-finger taps
 }
 
 - (void)rightMouseUp:(NSEvent *)event
