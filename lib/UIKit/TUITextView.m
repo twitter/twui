@@ -206,7 +206,7 @@ static CAAnimation *ThrobAnimation()
 	
 	if(doMask) {
 		CGContextSaveGState(ctx);
-		CGContextClipToRoundRect(ctx, rect, floor(rect.size.height / 2));
+		CGContextClipToRoundRect(ctx, self.bounds, floor(rect.size.height / 2));
 	}
 	
 	[renderer draw];
