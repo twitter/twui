@@ -52,6 +52,7 @@ typedef enum {
 - (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event; // happens on left/right mouse up (can look at clickCount)
 
 - (BOOL)tableView:(TUITableView*)tableView shouldSelectRowAtIndexPath:(TUIFastIndexPath*)indexPath forEvent:(NSEvent*)event; // YES, if not implemented
+- (NSMenu *)tableView:(TUITableView *)tableView menuForRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event;
 
 // the following are good places to update or restore state (such as selection) when the table data reloads
 - (void)tableViewWillReloadData:(TUITableView *)tableView;
