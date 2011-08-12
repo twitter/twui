@@ -16,8 +16,9 @@
 
 #import "TUIKit.h"
 #import "TUITextField.h"
+#import "TUITextViewEditor.h"
 
-@interface TUITextFieldEditor : TUITextEditor
+@interface TUITextFieldEditor : TUITextViewEditor
 @end
 
 @implementation TUITextField

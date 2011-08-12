@@ -16,6 +16,7 @@
 
 #import "TUIKit.h"
 #import "TUITextView.h"
+#import "TUITextViewEditor.h"
 
 @implementation TUITextView
 
@@ -44,7 +45,7 @@
 
 - (Class)textEditorClass
 {
-	return [TUITextEditor class];
+	return [TUITextViewEditor class];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -101,6 +102,7 @@
 {
 	delegate = d;
 	_textViewFlags.delegateTextViewDidChange = [delegate respondsToSelector:@selector(textViewDidChange:)];
+	_textViewFlags.delegateDoCommandBySelector = [delegate respondsToSelector:@selector(textView:doCommandBySelector:)];
 }
 
 - (TUIResponder *)initialFirstResponder
@@ -287,6 +289,15 @@ static CAAnimation *ThrobAnimation()
 - (BOOL)acceptsFirstResponder
 {
     return YES;
+}
+
+- (BOOL)doCommandBySelector:(SEL)selector
+{
+	if(_textViewFlags.delegateDoCommandBySelector) {
+		return [delegate textView:self doCommandBySelector:selector];
+	}
+	
+	return NO;
 }
 
 @end

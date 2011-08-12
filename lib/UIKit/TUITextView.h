@@ -17,8 +17,8 @@
 #import "TUIControl.h"
 #import "TUIGeometry.h"
 #import "TUIAttributedString.h"
-#import "TUITextEditor.h"
 
+@class TUITextEditor;
 @class TUIFont;
 @class TUIColor;
 
@@ -45,6 +45,7 @@
 	
 	struct {
 		unsigned int delegateTextViewDidChange:1;
+		unsigned int delegateDoCommandBySelector:1;
 	} _textViewFlags;
 }
 
@@ -66,6 +67,8 @@
 
 - (BOOL)hasText;
 
+- (BOOL)doCommandBySelector:(SEL)selector;
+
 @end
 
 
@@ -74,6 +77,7 @@
 @optional
 
 - (void)textViewDidChange:(TUITextView *)textView;
+- (BOOL)textView:(TUITextView *)textView doCommandBySelector:(SEL)commandSelector; // return YES if the implementation consumes the selector, NO if it should be passed up to super
 
 @end
 
