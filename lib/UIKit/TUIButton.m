@@ -215,12 +215,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 - (void)mouseDown:(NSEvent *)event
 {
 	[super mouseDown:event];
-	if([event clickCount] < 2) {
-		[self sendActionsForControlEvents:TUIControlEventTouchDown];
-	} else {
-		[self sendActionsForControlEvents:TUIControlEventTouchDownRepeat];
-	}
-	
+
 	if(popUpMenu) { // happens even if clickCount is big
 		NSMenu *menu = popUpMenu;
 		NSPoint p = [self frameInNSView].origin;
@@ -238,20 +233,6 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 			[self redraw];
 		}];
 	}
-}
-
-- (void)mouseUp:(NSEvent *)event
-{
-	[super mouseUp:event];
-//	if([event clickCount] < 2) {
-		if([self eventInside:event]) {
-			if(![self didDrag]) {
-				[self sendActionsForControlEvents:TUIControlEventTouchUpInside];
-			}
-		} else {
-			[self sendActionsForControlEvents:TUIControlEventTouchUpOutside];
-		}
-//	}
 }
 
 - (void)_update {

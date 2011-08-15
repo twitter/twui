@@ -95,9 +95,9 @@
  */
 -(void)setSelected:(BOOL)selected {
 	[self _stateWillChange];
-  _controlFlags.selected = selected;
+	_controlFlags.selected = selected;
 	[self _stateDidChange];
-  [self setNeedsDisplay];
+	[self setNeedsDisplay];
 }
 
 - (BOOL)acceptsFirstMouse
@@ -124,12 +124,15 @@
 	_controlFlags.tracking = 1;
 	[self _stateDidChange];
 	
-  // handle touch down
-  [self sendActionsForControlEvents:TUIControlEventTouchDown];
+	// handle touch down
+	if([event clickCount] < 2) {
+		[self sendActionsForControlEvents:TUIControlEventTouchDown];
+	} else {
+		[self sendActionsForControlEvents:TUIControlEventTouchDownRepeat];
+	}
   
 	// needs display
 	[self setNeedsDisplay];
-	
 }
 
 - (void)mouseUp:(NSEvent *)event
@@ -141,16 +144,16 @@
 	_controlFlags.tracking = 0;
 	[self _stateDidChange];
 	
-  // handle touch up
-  if([self pointInside:[self localPointForEvent:event] withEvent:event]){
-    [self sendActionsForControlEvents:TUIControlEventTouchUpInside];
-  }else{
-    [self sendActionsForControlEvents:TUIControlEventTouchUpOutside];
-  }
+	if([self eventInside:event]) {
+		if(![self didDrag]) {
+			[self sendActionsForControlEvents:TUIControlEventTouchUpInside];
+		}
+	} else {
+		[self sendActionsForControlEvents:TUIControlEventTouchUpOutside];
+	}
 	
-  // needs display
+	// needs display
 	[self setNeedsDisplay];
-	
 }
 
 @end
