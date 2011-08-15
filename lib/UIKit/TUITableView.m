@@ -788,9 +788,11 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 			} else {
 				[cell setSelected:NO animated:NO];
 			}
+			
 			if(_tableFlags.delegateTableViewWillDisplayCellForRowAtIndexPath) {
 				[_delegate tableView:self willDisplayCell:cell forRowAtIndexPath:i];
 			}
+			
 			[self addSubview:cell];
 			
 			if([_indexPathShouldBeFirstResponder isEqual:i]) {
