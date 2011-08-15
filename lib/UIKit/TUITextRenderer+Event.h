@@ -19,6 +19,7 @@
 @interface TUITextRenderer (Event)
 
 - (CFIndex)stringIndexForPoint:(CGPoint)p;
+- (CFIndex)stringIndexForEvent:(NSEvent *)event;
 - (void)resetSelection;
 - (CGRect)rectForCurrentSelection;
 
