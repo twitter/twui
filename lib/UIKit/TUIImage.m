@@ -115,6 +115,66 @@
 	return [[[self alloc] initWithCGImage:imageRef] autorelease];
 }
 
+/**
+ * @brief Create a new TUIImage from an NSImage
+ * 
+ * @note Don't use this method in -drawRect: if you use a NSGraphicsContext.  This method may
+ * change the current context in order to convert the image and will not restore any previous
+ * context.
+ * 
+ * @param image an NSImage
+ * @return TUIImage
+ */
++ (TUIImage *)imageWithNSImage:(NSImage *)image {
+  
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+  // first, attempt to find an NSBitmapImageRep representation, (the easy way)
+  for(NSImageRep *rep in [image representations]){
+    CGImageRef cgImage;
+    if([rep isKindOfClass:[NSBitmapImageRep class]] && (cgImage = [(NSBitmapImageRep *)rep CGImage]) != nil){
+      return [[[TUIImage alloc] initWithCGImage:cgImage] autorelease];
+    }
+  }
+#endif
+  
+  // if that didn't work, we have to render the image to a context and create the CGImage
+  // from that (the hard way)
+  TUIImage *result = nil;
+  
+  CGColorSpaceRef colorspace = NULL;
+  CGContextRef context = NULL;
+  CGBitmapInfo info = kCGImageAlphaPremultipliedLast;
+  
+  size_t width  = (size_t)ceil(image.size.width);
+  size_t height = (size_t)ceil(image.size.height);
+  size_t bytesPerPixel = 4;
+  size_t bitsPerComponent = 8;
+  
+  // create a colorspace for our image
+  if((colorspace = CGColorSpaceCreateDeviceRGB()) != NULL){
+    // create a context for our image using premultiplied RGBA
+    if((context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, width * bytesPerPixel, colorspace, info)) != NULL){
+      
+      // setup an NSGraphicsContext for our bitmap context and render our NSImage into it
+      [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:FALSE]];
+      [image drawAtPoint:CGPointMake(0, 0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+      
+      // create an image from the context and use that to create our TUIImage
+      CGImageRef cgImage;
+      if((cgImage = CGBitmapContextCreateImage(context)) != NULL){
+        result = [[[TUIImage alloc] initWithCGImage:cgImage] autorelease];
+        CFRelease(cgImage);
+      }
+      
+      CFRelease(context);
+    }
+    CFRelease(colorspace);
+  }
+  
+  // return the (hopefully sucessfully initialized) TUIImage
+  return result;
+}
+
 - (CGSize)size
 {
 	return CGSizeMake(CGImageGetWidth(_imageRef), CGImageGetHeight(_imageRef));

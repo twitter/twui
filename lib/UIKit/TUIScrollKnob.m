@@ -118,6 +118,23 @@ if(isnan(knobLength)) knobLength = 0.0;
 	[knob.layer addAnimation:animation forKey:@"opacity"];
 }
 
+-(unsigned int)scrollIndicatorStyle {
+  return _scrollKnobFlags.scrollIndicatorStyle;
+}
+
+-(void)setScrollIndicatorStyle:(unsigned int)style {
+  _scrollKnobFlags.scrollIndicatorStyle = style;
+  switch(style){
+    case TUIScrollViewIndicatorStyleLight:
+      knob.backgroundColor = [TUIColor whiteColor];
+      break;
+    case TUIScrollViewIndicatorStyleDark:
+    default:
+      knob.backgroundColor = [TUIColor blackColor];
+      break;
+  }
+}
+
 - (void)_updateKnobColor:(CGFloat)duration
 {
 	[TUIView beginAnimations:nil context:NULL];
@@ -130,12 +147,16 @@ if(isnan(knobLength)) knobLength = 0.0;
 {
 	_scrollKnobFlags.hover = 1;
 	[self _updateKnobColor:0.08];
+	// make sure we propagate mouse events
+	[super mouseEntered:event];
 }
 
 - (void)mouseExited:(NSEvent *)event
 {
 	_scrollKnobFlags.hover = 0;
 	[self _updateKnobColor:0.25];
+	// make sure we propagate mouse events
+	[super mouseExited:event];
 }
 
 - (void)mouseDown:(NSEvent *)event
@@ -171,12 +192,15 @@ if(isnan(knobLength)) knobLength = 0.0;
 
 		[scrollView setContentOffset:contentOffset animated:YES];
 	}
+	
+	[super mouseDown:event];
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
 	_scrollKnobFlags.active = 0;
 	[self _updateKnobColor:0.08];
+	[super mouseUp:event];
 }
 
 #define KNOB_CALCULATIONS_REVERSE(OFFSET, LENGTH) \

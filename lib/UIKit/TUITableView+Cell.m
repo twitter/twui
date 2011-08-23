@@ -87,6 +87,9 @@
   _currentDragToReorderLocation = location;
   _currentDragToReorderMouseOffset = offset;
   
+  // return if there wasn't a proper drag
+  if(![cell didDrag]) return;
+  
   // make sure reordering is supported by our data source (this should probably be done only once somewhere)
   if(self.dataSource == nil || ![self.dataSource respondsToSelector:@selector(tableView:moveRowAtIndexPath:toIndexPath:)]){
     return; // reordering is not supported by the data source
@@ -127,8 +130,8 @@
   NSInteger sectionIndex = -1;
   
   // determine the current index path the cell is occupying
-  if((currentPath = [self indexPathForRowAtPoint:CGPointMake(location.x, location.y + visible.origin.y)]) == nil){
-    if((sectionIndex = [self indexOfSectionWithHeaderAtPoint:CGPointMake(location.x, location.y + visible.origin.y)]) > 0){
+  if((currentPath = [self indexPathForRowAtVerticalOffset:location.y + visible.origin.y]) == nil){
+    if((sectionIndex = [self indexOfSectionWithHeaderAtVerticalOffset:location.y + visible.origin.y]) > 0){
       if(sectionIndex <= cell.indexPath.section){
         // if we're on a section header (but not the first one, which can't move) which is above the origin
         // index path we insert after the last index in the section above
@@ -334,7 +337,7 @@
       [TUIView animateWithDuration:0.2
         animations:^ { cell.frame = frame; }
         completion:^(BOOL finished) {
-          // reload the table when we're done
+          // reload the table when we're done (implicitly restores z-position)
           if(finished) [self reloadData];
           // restore user interactivity
           [self setUserInteractionEnabled:TRUE];
@@ -342,6 +345,7 @@
       ];
     }else{
       cell.frame = frame;
+      cell.layer.zPosition = 0;
       [self reloadData];
     }
     
@@ -349,13 +353,13 @@
     [_currentDragToReorderIndexPath release];
     _currentDragToReorderIndexPath = nil;
     
+  }else{
+    cell.layer.zPosition = 0;
   }
   
   [_previousDragToReorderIndexPath release];
   _previousDragToReorderIndexPath = nil;
   
-  // restore the dragged cell z-position
-  _dragToReorderCell.layer.zPosition = 0;
   // and clean up
   [_dragToReorderCell release];
   _dragToReorderCell = nil;

@@ -18,8 +18,31 @@
 #import "TUIGeometry.h"
 
 typedef enum {
-    TUIScrollViewIndicatorStyleDefault,
+  /** Dark scroll indicator style suitable for light background */
+  TUIScrollViewIndicatorStyleDark,
+  /** Light scroll indicator style suitable for dark backgrounds */
+  TUIScrollViewIndicatorStyleLight,
+  /** Default scroll indicator style (dark) */
+  TUIScrollViewIndicatorStyleDefault = TUIScrollViewIndicatorStyleDark
 } TUIScrollViewIndicatorStyle;
+
+typedef enum {
+  /** Never show scrollers */
+  TUIScrollViewIndicatorVisibleNever,
+  /** Show scrollers only during an animated scroll (not particularly useful yet) */
+  TUIScrollViewIndicatorVisibleWhenScrolling,
+  /** Show scrollers only when the mouse is inside the scroll view */
+  TUIScrollViewIndicatorVisibleWhenMouseInside,
+  /** Always show scrollers */
+  TUIScrollViewIndicatorVisibleAlways,
+  /** Default scroller visibility (always) */
+  TUIScrollViewIndicatorVisibleDefault = TUIScrollViewIndicatorVisibleAlways
+} TUIScrollViewIndicatorVisibility;
+
+typedef enum {
+  TUIScrollViewIndicatorVertical,
+  TUIScrollViewIndicatorHorizontal,
+} TUIScrollViewIndicator;
 
 @protocol TUIScrollViewDelegate;
 
@@ -49,14 +72,15 @@ typedef enum {
 
 @interface TUIScrollView : TUIView
 {
-	CGPoint _unroundedContentOffset;
-	CGSize	_contentSize;
-	CGSize resizeKnobSize;
-	TUIEdgeInsets _contentInset;
+  CGPoint         _unroundedContentOffset;
+  CGSize          _contentSize;
+  CGSize          resizeKnobSize;
+  TUIEdgeInsets   _contentInset;
 	
 	id _delegate;
-	TUIScrollKnob *_verticalScrollKnob;
-	TUIScrollKnob *_horizontalScrollKnob;
+	
+  TUIScrollKnob * _verticalScrollKnob;
+  TUIScrollKnob * _horizontalScrollKnob;
 	
 	NSTimer *scrollTimer;
 	CGPoint destinationOffset;
@@ -92,23 +116,31 @@ typedef enum {
 		BOOL pulling; // horizontal pulling not done yet, this flag should be split
 	} _pull;
 	
-	CGPoint _dragScrollLocation;
+	CGPoint  _dragScrollLocation;
 	
 	BOOL x;
 	
 	struct {
 		unsigned int didChangeContentInset:1;
 		unsigned int bounceEnabled:1;
+		unsigned int mouseInside:1;
+		unsigned int mouseDownInScrollKnob:1;
 		unsigned int ignoreNextScrollPhaseNormal_10_7:1;
 		unsigned int gestureBegan:1;
 		unsigned int animationMode:2;
 		unsigned int scrollDisabled:1;
-		unsigned int indicatorStyle:2;
-		unsigned int showsHorizontalScrollIndicator:1;
-		unsigned int showsVerticalScrollIndicator:1;
+		unsigned int scrollIndicatorStyle:2;
+		unsigned int verticalScrollIndicatorVisibility:2;
+		unsigned int horizontalScrollIndicatorVisibility:2;
+		unsigned int verticalScrollIndicatorShowing:1;
+		unsigned int horizontalScrollIndicatorShowing:1;
 		unsigned int delegateScrollViewDidScroll:1;
 		unsigned int delegateScrollViewWillBeginDragging:1;
 		unsigned int delegateScrollViewDidEndDragging:1;
+		unsigned int delegateScrollViewWillShowScrollIndicator:1;
+		unsigned int delegateScrollViewDidShowScrollIndicator:1;
+		unsigned int delegateScrollViewWillHideScrollIndicator:1;
+		unsigned int delegateScrollViewDidHideScrollIndicator:1;
 	} _scrollViewFlags;
 }
 
@@ -118,9 +150,11 @@ typedef enum {
 @property (nonatomic) TUIEdgeInsets contentInset;
 @property (nonatomic, assign) id<TUIScrollViewDelegate> delegate;
 @property (nonatomic, getter=isScrollEnabled) BOOL scrollEnabled;
-@property (nonatomic) BOOL showsHorizontalScrollIndicator;
-@property (nonatomic) BOOL showsVerticalScrollIndicator;
-@property (nonatomic) TUIScrollViewIndicatorStyle indicatorStyle;
+@property (nonatomic) TUIScrollViewIndicatorVisibility horizontalScrollIndicatorVisibility;
+@property (nonatomic) TUIScrollViewIndicatorVisibility verticalScrollIndicatorVisibility;
+@property (readonly, nonatomic) BOOL verticalScrollIndicatorShowing;
+@property (readonly, nonatomic) BOOL horizontalScrollIndicatorShowing;
+@property (nonatomic) TUIScrollViewIndicatorStyle scrollIndicatorStyle;
 @property (nonatomic) float decelerationRate;
 
 - (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated;
@@ -132,6 +166,7 @@ typedef enum {
 - (void)endContinuousScrollAnimated:(BOOL)animated;
 
 @property (nonatomic, readonly) CGRect visibleRect;
+@property (nonatomic, readonly) TUIEdgeInsets scrollIndicatorInsets;
 
 - (void)flashScrollIndicators;
 
@@ -151,5 +186,10 @@ typedef enum {
 - (void)scrollViewDidScroll:(TUIScrollView *)scrollView;
 - (void)scrollViewWillBeginDragging:(TUIScrollView *)scrollView;
 - (void)scrollViewDidEndDragging:(TUIScrollView *)scrollView;
+
+- (void)scrollView:(TUIScrollView *)scrollView willShowScrollIndicator:(TUIScrollViewIndicator)indicator;
+- (void)scrollView:(TUIScrollView *)scrollView didShowScrollIndicator:(TUIScrollViewIndicator)indicator;
+- (void)scrollView:(TUIScrollView *)scrollView willHideScrollIndicator:(TUIScrollViewIndicator)indicator;
+- (void)scrollView:(TUIScrollView *)scrollView didHideScrollIndicator:(TUIScrollViewIndicator)indicator;
 
 @end

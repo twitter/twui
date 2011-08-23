@@ -132,9 +132,11 @@ typedef enum {
 - (NSIndexSet *)indexesOfSectionsInRect:(CGRect)rect;
 - (NSIndexSet *)indexesOfSectionHeadersInRect:(CGRect)rect;
 - (TUIFastIndexPath *)indexPathForCell:(TUITableViewCell *)cell;                      // returns nil if cell is not visible
-- (NSArray *)indexPathsForRowsInRect:(CGRect)rect;                              // returns nil if rect not valid 
+- (NSArray *)indexPathsForRowsInRect:(CGRect)rect;                                    // returns nil if rect not valid
 - (TUIFastIndexPath *)indexPathForRowAtPoint:(CGPoint)point;
+- (TUIFastIndexPath *)indexPathForRowAtVerticalOffset:(CGFloat)offset;
 - (NSInteger)indexOfSectionWithHeaderAtPoint:(CGPoint)point;
+- (NSInteger)indexOfSectionWithHeaderAtVerticalOffset:(CGFloat)offset;
 
 - (void)enumerateIndexPathsUsingBlock:(void (^)(TUIFastIndexPath *indexPath, BOOL *stop))block;
 - (void)enumerateIndexPathsWithOptions:(NSEnumerationOptions)options usingBlock:(void (^)(TUIFastIndexPath *indexPath, BOOL *stop))block;
@@ -182,6 +184,10 @@ typedef enum {
 @optional
 
 - (TUIView *)tableView:(TUITableView *)tableView headerViewForSection:(NSInteger)section;
+
+// the following are required to support row reordering
+- (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath;
+- (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath;
 
 // the following are required to support row reordering
 - (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath;

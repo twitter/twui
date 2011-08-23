@@ -22,7 +22,7 @@
 
 - (id)initWithImage:(TUIImage *)image
 {
-	if((self = [self initWithFrame:CGRectZero]))
+	if((self = [self initWithFrame:(image != nil) ? CGRectMake(0, 0, image.size.width, image.size.height) : CGRectZero]) != nil)
 	{
 		self.userInteractionEnabled = NO;
 		_image = [image retain];

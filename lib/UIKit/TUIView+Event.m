@@ -42,6 +42,11 @@
 	_viewFlags.dragDistanceLock = 1;
 	_viewFlags.didStartMovingByDragging = 0;
 	_viewFlags.didStartResizeByDragging = 0;
+	
+	if(self.superview != nil){
+	  [self.superview mouseDown:event onSubview:self];
+	}
+	
 }
 
 - (void)mouseUp:(NSEvent *)event
@@ -54,17 +59,24 @@
 		[self.nsView viewDidEndLiveResize];
 	}
 	
-	[self.superview mouseUp:event fromSubview:self];
+	if(self.superview != nil){
+	  [self.superview mouseUp:event fromSubview:self];
+	}
+	
 }
 
 - (void)rightMouseDown:(NSEvent *)event
 {
-	[self.superview rightMouseDown:event onSubview:self];
+	if(self.superview != nil){
+	  [self.superview rightMouseDown:event onSubview:self];
+	}
 }
 
 - (void)rightMouseUp:(NSEvent *)event
 {
-	[self.superview rightMouseUp:event fromSubview:self];	
+	if(self.superview != nil){
+	  [self.superview rightMouseUp:event fromSubview:self];
+	}
 }
 
 - (void)mouseDragged:(NSEvent *)event
@@ -138,6 +150,11 @@
 		if(!_currentTextRenderer && _viewFlags.pasteboardDraggingEnabled)
 			[self pasteboardDragMouseDragged:event];
 	}
+	
+	if(self.superview != nil){
+	  [self.superview mouseDragged:event onSubview:self];
+	}
+	
 }
 
 - (BOOL)didDrag
@@ -162,14 +179,22 @@
 
 - (void)mouseEntered:(NSEvent *)event
 {
-	if(_viewFlags.delegateMouseEntered)
+  if(self.superview != nil){
+    [self.superview mouseEntered:event onSubview:self];
+  }
+	if(_viewFlags.delegateMouseEntered){
 		[_viewDelegate view:self mouseEntered:event];
+	}
 }
 
 - (void)mouseExited:(NSEvent *)event
 {
-	if(_viewFlags.delegateMouseExited)
+  if(self.superview != nil){
+    [self.superview mouseExited:event fromSubview:self];
+  }
+	if(_viewFlags.delegateMouseExited){
 		[_viewDelegate view:self mouseExited:event];
+	}
 }
 
 - (void)viewWillStartLiveResize
@@ -184,41 +209,37 @@
 
 - (void)mouseDown:(NSEvent *)event onSubview:(TUIView *)subview
 {
-	
+  [self.superview mouseDown:event onSubview:subview];
 }
 
 - (void)mouseDragged:(NSEvent *)event onSubview:(TUIView *)subview
 {
-	
+  [self.superview mouseDragged:event onSubview:subview];
 }
 
 - (void)mouseUp:(NSEvent *)event fromSubview:(TUIView *)subview
 {
-	// not sure which should be the correct behavior, the specific subview, or the immediate subview of the reciever
-	// going with specific subview, can always query isDescendent (lose less information)
 	[self.superview mouseUp:event fromSubview:subview];
-//	[self.superview mouseUp:event fromSubview:self];
 }
 
 - (void)rightMouseDown:(NSEvent *)event onSubview:(TUIView *)subview
 {
-	
+  [self.superview rightMouseDown:event onSubview:subview];
 }
 
 - (void)rightMouseUp:(NSEvent *)event fromSubview:(TUIView *)subview
 {
-	// same question here as for mouseUp:fromSubview:
 	[self.superview rightMouseUp:event fromSubview:subview];
 }
 
 - (void)mouseEntered:(NSEvent *)event onSubview:(TUIView *)subview
 {
-	
+  [self.superview mouseEntered:event onSubview:subview];
 }
 
 - (void)mouseExited:(NSEvent *)event fromSubview:(TUIView *)subview
 {
-	
+  [self.superview mouseExited:event fromSubview:subview];
 }
 
 @end

@@ -251,6 +251,14 @@
 	[self _updateHoverViewWithEvent:event];
 }
 
+-(void)mouseEntered:(NSEvent *)event {
+  [self _updateHoverViewWithEvent:event];
+}
+
+-(void)mouseExited:(NSEvent *)event {
+  [self _updateHoverViewWithEvent:event];
+}
+
 - (void)rightMouseDown:(NSEvent *)event
 {
 	[_trackingView release];

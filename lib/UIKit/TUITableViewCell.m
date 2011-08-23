@@ -103,6 +103,8 @@
  * @brief The table cell was dragged
  */
 -(void)mouseDragged:(NSEvent *)event {
+  // propagate the event
+  [super mouseDragged:event];
   // notify our table view of the event
   [self.tableView __mouseDraggedCell:self offset:_mouseOffset event:event];
 }
