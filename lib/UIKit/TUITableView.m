@@ -63,7 +63,6 @@ typedef struct {
 - (void)dealloc
 {
 	if(rowInfo) free(rowInfo);
-	NSLog(@"RELEASE HEADER: %@ (%@)", _headerView, _headerView.superview);
 	[_headerView release];
 	[super dealloc];
 }
