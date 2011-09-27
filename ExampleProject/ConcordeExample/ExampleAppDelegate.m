@@ -16,12 +16,14 @@
 
 #import "ExampleAppDelegate.h"
 #import "ExampleView.h"
+#import "ExampleScrollView.h"
 
 @implementation ExampleAppDelegate
 
 - (void)dealloc
 {
-	[window release];
+	[tableViewWindow release];
+	[scrollViewWindow release];
 	[super dealloc];
 }
 
@@ -29,25 +31,52 @@
 {
 	CGRect b = CGRectMake(0, 0, 500, 450);
 	
-	window = [[NSWindow alloc] initWithContentRect:b 
-										 styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask 
-										   backing:NSBackingStoreBuffered 
-											 defer:NO];
-	[window setMinSize:NSMakeSize(300, 250)];
-	[window center];
+	/** Table View */
+	tableViewWindow = [[NSWindow alloc] initWithContentRect:b styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
+	[tableViewWindow setReleasedWhenClosed:FALSE];
+	[tableViewWindow setMinSize:NSMakeSize(300, 250)];
+	[tableViewWindow center];
+	
+	/* TUINSView is the bridge between the standard AppKit NSView-based heirarchy and the TUIView-based heirarchy */
+	TUINSView *tuiTableViewContainer = [[TUINSView alloc] initWithFrame:b];
+	[tableViewWindow setContentView:tuiTableViewContainer];
+	[tuiTableViewContainer release];
+	
+	ExampleView *tableExample = [[ExampleView alloc] initWithFrame:b];
+	tuiTableViewContainer.rootView = tableExample;
+	[tableExample release];
+	
+	/** Scroll View */
+	scrollViewWindow = [[NSWindow alloc] initWithContentRect:b styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:YES];
+	[scrollViewWindow setReleasedWhenClosed:FALSE];
+	[scrollViewWindow setMinSize:NSMakeSize(300, 250)];
+	[scrollViewWindow setFrameTopLeftPoint:[tableViewWindow cascadeTopLeftFromPoint:CGPointMake(tableViewWindow.frame.origin.x, tableViewWindow.frame.origin.y + tableViewWindow.frame.size.height)]];
+	
+	/* TUINSView is the bridge between the standard AppKit NSView-based heirarchy and the TUIView-based heirarchy */
+	TUINSView *tuiScrollViewContainer = [[TUINSView alloc] initWithFrame:b];
+	[scrollViewWindow setContentView:tuiScrollViewContainer];
+	[tuiScrollViewContainer release];
+	
+	ExampleScrollView *scrollExample = [[ExampleScrollView alloc] initWithFrame:b];
+	tuiScrollViewContainer.rootView = scrollExample;
+	[scrollExample release];
+	
+	[self showTableViewExampleWindow:nil];
+	
+}
 
-	/*
-	 TUINSView is the bridge between the standard AppKit NSView-based heirarchy and the TUIView-based heirarchy
-	 */
-	TUINSView *tuiContainer = [[TUINSView alloc] initWithFrame:b];
-	[window setContentView:tuiContainer];
-	[tuiContainer release];
-	
-	ExampleView *example = [[ExampleView alloc] initWithFrame:b];
-	tuiContainer.rootView = example;
-	[example release];
-	
-	[window makeKeyAndOrderFront:nil];
+/**
+ * @brief Show the table view example
+ */
+-(IBAction)showTableViewExampleWindow:(id)sender {
+	[tableViewWindow makeKeyAndOrderFront:sender];
+}
+
+/**
+ * @brief Show the scroll view example
+ */
+-(IBAction)showScrollViewExampleWindow:(id)sender {
+	[scrollViewWindow makeKeyAndOrderFront:sender];
 }
 
 @end

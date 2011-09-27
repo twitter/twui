@@ -57,16 +57,16 @@
 }
 
 #define KNOB_CALCULATIONS(OFFSET, LENGTH, MIN_KNOB_SIZE) \
-float proportion = visible.size.LENGTH / contentSize.LENGTH; \
-float knobLength = trackBounds.size.LENGTH * proportion; \
-if(knobLength < MIN_KNOB_SIZE) knobLength = MIN_KNOB_SIZE; \
-float rangeOfMotion = trackBounds.size.LENGTH - knobLength; \
-float maxOffset = contentSize.LENGTH - visible.size.LENGTH; \
-float currentOffset = visible.origin.OFFSET; \
-float offsetProportion = 1.0 - (maxOffset - currentOffset) / maxOffset; \
-float knobOffset = offsetProportion * rangeOfMotion; \
-if(isnan(knobOffset)) knobOffset = 0.0; \
-if(isnan(knobLength)) knobLength = 0.0;
+  float proportion = visible.size.LENGTH / contentSize.LENGTH; \
+  float knobLength = trackBounds.size.LENGTH * proportion; \
+  if(knobLength < MIN_KNOB_SIZE) knobLength = MIN_KNOB_SIZE; \
+  float rangeOfMotion = trackBounds.size.LENGTH - knobLength; \
+  float maxOffset = contentSize.LENGTH - visible.size.LENGTH; \
+  float currentOffset = visible.origin.OFFSET; \
+  float offsetProportion = 1.0 - (maxOffset - currentOffset) / maxOffset; \
+  float knobOffset = offsetProportion * rangeOfMotion; \
+  if(isnan(knobOffset)) knobOffset = 0.0; \
+  if(isnan(knobLength)) knobLength = 0.0;
 
 #define DEFAULT_MIN_KNOB_SIZE 25
 
@@ -81,23 +81,19 @@ if(isnan(knobLength)) knobLength = 0.0;
 		CGRect frame;
 		frame.origin.x = 0.0;
 		frame.origin.y = knobOffset;
-		frame.size.height = knobLength;
+		frame.size.height = MIN(2000, knobLength);
 		frame.size.width = trackBounds.size.width;
-		
-		if(frame.size.height > 2000) {
-			frame.size.height = 2000;
-		}
-		
 		knob.frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
 	} else {
 		KNOB_CALCULATIONS(x, width, DEFAULT_MIN_KNOB_SIZE)
 		CGRect frame;
 		frame.origin.x = knobOffset;
 		frame.origin.y = 0.0;
-		frame.size.width = knobLength;
+		frame.size.width = MIN(2000, knobLength);
 		frame.size.height = trackBounds.size.height;
-		knob.frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
+		knob.frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
 	}
+	
 }
 
 - (void)layoutSubviews
@@ -204,13 +200,13 @@ if(isnan(knobLength)) knobLength = 0.0;
 }
 
 #define KNOB_CALCULATIONS_REVERSE(OFFSET, LENGTH) \
-CGRect knobFrame = _knobStartFrame; \
-knobFrame.origin.OFFSET += diff.LENGTH; \
-CGFloat knobOffset = knobFrame.origin.OFFSET; \
-CGFloat minKnobOffset = 0.0; \
-CGFloat maxKnobOffset = trackBounds.size.LENGTH - knobFrame.size.LENGTH; \
-CGFloat proportion = (knobOffset - 1.0) / (maxKnobOffset - minKnobOffset); \
-CGFloat maxContentOffset = contentSize.LENGTH - visible.size.LENGTH;
+  CGRect knobFrame = _knobStartFrame; \
+  knobFrame.origin.OFFSET += diff.LENGTH; \
+  CGFloat knobOffset = knobFrame.origin.OFFSET; \
+  CGFloat minKnobOffset = 0.0; \
+  CGFloat maxKnobOffset = trackBounds.size.LENGTH - knobFrame.size.LENGTH; \
+  CGFloat proportion = (knobOffset - 1.0) / (maxKnobOffset - minKnobOffset); \
+  CGFloat maxContentOffset = contentSize.LENGTH - visible.size.LENGTH;
 
 - (void)mouseDragged:(NSEvent *)event
 {

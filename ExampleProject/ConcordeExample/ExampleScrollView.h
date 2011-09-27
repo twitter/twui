@@ -14,16 +14,12 @@
  limitations under the License.
  */
 
-#import <Cocoa/Cocoa.h>
 #import "TUIKit.h"
+#import "ExampleTabBar.h"
 
-@interface ExampleAppDelegate : NSObject <NSApplicationDelegate>
+@interface ExampleScrollView : TUIView
 {
-  NSWindow    * tableViewWindow;
-  NSWindow    * scrollViewWindow;
+  TUIScrollView * _scrollView;
 }
-
--(IBAction)showTableViewExampleWindow:(id)sender;
--(IBAction)showScrollViewExampleWindow:(id)sender;
 
 @end

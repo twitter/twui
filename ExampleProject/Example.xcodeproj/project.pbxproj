@@ -68,6 +68,8 @@
 		5ED56736139DC35800031CDF /* CoreText+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56732139DC35800031CDF /* CoreText+Additions.m */; };
 		D3502AAE13EA0FE4007C5CA7 /* TUITableView+Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3502AAD13EA0FE4007C5CA7 /* TUITableView+Cell.m */; };
 		D3CE671313C6646B00D47B2D /* ExampleSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */; };
+		D3EC0C491432325A003C162C /* ExampleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3EC0C471432325A003C162C /* ExampleScrollView.m */; };
+		D3EC0C4A1432325A003C162C /* large-image.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = D3EC0C481432325A003C162C /* large-image.jpeg */; };
 		D3FA4CA913F85B7100860379 /* TUITableViewSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CA813F85B7100860379 /* TUITableViewSectionHeader.m */; };
 		D3FA4CBA13F85BC100860379 /* TUIAccessibilityElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CAF13F85BC100860379 /* TUIAccessibilityElement.m */; };
 		D3FA4CBB13F85BC100860379 /* TUIButton+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CB113F85BC100860379 /* TUIButton+Accessibility.m */; };
@@ -193,6 +195,9 @@
 		D3502AAD13EA0FE4007C5CA7 /* TUITableView+Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITableView+Cell.m"; sourceTree = "<group>"; };
 		D3CE671113C6646B00D47B2D /* ExampleSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleSectionHeaderView.h; sourceTree = "<group>"; };
 		D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleSectionHeaderView.m; sourceTree = "<group>"; };
+		D3EC0C461432325A003C162C /* ExampleScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleScrollView.h; sourceTree = "<group>"; };
+		D3EC0C471432325A003C162C /* ExampleScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleScrollView.m; sourceTree = "<group>"; };
+		D3EC0C481432325A003C162C /* large-image.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "large-image.jpeg"; sourceTree = "<group>"; };
 		D3FA4CA713F85B7100860379 /* TUITableViewSectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITableViewSectionHeader.h; sourceTree = "<group>"; };
 		D3FA4CA813F85B7100860379 /* TUITableViewSectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITableViewSectionHeader.m; sourceTree = "<group>"; };
 		D3FA4CAE13F85BC100860379 /* TUIAccessibilityElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIAccessibilityElement.h; sourceTree = "<group>"; };
@@ -282,6 +287,8 @@
 				5ED5668A139DC30300031CDF /* ExampleAppDelegate.m */,
 				5C55D83213A667A0000ED768 /* ExampleView.h */,
 				5C55D83313A667A0000ED768 /* ExampleView.m */,
+				D3EC0C461432325A003C162C /* ExampleScrollView.h */,
+				D3EC0C471432325A003C162C /* ExampleScrollView.m */,
 				5C90DB9B13A7C08D00ECDD14 /* ExampleTabBar.h */,
 				5C90DB9C13A7C08D00ECDD14 /* ExampleTabBar.m */,
 				5C55D83513A66BD5000ED768 /* ExampleTableViewCell.h */,
@@ -297,6 +304,7 @@
 		5ED5667E139DC30300031CDF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D3EC0C481432325A003C162C /* large-image.jpeg */,
 				5C57CF3C13A7E7C00032AC1F /* clock.png */,
 				5ED5667F139DC30300031CDF /* Example-Info.plist */,
 				5ED56680139DC30300031CDF /* InfoPlist.strings */,
@@ -440,6 +448,9 @@
 /* Begin PBXProject section */
 		5ED5666A139DC30300031CDF /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 5ED5666D139DC30300031CDF /* Build configuration list for PBXProject "Example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -466,6 +477,7 @@
 				5ED56688139DC30300031CDF /* Credits.rtf in Resources */,
 				5ED5668E139DC30300031CDF /* MainMenu.xib in Resources */,
 				5C57CF3D13A7E7C00032AC1F /* clock.png in Resources */,
+				D3EC0C4A1432325A003C162C /* large-image.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +549,7 @@
 				D3FA4CBD13F85BC100860379 /* TUIControl+Private.m in Sources */,
 				D3FA4CBE13F85BC100860379 /* TUINSView+Accessibility.m in Sources */,
 				D3FA4CBF13F85BC100860379 /* TUIView+Accessibility.m in Sources */,
+				D3EC0C491432325A003C162C /* ExampleScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
