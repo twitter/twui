@@ -1082,8 +1082,8 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 
 - (void)selectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition
 {
-  
-	if([indexPath isEqual:[self indexPathForSelectedRow]]) {
+  TUIFastIndexPath *oldIndexPath = [self indexPathForSelectedRow];  
+	if([indexPath isEqual:oldIndexPath]) {
 		// just scroll to visible
 	} else {
 		[self deselectRowAtIndexPath:[self indexPathForSelectedRow] animated:animated];
@@ -1100,8 +1100,12 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
     }
 		
 	}
-	
-	[self _makeRowAtIndexPathFirstResponder:indexPath];
+
+  NSResponder *firstResponder = [self.nsWindow firstResponder];
+  if(firstResponder == self || firstResponder == [self cellForRowAtIndexPath:oldIndexPath]) {
+    // only make cell first responder if the table view already is first responder
+    [self _makeRowAtIndexPathFirstResponder:indexPath];
+  }
 	[self scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:animated];
 }
 
