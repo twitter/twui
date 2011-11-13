@@ -28,8 +28,8 @@
 		self.backgroundColor = [TUIColor colorWithWhite:0.9 alpha:1.0];
 		
 		// if you're using a font a lot, it's best to allocate it once and re-use it
-		exampleFont1 = [[TUIFont fontWithName:@"HelveticaNeue" size:15] retain];
-		exampleFont2 = [[TUIFont fontWithName:@"HelveticaNeue-Bold" size:15] retain];
+		exampleFont1 = [TUIFont fontWithName:@"HelveticaNeue" size:15];
+		exampleFont2 = [TUIFont fontWithName:@"HelveticaNeue-Bold" size:15];
 		
 		CGRect b = self.bounds;
 		b.origin.y += TAB_HEIGHT;
@@ -106,12 +106,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[_tableView release];
-	[_tabBar release];
-	[super dealloc];
-}
 
 - (void)tabBar:(ExampleTabBar *)tabBar didSelectTab:(NSInteger)index
 {
@@ -144,7 +138,7 @@
 	title.color = [TUIColor blackColor];
 	title.font = exampleFont2;
 	view.labelRenderer.attributedString = title;
-	return [view autorelease];
+	return view;
 }
 
 - (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath

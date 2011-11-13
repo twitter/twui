@@ -112,7 +112,7 @@
 		_selectionStart = saveStart;
 		_selectionEnd = saveEnd;
 		
-		NSImage *image = [[[NSImage alloc] initWithCGImage:dragImage.CGImage size:NSZeroSize] autorelease];
+		NSImage *image = [[NSImage alloc] initWithCGImage:dragImage.CGImage size:NSZeroSize];
 		
 		[view.nsView dragImage:image 
 							at:f.origin

@@ -31,8 +31,6 @@
 	for(TUITextRenderer *renderer in _textRenderers)
 		renderer.view = nil;
 	
-	[renderers retain];
-	[_textRenderers release];
 	_textRenderers = renderers;
 
 	for(TUITextRenderer *renderer in _textRenderers) {

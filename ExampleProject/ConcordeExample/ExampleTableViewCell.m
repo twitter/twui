@@ -38,11 +38,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[textRenderer release];
-	[super dealloc];
-}
 
 - (NSAttributedString *)attributedString
 {

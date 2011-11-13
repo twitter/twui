@@ -67,12 +67,9 @@
   _currentDragToReorderLocation = location;
   _currentDragToReorderMouseOffset = offset;
   
-  [_dragToReorderCell release];
-  _dragToReorderCell = [cell retain];
+  _dragToReorderCell = cell;
   
-  [_currentDragToReorderIndexPath release];
   _currentDragToReorderIndexPath = nil;
-  [_previousDragToReorderIndexPath release];
   _previousDragToReorderIndexPath = nil;
   
 }
@@ -105,10 +102,8 @@
     // make sure the dragged cell is on top
     _dragToReorderCell.layer.zPosition = kTUITableViewDraggedCellZPosition;
     // setup index paths
-    [_currentDragToReorderIndexPath release];
-    _currentDragToReorderIndexPath = [cell.indexPath retain];
-    [_previousDragToReorderIndexPath release];
-    _previousDragToReorderIndexPath = [cell.indexPath retain];
+    _currentDragToReorderIndexPath = cell.indexPath;
+    _previousDragToReorderIndexPath = cell.indexPath;
     return; // just initialize on the first event
   }
   
@@ -169,13 +164,11 @@
   }
   
   // note the previous path
-  [_previousDragToReorderIndexPath release];
-  _previousDragToReorderIndexPath = [_currentDragToReorderIndexPath retain];
+  _previousDragToReorderIndexPath = _currentDragToReorderIndexPath;
   _previousDragToReorderInsertionMethod = _currentDragToReorderInsertionMethod;
   
   // note the current path
-  [_currentDragToReorderIndexPath release];
-  _currentDragToReorderIndexPath = [currentPath retain];
+  _currentDragToReorderIndexPath = currentPath;
   _currentDragToReorderInsertionMethod = insertMethod;
   
   // determine the current drag direction
@@ -350,18 +343,15 @@
     }
     
     // clear state
-    [_currentDragToReorderIndexPath release];
     _currentDragToReorderIndexPath = nil;
     
   }else{
     cell.layer.zPosition = 0;
   }
   
-  [_previousDragToReorderIndexPath release];
   _previousDragToReorderIndexPath = nil;
   
   // and clean up
-  [_dragToReorderCell release];
   _dragToReorderCell = nil;
   
   _currentDragToReorderLocation = CGPointZero;

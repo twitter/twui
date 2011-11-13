@@ -29,7 +29,6 @@
 		spinner.alpha = 0.2;
 		spinner.layer.cornerRadius = 10.0;
 		[self addSubview:spinner];
-		[spinner release];
 	}
 	return self;
 }

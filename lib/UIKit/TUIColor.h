@@ -86,6 +86,6 @@
 /**
  Not cached
  */
-@property (nonatomic, readonly) NSColor *nsColor;
+@property (strong, nonatomic, readonly) NSColor *nsColor;
 
 @end

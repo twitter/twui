@@ -57,10 +57,10 @@ typedef enum {
 
 @property(nonatomic,readonly) TUIButtonType buttonType;
 
-@property (nonatomic, retain) NSMenu *popUpMenu;
+@property (nonatomic, strong) NSMenu *popUpMenu;
 
-@property(nonatomic,readonly,retain) TUILabel     *titleLabel;
-@property(nonatomic,readonly,retain) TUIImageView *imageView;
+@property(nonatomic,readonly,strong) TUILabel     *titleLabel;
+@property(nonatomic,readonly,strong) TUIImageView *imageView;
 
 - (CGRect)backgroundRectForBounds:(CGRect)bounds;
 - (CGRect)contentRectForBounds:(CGRect)bounds;

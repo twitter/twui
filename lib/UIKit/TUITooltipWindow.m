@@ -69,7 +69,6 @@ static NSTimer *FadeOutTimer = nil;
 		TUITooltipWindowView *v = [[TUITooltipWindowView alloc] initWithFrame:r];
 		[v setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
 		[w setContentView:v];
-		[v release];
 	}
 	return w;
 }
@@ -137,8 +136,7 @@ static BOOL ShowingTooltip = NO;
 			[self performSelector:@selector(_beginTooltip) withObject:nil afterDelay:delay];
 		}
 		
-		[CurrentTooltipString release];
-		CurrentTooltipString = [[TUIAttributedString stringWithString:s] retain];
+		CurrentTooltipString = [TUIAttributedString stringWithString:s];
 		CurrentTooltipString.font = [TUIFont fontWithName:@"HelveticaNeue" size:11];
 		CurrentTooltipString.kerning = 0.2;
 		[CurrentTooltipString setAlignment:TUITextAlignmentCenter lineBreakMode:TUILineBreakModeClip];

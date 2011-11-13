@@ -62,7 +62,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 	CALayer		*_layer;
 	NSInteger	 _tag;
 	NSArray		*_textRenderers;
-	id			 _currentTextRenderer; // weak
+	__unsafe_unretained id   _currentTextRenderer; // weak
 	
 	CGPoint		startDrag;
 	
@@ -116,7 +116,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 + (Class)layerClass;
 
-@property (nonatomic, assign) id<TUIViewDelegate> viewDelegate;
+@property (nonatomic, unsafe_unretained) id<TUIViewDelegate> viewDelegate;
 
 /**
  Designated initializer
@@ -137,7 +137,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  Will always return a non-nil value. Reciever is the layer's delegate.
  @returns the reciever's backing layer.
  */
-@property (nonatomic,readonly,retain) CALayer *layer;
+@property (nonatomic,readonly,strong) CALayer *layer;
 
 /**
  Supply a block as an alternative to subclassing and overriding -drawRect:
@@ -160,7 +160,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 /**
  Tooltip will pop up if cursor hovers a view for toolTipDelay seconds
  */
-@property (nonatomic, retain) NSString *toolTip;
+@property (nonatomic, strong) NSString *toolTip;
 
 /**
  Default is 1.5s
@@ -228,7 +228,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 @interface TUIView (TUIViewHierarchy)
 
 @property (nonatomic, readonly) TUIView *superview;
-@property (nonatomic, readonly, copy) NSArray *subviews;
+@property (nonatomic, readonly, strong) NSArray *subviews;
 
 /**
  Recursive search, handy for debugging.

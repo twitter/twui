@@ -67,7 +67,6 @@
 			};
 			[self addSubview:t];
 			[_tabViews addObject:t];
-			[t release];
 		}
 		
 		tabViews = [[NSArray alloc] initWithArray:_tabViews];
@@ -75,11 +74,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[tabViews release];
-	[super dealloc];
-}
 
 - (void)drawRect:(CGRect)rect
 {

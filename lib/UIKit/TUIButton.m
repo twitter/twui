@@ -43,13 +43,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[_contentLookup release];
-	[_titleView release];
-	[popUpMenu release];
-	[super dealloc];
-}
 
 + (id)button
 {
@@ -59,7 +52,7 @@
 + (id)buttonWithType:(TUIButtonType)buttonType
 {
 	TUIButton *b = [[self alloc] initWithFrame:CGRectZero];
-	return [b autorelease];
+	return b;
 }
 
 - (BOOL)acceptsFirstResponder

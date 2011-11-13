@@ -30,12 +30,8 @@ static struct TUIFastIndexPath_staticStruct {
 
 @interface TUIFastIndexPath_staticClass : TUIFastIndexPath
 @end
+
 @implementation TUIFastIndexPath_staticClass
-
-- (id)retain { return self; }
-- (id)autorelease { return self; }
-- (oneway void)release { }
-
 @end
 
 @implementation TUIFastIndexPath
@@ -57,7 +53,7 @@ static struct TUIFastIndexPath_staticStruct {
 {
 	if(section == 0) {
 		if(row < CACHE_COMMON_INDEX_PATHS) {
-			return (TUIFastIndexPath *)&CommonIndexPaths[row];
+			return (__bridge TUIFastIndexPath *)&CommonIndexPaths[row];
 		}
 	}
 	
@@ -65,17 +61,17 @@ static struct TUIFastIndexPath_staticStruct {
 	TUIFastIndexPath *f = [[TUIFastIndexPath alloc] init];
 	f->row = row;
 	f->section = section;
-	return [f autorelease];
+	return f;
 }
 
 - (id)copyWithZone:(NSZone *)zone
 {
-	return [self retain];  // change me if we ever do mutable index paths
+	return self;  // change me if we ever do mutable index paths
 }
 
 - (id)initWithCoder:(NSCoder *)coder
 {
-	[self init];
+	self = [self init];
 	section = [coder decodeIntegerForKey:@"s"];
 	row = [coder decodeIntegerForKey:@"r"];
 	return self;

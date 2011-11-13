@@ -32,7 +32,6 @@
 {
 	if(_ctFont)
 		CFRelease(_ctFont);
-	[super dealloc];
 }
 
 static NSRange MakeNSRangeFromEndpoints(NSUInteger first, NSUInteger last) {
@@ -49,11 +48,11 @@ static NSDictionary *CachedFontDescriptors = nil;
 		// fallback stuff prevents massive stalls
 		NSRange range = MakeNSRangeFromEndpoints(0x2100, 0x214F);
 		NSCharacterSet *letterlikeSymbolsSet = [NSCharacterSet characterSetWithRange:range];
-		arialUniDescFallback = [[NSFontDescriptor fontDescriptorWithFontAttributes:
+		arialUniDescFallback = [NSFontDescriptor fontDescriptorWithFontAttributes:
 												   [NSDictionary dictionaryWithObjectsAndKeys:
 													@"ArialUnicodeMS", NSFontNameAttribute, 
 													letterlikeSymbolsSet, NSFontCharacterSetAttribute, 
-													nil]] retain];
+													nil]];
 		NSString *normalFontName;
 		NSString *lightFontName;
 		NSString *mediumFontName;
@@ -84,12 +83,12 @@ static NSDictionary *CachedFontDescriptors = nil;
 													[NSArray arrayWithObject:arialUniDescFallback], NSFontCascadeListAttribute,
 													nil]];
 		
-		CachedFontDescriptors = [[NSDictionary dictionaryWithObjectsAndKeys:
+		CachedFontDescriptors = [NSDictionary dictionaryWithObjectsAndKeys:
 								  D_HelveticaNeue, @"HelveticaNeue",
 								  D_HelveticaNeue_Light, @"HelveticaNeue-Light",
 								  D_HelveticaNeue_Medium, @"HelveticaNeue-Medium",
 								  D_HelveticaNeue_Bold, @"HelveticaNeue-Bold",
-								  nil] retain];
+								  nil];
 	}
 }
 
@@ -104,11 +103,11 @@ static NSDictionary *CachedFontDescriptors = nil;
 				 nil]];
 		
 	}
-	CTFontRef font = CTFontCreateWithFontDescriptor((CTFontDescriptorRef)desc, fontSize, NULL);
+	CTFontRef font = CTFontCreateWithFontDescriptor((__bridge CTFontDescriptorRef)desc, fontSize, NULL);
 	TUIFont *uiFont = [[TUIFont alloc] initWithCTFont:font];
 	CFRelease(font);
 	
-	return [uiFont autorelease];
+	return uiFont;
 }
 
 + (TUIFont *)systemFontOfSize:(CGFloat)fontSize
@@ -116,7 +115,7 @@ static NSDictionary *CachedFontDescriptors = nil;
 	CTFontRef f = CTFontCreateUIFontForLanguage(kCTFontSystemFontType, fontSize, NULL);
 	TUIFont *uifont = [[TUIFont alloc] initWithCTFont:f];
 	CFRelease(f);
-	return [uifont autorelease];
+	return uifont;
 }
 
 + (TUIFont *)boldSystemFontOfSize:(CGFloat)fontSize
@@ -124,11 +123,11 @@ static NSDictionary *CachedFontDescriptors = nil;
 	CTFontRef f = CTFontCreateUIFontForLanguage(kCTFontEmphasizedSystemFontType, fontSize, NULL);
 	TUIFont *uifont = [[TUIFont alloc] initWithCTFont:f];
 	CFRelease(f);
-	return [uifont autorelease];
+	return uifont;
 }
 
-- (NSString *)familyName { return [(NSString *)CTFontCopyFamilyName(_ctFont) autorelease]; }
-- (NSString *)fontName { return [(NSString *)CTFontCopyPostScriptName(_ctFont) autorelease]; }
+- (NSString *)familyName { return (__bridge_transfer NSString *)CTFontCopyFamilyName(_ctFont); }
+- (NSString *)fontName { return (__bridge_transfer NSString *)CTFontCopyPostScriptName(_ctFont); }
 - (CGFloat)pointSize { return CTFontGetSize(_ctFont); }
 - (CGFloat)ascender { return CTFontGetAscent(_ctFont); }
 - (CGFloat)descender { return CTFontGetDescent(_ctFont); }
@@ -144,50 +143,6 @@ static NSDictionary *CachedFontDescriptors = nil;
 - (CTFontRef)ctFont
 {
 	return _ctFont;
-}
-
-
-/*
- deprecated
- */
-
-+ (void)loadFontData:(NSData *)fontData
-{
-	ATSFontContainerRef container;
-	OSStatus err = ATSFontActivateFromMemory((void *)[fontData bytes], 
-											 [fontData length],
-											 kATSFontContextLocal,
-											 kATSFontFormatUnspecified,
-											 NULL,
-											 kATSOptionFlagsDefault,
-											 &container);
-	
-	if(err != noErr)
-		NSLog(@"failed to load font into memory");
-	
-	ATSFontRef fontRefs[100];
-	ItemCount fontCount;
-	err = ATSFontFindFromContainer(container,
-								   kATSOptionFlagsDefault,
-								   100,
-								   fontRefs,
-								   &fontCount);
-	
-	if(err != noErr || fontCount < 1 ){
-		NSLog(@"font could not be loaded.");
-	} else{
-		NSString *fontName;
-		err = ATSFontGetPostScriptName(fontRefs[0],
-									   kATSOptionFlagsDefault,
-									   (CFStringRef *)(&fontName));
-		NSLog(@"font %@ loaded", fontName);
-	}
-}
-
-+ (void)loadBundledFonts
-{
-	[self loadFontData:[NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Chicago-Bold.ttf"]]];
-	[self loadFontData:[NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"pixChicago.ttf"]]];
 }
 
 @end

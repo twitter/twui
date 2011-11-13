@@ -74,11 +74,9 @@
 				f.origin.y += (visibleRect.origin.y + visibleRect.size.height) - (cellFrame.origin.y + cellFrame.size.height);
 			
 			derepeaterView.frame = f;
-			[lastIdentifier release];
-			lastIdentifier = [identifier retain];
+			lastIdentifier = identifier;
 		}
 	}
-	[lastIdentifier release];
 	
 	[CATransaction commit];
 }

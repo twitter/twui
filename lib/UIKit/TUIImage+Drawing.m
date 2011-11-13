@@ -129,41 +129,41 @@
 - (TUIImage *)innerShadowWithOffset:(CGSize)offset radius:(CGFloat)radius color:(TUIColor *)color backgroundColor:(TUIColor *)backgroundColor
 {
 	CGFloat padding = ceil(radius);
-	self = [self pad:padding];
-	self = [TUIImage imageWithSize:self.size drawing:^(CGContextRef ctx) {
+	TUIImage *paddedImage = [self pad:padding];
+	TUIImage *shadowImage = [TUIImage imageWithSize:paddedImage.size drawing:^(CGContextRef ctx) {
 		CGContextSaveGState(ctx);
-		CGRect r = CGRectMake(0, 0, self.size.width, self.size.height);
-		CGContextClipToMask(ctx, r, self.CGImage); // clip to image
+		CGRect r = CGRectMake(0, 0, paddedImage.size.width, paddedImage.size.height);
+		CGContextClipToMask(ctx, r, paddedImage.CGImage); // clip to image
 		CGContextSetShadowWithColor(ctx, offset, radius, color.CGColor);
 		CGContextBeginTransparencyLayer(ctx, NULL);
 		{
-			CGContextClipToMask(ctx, r, [[self invertedMask] CGImage]); // clip to inverted
+			CGContextClipToMask(ctx, r, [[paddedImage invertedMask] CGImage]); // clip to inverted
 			CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
 			CGContextFillRect(ctx, r); // draw with shadow
 		}
 		CGContextEndTransparencyLayer(ctx);
 		CGContextRestoreGState(ctx);
 	}];
-	self = [self pad:-padding];
-	return self;
+	
+	return [shadowImage pad:-padding];
 }
 
 - (TUIImage *)embossMaskWithOffset:(CGSize)offset
 {
 	CGFloat padding = MAX(offset.width, offset.height) + 1;
-	self = [self pad:padding];
-	CGSize s = self.size;
-	self = [TUIImage imageWithSize:s drawing:^(CGContextRef ctx) {
+	TUIImage *paddedImage = [self pad:padding];
+	CGSize s = paddedImage.size;
+	TUIImage *embossedImage = [TUIImage imageWithSize:s drawing:^(CGContextRef ctx) {
 		CGContextSaveGState(ctx);
 		CGRect r = CGRectMake(0, 0, s.width, s.height);
-		CGContextClipToMask(ctx, r, [self CGImage]);
-		CGContextClipToMask(ctx, CGRectOffset(r, offset.width, offset.height), [[self invertedMask] CGImage]);
+		CGContextClipToMask(ctx, r, [paddedImage CGImage]);
+		CGContextClipToMask(ctx, CGRectOffset(r, offset.width, offset.height), [[paddedImage invertedMask] CGImage]);
 		CGContextSetRGBFillColor(ctx, 0, 0, 0, 1);
 		CGContextFillRect(ctx, r);
 		CGContextRestoreGState(ctx);
 	}];
-	self = [self pad:-padding];
-	return self;
+	
+	return [embossedImage pad:-padding];
 }
 
 @end

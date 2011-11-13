@@ -20,12 +20,6 @@
 
 @implementation ExampleAppDelegate
 
-- (void)dealloc
-{
-	[tableViewWindow release];
-	[scrollViewWindow release];
-	[super dealloc];
-}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -40,11 +34,9 @@
 	/* TUINSView is the bridge between the standard AppKit NSView-based heirarchy and the TUIView-based heirarchy */
 	TUINSView *tuiTableViewContainer = [[TUINSView alloc] initWithFrame:b];
 	[tableViewWindow setContentView:tuiTableViewContainer];
-	[tuiTableViewContainer release];
 	
 	ExampleView *tableExample = [[ExampleView alloc] initWithFrame:b];
 	tuiTableViewContainer.rootView = tableExample;
-	[tableExample release];
 	
 	/** Scroll View */
 	scrollViewWindow = [[NSWindow alloc] initWithContentRect:b styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:YES];
@@ -55,11 +47,9 @@
 	/* TUINSView is the bridge between the standard AppKit NSView-based heirarchy and the TUIView-based heirarchy */
 	TUINSView *tuiScrollViewContainer = [[TUINSView alloc] initWithFrame:b];
 	[scrollViewWindow setContentView:tuiScrollViewContainer];
-	[tuiScrollViewContainer release];
 	
 	ExampleScrollView *scrollExample = [[ExampleScrollView alloc] initWithFrame:b];
 	tuiScrollViewContainer.rootView = scrollExample;
-	[scrollExample release];
 	
 	[self showTableViewExampleWindow:nil];
 	

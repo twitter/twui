@@ -31,16 +31,10 @@
 		TUIImageView *imageView = [[TUIImageView alloc] initWithImage:[TUIImage imageNamed:@"large-image.jpeg"]];
 		[_scrollView addSubview:imageView];
 		[_scrollView setContentSize:imageView.frame.size];
-		[imageView release];
 		
 	}
 	return self;
 }
 
-- (void)dealloc
-{
-	[_scrollView release];
-	[super dealloc];
-}
 
 @end

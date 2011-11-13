@@ -17,12 +17,12 @@
 #import "TUITableViewCell.h"
 #import "TUITableView.h"
 #import "TUITableView+Cell.h"
+#import "TUINSWindow.h"
 
 @implementation TUITableViewCell
 
 - (void)setReuseIdentifier:(NSString *)r
 {
-	[_reuseIdentifier release];
 	_reuseIdentifier = [r copy];
 }
 
@@ -35,11 +35,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[_reuseIdentifier release];
-	[super dealloc];
-}
 
 - (NSString *)reuseIdentifier
 {

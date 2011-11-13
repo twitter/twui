@@ -52,10 +52,9 @@ CGContextRef TUICreateGraphicsContextWithOptions(CGSize size, BOOL opaque)
 		return TUICreateGraphicsContext(size);
 }
 
-CGImageRef TUICGImageFromBitmapContext(CGContextRef ctx) // autoreleased
+CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx) // autoreleased
 {
-	CGImageRef i = CGBitmapContextCreateImage(ctx);
-	return (CGImageRef)[(id)i autorelease];
+	return CGBitmapContextCreateImage(ctx);
 }
 
 void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius)

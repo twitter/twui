@@ -21,7 +21,7 @@
 - (id)initWithNSView:(NSView *)v
 {
 	if((self = [super initWithFrame:[v frame]])) {
-		nsView = [v retain];
+		nsView = v;
 		[v setWantsLayer:YES];
 		CALayer *l = [v layer];
 		l.delegate = self;
@@ -30,11 +30,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[nsView release];
-	[super dealloc];
-}
 
 - (void)layoutSubviews
 {

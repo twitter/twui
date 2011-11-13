@@ -97,13 +97,6 @@ enum {
 - (void)dealloc
 {
 	[scrollTimer invalidate];
-	[scrollTimer release];
-	scrollTimer = nil;
-	
-	[_horizontalScrollKnob release];
-	[_verticalScrollKnob release];
-	
-	[super dealloc];
 }
 
 - (id<TUIScrollViewDelegate>)delegate
@@ -260,7 +253,7 @@ enum {
 	_bounce.bouncing = NO;
 	
 	if(!scrollTimer) {
-		scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:1/60. target:self selector:@selector(tick:) userInfo:nil repeats:YES] retain];
+		scrollTimer = [NSTimer scheduledTimerWithTimeInterval:1/60. target:self selector:@selector(tick:) userInfo:nil repeats:YES];
 	}
 }
 
@@ -268,7 +261,6 @@ enum {
 {
 	if(scrollTimer) {
 		[scrollTimer invalidate];
-		[scrollTimer release];
 		scrollTimer = nil;
 	}
 	_scrollViewFlags.animationMode = AnimationModeNone;

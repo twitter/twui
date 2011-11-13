@@ -25,6 +25,6 @@
 
 - (id)initWithImage:(TUIImage *)image;
 
-@property(nonatomic,retain) TUIImage *image;
+@property(nonatomic,strong) TUIImage *image;
 
 @end

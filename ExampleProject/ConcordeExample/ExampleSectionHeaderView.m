@@ -7,10 +7,6 @@
 /**
  * Clean up
  */
--(void)dealloc {
-  [_labelRenderer release];
-  [super dealloc];
-}
 
 /**
  * Initialize
@@ -60,7 +56,6 @@
     
     gradient = [[NSGradient alloc] initWithStartingColor:start endingColor:end];
     [gradient drawInRect:self.bounds angle:90];
-    [gradient release];
     
     [[start shadowWithLevel:0.1] set];
     NSRectFill(NSMakeRect(0, 0, self.bounds.size.width, 1));

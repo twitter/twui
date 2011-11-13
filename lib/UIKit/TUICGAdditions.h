@@ -19,7 +19,7 @@
 extern CGContextRef TUICreateOpaqueGraphicsContext(CGSize size);
 extern CGContextRef TUICreateGraphicsContext(CGSize size);
 extern CGContextRef TUICreateGraphicsContextWithOptions(CGSize size, BOOL opaque);
-extern CGImageRef TUICGImageFromBitmapContext(CGContextRef ctx); // autoreleased
+extern CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx);
 
 extern void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 extern void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius);

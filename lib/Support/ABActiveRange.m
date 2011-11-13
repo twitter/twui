@@ -24,18 +24,13 @@
 {
 	ABFlavoredRange *f = [[ABFlavoredRange alloc] init];
 	f.rangeValue = r;
-	return [f autorelease];
+	return f;
 }
 
-- (void)dealloc
-{
-	[displayString release];
-	[super dealloc];
-}
 
 - (id)copyWithZone:(NSZone *)zone
 {
-	return [self retain]; // these are immutable after creation
+	return self; // these are immutable after creation
 }
 
 - (NSString *)description
@@ -60,7 +55,6 @@
 
 - (void)setDisplayString:(NSString *)s
 {
-	[displayString release];
 	displayString = [s copy];
 }
 

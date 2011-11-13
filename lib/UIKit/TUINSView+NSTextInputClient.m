@@ -56,7 +56,7 @@
 		return s;
 	} else {
 //		NSLog(@"ignoring");
-		return [[[NSAttributedString alloc] initWithString:@"a"] autorelease]; // dummy string because we have NO clue what text renderer NSTextInputContext is asking about
+		return [[NSAttributedString alloc] initWithString:@"a"]; // dummy string because we have NO clue what text renderer NSTextInputContext is asking about
 	}
 }
 

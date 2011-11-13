@@ -37,14 +37,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[defaultAttributes release];
-	[markedAttributes release];
-	[inputContext release];
-	[backingStore release];
-	[super dealloc];
-}
 
 - (NSTextInputContext *)inputContext
 {

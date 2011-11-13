@@ -66,7 +66,7 @@ typedef enum {
 @interface TUITableView : TUIScrollView
 {
 	TUITableViewStyle             _style;
-	id <TUITableViewDataSource>	  _dataSource; // weak
+	__unsafe_unretained id <TUITableViewDataSource>	_dataSource; // weak
 	NSArray                     * _sectionInfo;
 	
 	TUIView                     * _pullDownView;
@@ -109,8 +109,8 @@ typedef enum {
 
 - (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style;                // must specify style at creation. -initWithFrame: calls this with UITableViewStylePlain
 
-@property (nonatomic,assign) id <TUITableViewDataSource>  dataSource;
-@property (nonatomic,assign) id <TUITableViewDelegate>    delegate;
+@property (nonatomic,unsafe_unretained) id <TUITableViewDataSource>  dataSource;
+@property (nonatomic,unsafe_unretained) id <TUITableViewDelegate>    delegate;
 
 @property (readwrite, assign) BOOL                        animateSelectionChanges;
 @property (nonatomic, assign) BOOL maintainContentOffsetAfterReload;
@@ -160,11 +160,11 @@ typedef enum {
 /**
  Above the top cell, only visible if you pull down (if you have scroll bouncing enabled)
  */
-@property (nonatomic, retain) TUIView *pullDownView;
+@property (nonatomic, strong) TUIView *pullDownView;
 
 - (BOOL)pullDownViewIsVisible;
 
-@property (nonatomic, retain) TUIView *headerView;
+@property (nonatomic, strong) TUIView *headerView;
 
 /**
  Used by the delegate to acquire an already allocated cell, in lieu of allocating a new one.

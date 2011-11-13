@@ -26,7 +26,7 @@
 
 @interface TUITextView : TUIControl
 {
-	id<TUITextViewDelegate> delegate;
+	id<TUITextViewDelegate> __unsafe_unretained delegate;
 	TUIViewDrawRect drawFrame;
 	
 	NSString *placeholder;
@@ -57,12 +57,12 @@
 
 - (Class)textEditorClass;
 
-@property (nonatomic, assign) id<TUITextViewDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<TUITextViewDelegate> delegate;
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *placeholder;
-@property (nonatomic, retain) TUIFont *font;
-@property (nonatomic, retain) TUIColor *textColor;
+@property (nonatomic, strong) TUIFont *font;
+@property (nonatomic, strong) TUIColor *textColor;
 @property (nonatomic, assign) TUITextAlignment textAlignment;
 @property (nonatomic, assign) TUIEdgeInsets contentInset;
 

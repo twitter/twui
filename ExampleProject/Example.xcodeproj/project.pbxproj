@@ -7,95 +7,72 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C55D83113A663E2000ED768 /* TUIViewNSViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C55D83013A663E2000ED768 /* TUIViewNSViewContainer.m */; };
 		5C55D83413A667A0000ED768 /* ExampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C55D83313A667A0000ED768 /* ExampleView.m */; };
 		5C55D83713A66BD5000ED768 /* ExampleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C55D83613A66BD5000ED768 /* ExampleTableViewCell.m */; };
 		5C57CF3D13A7E7C00032AC1F /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C57CF3C13A7E7C00032AC1F /* clock.png */; };
-		5C782FA513A541EC00CF69EF /* ABActiveRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C782FA413A541EC00CF69EF /* ABActiveRange.m */; };
 		5C782FD013A54FFF00CF69EF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C782FCF13A54FFD00CF69EF /* ApplicationServices.framework */; };
 		5C782FD713A556A900CF69EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C782FD613A556A800CF69EF /* QuartzCore.framework */; };
-		5C78300513A577B100CF69EF /* TUICGAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78300413A5778500CF69EF /* TUICGAdditions.m */; };
 		5C90DB9D13A7C08E00ECDD14 /* ExampleTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C90DB9C13A7C08D00ECDD14 /* ExampleTabBar.m */; };
-		5ED06F2C13F4C98800B34CAE /* TUITextViewEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED06F2B13F4C98800B34CAE /* TUITextViewEditor.m */; };
 		5ED56678139DC30300031CDF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ED56677139DC30300031CDF /* Cocoa.framework */; };
 		5ED56682139DC30300031CDF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ED56680139DC30300031CDF /* InfoPlist.strings */; };
 		5ED56685139DC30300031CDF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56684139DC30300031CDF /* main.m */; };
 		5ED56688139DC30300031CDF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5ED56686139DC30300031CDF /* Credits.rtf */; };
 		5ED5668B139DC30300031CDF /* ExampleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED5668A139DC30300031CDF /* ExampleAppDelegate.m */; };
 		5ED5668E139DC30300031CDF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5ED5668C139DC30300031CDF /* MainMenu.xib */; };
-		5ED566F7139DC35100031CDF /* TUIAccessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56697139DC35100031CDF /* TUIAccessibility.m */; };
-		5ED566F8139DC35100031CDF /* TUIActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56699139DC35100031CDF /* TUIActivityIndicatorView.m */; };
-		5ED566F9139DC35100031CDF /* TUIAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED5669B139DC35100031CDF /* TUIAttributedString.m */; };
-		5ED566FC139DC35100031CDF /* TUIButton+Content.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566A0139DC35100031CDF /* TUIButton+Content.m */; };
-		5ED566FD139DC35100031CDF /* TUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566A2139DC35100031CDF /* TUIButton.m */; };
-		5ED566FE139DC35100031CDF /* TUIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566A4139DC35100031CDF /* TUIColor.m */; };
-		5ED566FF139DC35100031CDF /* TUIControl+TargetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566A5139DC35100031CDF /* TUIControl+TargetAction.m */; };
-		5ED56700139DC35100031CDF /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566A7139DC35100031CDF /* TUIControl.m */; };
-		5ED56701139DC35100031CDF /* TUIFastIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566A9139DC35100031CDF /* TUIFastIndexPath.m */; };
-		5ED56702139DC35100031CDF /* TUIFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566AB139DC35100031CDF /* TUIFont.m */; };
-		5ED56703139DC35100031CDF /* TUIGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566AD139DC35100031CDF /* TUIGeometry.m */; };
-		5ED56704139DC35100031CDF /* TUIImage+Drawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566AF139DC35100031CDF /* TUIImage+Drawing.m */; };
-		5ED56705139DC35100031CDF /* TUIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566B1139DC35100031CDF /* TUIImage.m */; };
-		5ED56706139DC35100031CDF /* TUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566B3139DC35100031CDF /* TUIImageView.m */; };
-		5ED56707139DC35100031CDF /* TUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566B5139DC35100031CDF /* TUIKit.m */; };
-		5ED56708139DC35100031CDF /* TUILabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566B7139DC35100031CDF /* TUILabel.m */; };
-		5ED5670C139DC35100031CDF /* TUINSView+Hyperfocus.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566BF139DC35100031CDF /* TUINSView+Hyperfocus.m */; };
-		5ED5670D139DC35100031CDF /* TUINSView+NSTextInputClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566C0139DC35100031CDF /* TUINSView+NSTextInputClient.m */; };
-		5ED5670E139DC35100031CDF /* TUINSView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566C2139DC35100031CDF /* TUINSView.m */; };
-		5ED5670F139DC35100031CDF /* TUINSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566C4139DC35100031CDF /* TUINSWindow.m */; };
-		5ED56710139DC35100031CDF /* TUIResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566C6139DC35100031CDF /* TUIResponder.m */; };
-		5ED56711139DC35100031CDF /* TUIScrollKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566C8139DC35100031CDF /* TUIScrollKnob.m */; };
-		5ED56712139DC35100031CDF /* TUIScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566CA139DC35100031CDF /* TUIScrollView.m */; };
-		5ED56713139DC35100031CDF /* TUIStringDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566CC139DC35100031CDF /* TUIStringDrawing.m */; };
-		5ED56715139DC35100031CDF /* TUITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566D0139DC35100031CDF /* TUITableView+Additions.m */; };
-		5ED56716139DC35100031CDF /* TUITableView+Derepeater.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566D2139DC35100031CDF /* TUITableView+Derepeater.m */; };
-		5ED56717139DC35100031CDF /* TUITableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566D4139DC35100031CDF /* TUITableView.m */; };
-		5ED56718139DC35100031CDF /* TUITableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566D6139DC35100031CDF /* TUITableViewCell.m */; };
-		5ED5671B139DC35100031CDF /* TUITextEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566DC139DC35100031CDF /* TUITextEditor.m */; };
-		5ED5671C139DC35100031CDF /* TUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566DE139DC35100031CDF /* TUITextField.m */; };
-		5ED5671D139DC35100031CDF /* TUITextRenderer+Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566E0139DC35100031CDF /* TUITextRenderer+Event.m */; };
-		5ED5671E139DC35100031CDF /* TUITextRenderer+KeyBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566E1139DC35100031CDF /* TUITextRenderer+KeyBindings.m */; };
-		5ED5671F139DC35100031CDF /* TUITextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566E3139DC35100031CDF /* TUITextRenderer.m */; };
-		5ED56720139DC35100031CDF /* TUITextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566E5139DC35100031CDF /* TUITextView.m */; };
-		5ED56721139DC35100031CDF /* TUITooltipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566E7139DC35100031CDF /* TUITooltipWindow.m */; };
-		5ED56722139DC35100031CDF /* TUIView+Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566E8139DC35100031CDF /* TUIView+Animation.m */; };
-		5ED56723139DC35100031CDF /* TUIView+Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566EA139DC35100031CDF /* TUIView+Event.m */; };
-		5ED56724139DC35100031CDF /* TUIView+NSTextInputClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566EC139DC35100031CDF /* TUIView+NSTextInputClient.m */; };
-		5ED56725139DC35100031CDF /* TUIView+PasteboardDragging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566EE139DC35100031CDF /* TUIView+PasteboardDragging.m */; };
-		5ED56726139DC35100031CDF /* TUIView+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566F0139DC35100031CDF /* TUIView+Private.m */; };
-		5ED56727139DC35100031CDF /* TUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566F2139DC35100031CDF /* TUIView.m */; };
-		5ED56728139DC35100031CDF /* TUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED566F4139DC35100031CDF /* TUIViewController.m */; };
-		5ED56736139DC35800031CDF /* CoreText+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56732139DC35800031CDF /* CoreText+Additions.m */; };
-		D3502AAE13EA0FE4007C5CA7 /* TUITableView+Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3502AAD13EA0FE4007C5CA7 /* TUITableView+Cell.m */; };
+		D01D9CF4146F54BC00147234 /* TwUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01D9CEB146F54B300147234 /* TwUI.framework */; };
 		D3CE671313C6646B00D47B2D /* ExampleSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */; };
 		D3EC0C491432325A003C162C /* ExampleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3EC0C471432325A003C162C /* ExampleScrollView.m */; };
 		D3EC0C4A1432325A003C162C /* large-image.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = D3EC0C481432325A003C162C /* large-image.jpeg */; };
-		D3FA4CA913F85B7100860379 /* TUITableViewSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CA813F85B7100860379 /* TUITableViewSectionHeader.m */; };
-		D3FA4CBA13F85BC100860379 /* TUIAccessibilityElement.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CAF13F85BC100860379 /* TUIAccessibilityElement.m */; };
-		D3FA4CBB13F85BC100860379 /* TUIButton+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CB113F85BC100860379 /* TUIButton+Accessibility.m */; };
-		D3FA4CBC13F85BC100860379 /* TUIControl+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CB313F85BC100860379 /* TUIControl+Accessibility.m */; };
-		D3FA4CBD13F85BC100860379 /* TUIControl+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CB513F85BC100860379 /* TUIControl+Private.m */; };
-		D3FA4CBE13F85BC100860379 /* TUINSView+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CB713F85BC100860379 /* TUINSView+Accessibility.m */; };
-		D3FA4CBF13F85BC100860379 /* TUIView+Accessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA4CB913F85BC100860379 /* TUIView+Accessibility.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D01D9CEA146F54B300147234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CB5B264C13BE6DA200579B1E;
+			remoteInfo = TwUI;
+		};
+		D01D9CEC146F54B300147234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CB5E321813BE7098004B7899;
+			remoteInfo = "Dynamic Library";
+		};
+		D01D9CEE146F54B300147234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5EE983B713BE7809005F430D;
+			remoteInfo = "Static Library";
+		};
+		D01D9CF0146F54B300147234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CB5B266113BE6DA300579B1E;
+			remoteInfo = Tests;
+		};
+		D01D9CF2146F54BA00147234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CB5B264B13BE6DA200579B1E;
+			remoteInfo = TwUI;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		5C55D83013A663E2000ED768 /* TUIViewNSViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIViewNSViewContainer.m; sourceTree = "<group>"; };
 		5C55D83213A667A0000ED768 /* ExampleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleView.h; sourceTree = "<group>"; };
 		5C55D83313A667A0000ED768 /* ExampleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleView.m; sourceTree = "<group>"; };
 		5C55D83513A66BD5000ED768 /* ExampleTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleTableViewCell.h; sourceTree = "<group>"; };
 		5C55D83613A66BD5000ED768 /* ExampleTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleTableViewCell.m; sourceTree = "<group>"; };
 		5C57CF3C13A7E7C00032AC1F /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
-		5C782FA313A541EB00CF69EF /* ABActiveRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABActiveRange.h; path = ../Support/ABActiveRange.h; sourceTree = "<group>"; };
-		5C782FA413A541EC00CF69EF /* ABActiveRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABActiveRange.m; path = ../Support/ABActiveRange.m; sourceTree = "<group>"; };
 		5C782FCF13A54FFD00CF69EF /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		5C782FD613A556A800CF69EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		5C78300313A5776D00CF69EF /* TUICGAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUICGAdditions.h; sourceTree = "<group>"; };
-		5C78300413A5778500CF69EF /* TUICGAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUICGAdditions.m; sourceTree = "<group>"; };
 		5C90DB9B13A7C08D00ECDD14 /* ExampleTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleTabBar.h; sourceTree = "<group>"; };
 		5C90DB9C13A7C08D00ECDD14 /* ExampleTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleTabBar.m; sourceTree = "<group>"; };
-		5ED06F2A13F4C98800B34CAE /* TUITextViewEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITextViewEditor.h; sourceTree = "<group>"; };
-		5ED06F2B13F4C98800B34CAE /* TUITextViewEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITextViewEditor.m; sourceTree = "<group>"; };
 		5ED56673139DC30300031CDF /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ED56677139DC30300031CDF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		5ED5667A139DC30300031CDF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -109,109 +86,12 @@
 		5ED56689139DC30300031CDF /* ExampleAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExampleAppDelegate.h; sourceTree = "<group>"; };
 		5ED5668A139DC30300031CDF /* ExampleAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleAppDelegate.m; sourceTree = "<group>"; };
 		5ED5668D139DC30300031CDF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		5ED56696139DC35100031CDF /* TUIAccessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TUIAccessibility.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		5ED56697139DC35100031CDF /* TUIAccessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TUIAccessibility.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		5ED56698139DC35100031CDF /* TUIActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TUIActivityIndicatorView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		5ED56699139DC35100031CDF /* TUIActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TUIActivityIndicatorView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		5ED5669A139DC35100031CDF /* TUIAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TUIAttributedString.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		5ED5669B139DC35100031CDF /* TUIAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIAttributedString.m; sourceTree = "<group>"; };
-		5ED566A0139DC35100031CDF /* TUIButton+Content.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIButton+Content.m"; sourceTree = "<group>"; };
-		5ED566A1139DC35100031CDF /* TUIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIButton.h; sourceTree = "<group>"; };
-		5ED566A2139DC35100031CDF /* TUIButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIButton.m; sourceTree = "<group>"; };
-		5ED566A3139DC35100031CDF /* TUIColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIColor.h; sourceTree = "<group>"; };
-		5ED566A4139DC35100031CDF /* TUIColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIColor.m; sourceTree = "<group>"; };
-		5ED566A5139DC35100031CDF /* TUIControl+TargetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIControl+TargetAction.m"; sourceTree = "<group>"; };
-		5ED566A6139DC35100031CDF /* TUIControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIControl.h; sourceTree = "<group>"; };
-		5ED566A7139DC35100031CDF /* TUIControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIControl.m; sourceTree = "<group>"; };
-		5ED566A8139DC35100031CDF /* TUIFastIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIFastIndexPath.h; sourceTree = "<group>"; };
-		5ED566A9139DC35100031CDF /* TUIFastIndexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIFastIndexPath.m; sourceTree = "<group>"; };
-		5ED566AA139DC35100031CDF /* TUIFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIFont.h; sourceTree = "<group>"; };
-		5ED566AB139DC35100031CDF /* TUIFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIFont.m; sourceTree = "<group>"; };
-		5ED566AC139DC35100031CDF /* TUIGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIGeometry.h; sourceTree = "<group>"; };
-		5ED566AD139DC35100031CDF /* TUIGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TUIGeometry.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		5ED566AE139DC35100031CDF /* TUIImage+Drawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "TUIImage+Drawing.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		5ED566AF139DC35100031CDF /* TUIImage+Drawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIImage+Drawing.m"; sourceTree = "<group>"; };
-		5ED566B0139DC35100031CDF /* TUIImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIImage.h; sourceTree = "<group>"; };
-		5ED566B1139DC35100031CDF /* TUIImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIImage.m; sourceTree = "<group>"; };
-		5ED566B2139DC35100031CDF /* TUIImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIImageView.h; sourceTree = "<group>"; };
-		5ED566B3139DC35100031CDF /* TUIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIImageView.m; sourceTree = "<group>"; };
-		5ED566B4139DC35100031CDF /* TUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIKit.h; sourceTree = "<group>"; };
-		5ED566B5139DC35100031CDF /* TUIKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIKit.m; sourceTree = "<group>"; };
-		5ED566B6139DC35100031CDF /* TUILabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUILabel.h; sourceTree = "<group>"; };
-		5ED566B7139DC35100031CDF /* TUILabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUILabel.m; sourceTree = "<group>"; };
-		5ED566BE139DC35100031CDF /* TUINSView+Hyperfocus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Hyperfocus.h"; sourceTree = "<group>"; };
-		5ED566BF139DC35100031CDF /* TUINSView+Hyperfocus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUINSView+Hyperfocus.m"; sourceTree = "<group>"; };
-		5ED566C0139DC35100031CDF /* TUINSView+NSTextInputClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUINSView+NSTextInputClient.m"; sourceTree = "<group>"; };
-		5ED566C1139DC35100031CDF /* TUINSView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUINSView.h; sourceTree = "<group>"; };
-		5ED566C2139DC35100031CDF /* TUINSView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUINSView.m; sourceTree = "<group>"; };
-		5ED566C3139DC35100031CDF /* TUINSWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUINSWindow.h; sourceTree = "<group>"; };
-		5ED566C4139DC35100031CDF /* TUINSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TUINSWindow.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		5ED566C5139DC35100031CDF /* TUIResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TUIResponder.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		5ED566C6139DC35100031CDF /* TUIResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIResponder.m; sourceTree = "<group>"; };
-		5ED566C7139DC35100031CDF /* TUIScrollKnob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIScrollKnob.h; sourceTree = "<group>"; };
-		5ED566C8139DC35100031CDF /* TUIScrollKnob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIScrollKnob.m; sourceTree = "<group>"; };
-		5ED566C9139DC35100031CDF /* TUIScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIScrollView.h; sourceTree = "<group>"; };
-		5ED566CA139DC35100031CDF /* TUIScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIScrollView.m; sourceTree = "<group>"; };
-		5ED566CB139DC35100031CDF /* TUIStringDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIStringDrawing.h; sourceTree = "<group>"; };
-		5ED566CC139DC35100031CDF /* TUIStringDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIStringDrawing.m; sourceTree = "<group>"; };
-		5ED566CF139DC35100031CDF /* TUITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUITableView+Additions.h"; sourceTree = "<group>"; };
-		5ED566D0139DC35100031CDF /* TUITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITableView+Additions.m"; sourceTree = "<group>"; };
-		5ED566D1139DC35100031CDF /* TUITableView+Derepeater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUITableView+Derepeater.h"; sourceTree = "<group>"; };
-		5ED566D2139DC35100031CDF /* TUITableView+Derepeater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITableView+Derepeater.m"; sourceTree = "<group>"; };
-		5ED566D3139DC35100031CDF /* TUITableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITableView.h; sourceTree = "<group>"; };
-		5ED566D4139DC35100031CDF /* TUITableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITableView.m; sourceTree = "<group>"; };
-		5ED566D5139DC35100031CDF /* TUITableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITableViewCell.h; sourceTree = "<group>"; };
-		5ED566D6139DC35100031CDF /* TUITableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITableViewCell.m; sourceTree = "<group>"; };
-		5ED566DB139DC35100031CDF /* TUITextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITextEditor.h; sourceTree = "<group>"; };
-		5ED566DC139DC35100031CDF /* TUITextEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITextEditor.m; sourceTree = "<group>"; };
-		5ED566DD139DC35100031CDF /* TUITextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITextField.h; sourceTree = "<group>"; };
-		5ED566DE139DC35100031CDF /* TUITextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITextField.m; sourceTree = "<group>"; };
-		5ED566DF139DC35100031CDF /* TUITextRenderer+Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUITextRenderer+Event.h"; sourceTree = "<group>"; };
-		5ED566E0139DC35100031CDF /* TUITextRenderer+Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITextRenderer+Event.m"; sourceTree = "<group>"; };
-		5ED566E1139DC35100031CDF /* TUITextRenderer+KeyBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITextRenderer+KeyBindings.m"; sourceTree = "<group>"; };
-		5ED566E2139DC35100031CDF /* TUITextRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITextRenderer.h; sourceTree = "<group>"; };
-		5ED566E3139DC35100031CDF /* TUITextRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITextRenderer.m; sourceTree = "<group>"; };
-		5ED566E4139DC35100031CDF /* TUITextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITextView.h; sourceTree = "<group>"; };
-		5ED566E5139DC35100031CDF /* TUITextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITextView.m; sourceTree = "<group>"; };
-		5ED566E6139DC35100031CDF /* TUITooltipWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITooltipWindow.h; sourceTree = "<group>"; };
-		5ED566E7139DC35100031CDF /* TUITooltipWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITooltipWindow.m; sourceTree = "<group>"; };
-		5ED566E8139DC35100031CDF /* TUIView+Animation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Animation.m"; sourceTree = "<group>"; };
-		5ED566E9139DC35100031CDF /* TUIView+Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Event.h"; sourceTree = "<group>"; };
-		5ED566EA139DC35100031CDF /* TUIView+Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Event.m"; sourceTree = "<group>"; };
-		5ED566EB139DC35100031CDF /* TUIView+NSTextInputClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+NSTextInputClient.h"; sourceTree = "<group>"; };
-		5ED566EC139DC35100031CDF /* TUIView+NSTextInputClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+NSTextInputClient.m"; sourceTree = "<group>"; };
-		5ED566ED139DC35100031CDF /* TUIView+PasteboardDragging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+PasteboardDragging.h"; sourceTree = "<group>"; };
-		5ED566EE139DC35100031CDF /* TUIView+PasteboardDragging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+PasteboardDragging.m"; sourceTree = "<group>"; };
-		5ED566EF139DC35100031CDF /* TUIView+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Private.h"; sourceTree = "<group>"; };
-		5ED566F0139DC35100031CDF /* TUIView+Private.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Private.m"; sourceTree = "<group>"; };
-		5ED566F1139DC35100031CDF /* TUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIView.h; sourceTree = "<group>"; };
-		5ED566F2139DC35100031CDF /* TUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIView.m; sourceTree = "<group>"; };
-		5ED566F3139DC35100031CDF /* TUIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIViewController.h; sourceTree = "<group>"; };
-		5ED566F4139DC35100031CDF /* TUIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIViewController.m; sourceTree = "<group>"; };
-		5ED566F5139DC35100031CDF /* TUIViewNSViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIViewNSViewContainer.h; sourceTree = "<group>"; };
-		5ED56731139DC35800031CDF /* CoreText+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoreText+Additions.h"; path = "../Support/CoreText+Additions.h"; sourceTree = "<group>"; };
-		5ED56732139DC35800031CDF /* CoreText+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoreText+Additions.m"; path = "../Support/CoreText+Additions.m"; sourceTree = "<group>"; };
-		D3502AAC13EA0FE4007C5CA7 /* TUITableView+Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUITableView+Cell.h"; sourceTree = "<group>"; };
-		D3502AAD13EA0FE4007C5CA7 /* TUITableView+Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITableView+Cell.m"; sourceTree = "<group>"; };
+		D01D9CE0146F54B300147234 /* TwUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TwUI.xcodeproj; path = ../TwUI.xcodeproj; sourceTree = "<group>"; };
 		D3CE671113C6646B00D47B2D /* ExampleSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleSectionHeaderView.h; sourceTree = "<group>"; };
 		D3CE671213C6646B00D47B2D /* ExampleSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleSectionHeaderView.m; sourceTree = "<group>"; };
 		D3EC0C461432325A003C162C /* ExampleScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleScrollView.h; sourceTree = "<group>"; };
 		D3EC0C471432325A003C162C /* ExampleScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleScrollView.m; sourceTree = "<group>"; };
 		D3EC0C481432325A003C162C /* large-image.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "large-image.jpeg"; sourceTree = "<group>"; };
-		D3FA4CA713F85B7100860379 /* TUITableViewSectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUITableViewSectionHeader.h; sourceTree = "<group>"; };
-		D3FA4CA813F85B7100860379 /* TUITableViewSectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUITableViewSectionHeader.m; sourceTree = "<group>"; };
-		D3FA4CAE13F85BC100860379 /* TUIAccessibilityElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIAccessibilityElement.h; sourceTree = "<group>"; };
-		D3FA4CAF13F85BC100860379 /* TUIAccessibilityElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIAccessibilityElement.m; sourceTree = "<group>"; };
-		D3FA4CB013F85BC100860379 /* TUIButton+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIButton+Accessibility.h"; sourceTree = "<group>"; };
-		D3FA4CB113F85BC100860379 /* TUIButton+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIButton+Accessibility.m"; sourceTree = "<group>"; };
-		D3FA4CB213F85BC100860379 /* TUIControl+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIControl+Accessibility.h"; sourceTree = "<group>"; };
-		D3FA4CB313F85BC100860379 /* TUIControl+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIControl+Accessibility.m"; sourceTree = "<group>"; };
-		D3FA4CB413F85BC100860379 /* TUIControl+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIControl+Private.h"; sourceTree = "<group>"; };
-		D3FA4CB513F85BC100860379 /* TUIControl+Private.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIControl+Private.m"; sourceTree = "<group>"; };
-		D3FA4CB613F85BC100860379 /* TUINSView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Accessibility.h"; sourceTree = "<group>"; };
-		D3FA4CB713F85BC100860379 /* TUINSView+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUINSView+Accessibility.m"; sourceTree = "<group>"; };
-		D3FA4CB813F85BC100860379 /* TUIView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Accessibility.h"; sourceTree = "<group>"; };
-		D3FA4CB913F85BC100860379 /* TUIView+Accessibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Accessibility.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D01D9CF4146F54BC00147234 /* TwUI.framework in Frameworks */,
 				5C782FD713A556A900CF69EF /* QuartzCore.framework in Frameworks */,
 				5C782FD013A54FFF00CF69EF /* ApplicationServices.framework in Frameworks */,
 				5ED56678139DC30300031CDF /* Cocoa.framework in Frameworks */,
@@ -228,19 +109,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5C90DB9A13A6D52000ECDD14 /* Extras */ = {
-			isa = PBXGroup;
-			children = (
-				5C78300313A5776D00CF69EF /* TUICGAdditions.h */,
-				5C78300413A5778500CF69EF /* TUICGAdditions.m */,
-				5ED56731139DC35800031CDF /* CoreText+Additions.h */,
-				5ED56732139DC35800031CDF /* CoreText+Additions.m */,
-				5C782FA313A541EB00CF69EF /* ABActiveRange.h */,
-				5C782FA413A541EC00CF69EF /* ABActiveRange.m */,
-			);
-			name = Extras;
-			sourceTree = "<group>";
-		};
 		5ED56668139DC30300031CDF = {
 			isa = PBXGroup;
 			children = (
@@ -261,6 +129,7 @@
 		5ED56676139DC30300031CDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D01D9CE0146F54B300147234 /* TwUI.xcodeproj */,
 				5C782FD613A556A800CF69EF /* QuartzCore.framework */,
 				5C782FCF13A54FFD00CF69EF /* ApplicationServices.framework */,
 				5ED56677139DC30300031CDF /* Cocoa.framework */,
@@ -282,7 +151,6 @@
 		5ED5667D139DC30300031CDF /* ConcordeExample */ = {
 			isa = PBXGroup;
 			children = (
-				5ED56695139DC35100031CDF /* TUIKit */,
 				5ED56689139DC30300031CDF /* ExampleAppDelegate.h */,
 				5ED5668A139DC30300031CDF /* ExampleAppDelegate.m */,
 				5C55D83213A667A0000ED768 /* ExampleView.h */,
@@ -315,112 +183,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		5ED56695139DC35100031CDF /* TUIKit */ = {
+		D01D9CE1146F54B300147234 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5ED566B4139DC35100031CDF /* TUIKit.h */,
-				5ED566B5139DC35100031CDF /* TUIKit.m */,
-				5ED566F1139DC35100031CDF /* TUIView.h */,
-				5ED566F2139DC35100031CDF /* TUIView.m */,
-				5ED566E8139DC35100031CDF /* TUIView+Animation.m */,
-				5ED566E9139DC35100031CDF /* TUIView+Event.h */,
-				5ED566EA139DC35100031CDF /* TUIView+Event.m */,
-				5ED566EB139DC35100031CDF /* TUIView+NSTextInputClient.h */,
-				5ED566EC139DC35100031CDF /* TUIView+NSTextInputClient.m */,
-				5ED566ED139DC35100031CDF /* TUIView+PasteboardDragging.h */,
-				5ED566EE139DC35100031CDF /* TUIView+PasteboardDragging.m */,
-				5ED566EF139DC35100031CDF /* TUIView+Private.h */,
-				5ED566F0139DC35100031CDF /* TUIView+Private.m */,
-				5ED566F3139DC35100031CDF /* TUIViewController.h */,
-				5ED566F4139DC35100031CDF /* TUIViewController.m */,
-				5ED566C1139DC35100031CDF /* TUINSView.h */,
-				5ED566C2139DC35100031CDF /* TUINSView.m */,
-				5ED566C3139DC35100031CDF /* TUINSWindow.h */,
-				5ED566C4139DC35100031CDF /* TUINSWindow.m */,
-				5ED566B0139DC35100031CDF /* TUIImage.h */,
-				5ED566B1139DC35100031CDF /* TUIImage.m */,
-				5ED566AA139DC35100031CDF /* TUIFont.h */,
-				5ED566AB139DC35100031CDF /* TUIFont.m */,
-				5ED566A3139DC35100031CDF /* TUIColor.h */,
-				5ED566A4139DC35100031CDF /* TUIColor.m */,
-				5ED566C9139DC35100031CDF /* TUIScrollView.h */,
-				5ED566CA139DC35100031CDF /* TUIScrollView.m */,
-				5ED566C7139DC35100031CDF /* TUIScrollKnob.h */,
-				5ED566C8139DC35100031CDF /* TUIScrollKnob.m */,
-				5ED5669A139DC35100031CDF /* TUIAttributedString.h */,
-				5ED5669B139DC35100031CDF /* TUIAttributedString.m */,
-				5ED566A6139DC35100031CDF /* TUIControl.h */,
-				5ED566A7139DC35100031CDF /* TUIControl.m */,
-				5ED566DB139DC35100031CDF /* TUITextEditor.h */,
-				5ED566DC139DC35100031CDF /* TUITextEditor.m */,
-				5ED566DD139DC35100031CDF /* TUITextField.h */,
-				5ED566DE139DC35100031CDF /* TUITextField.m */,
-				5ED566BE139DC35100031CDF /* TUINSView+Hyperfocus.h */,
-				5ED566BF139DC35100031CDF /* TUINSView+Hyperfocus.m */,
-				5ED566C0139DC35100031CDF /* TUINSView+NSTextInputClient.m */,
-				5ED566C5139DC35100031CDF /* TUIResponder.h */,
-				5ED566C6139DC35100031CDF /* TUIResponder.m */,
-				5ED566CB139DC35100031CDF /* TUIStringDrawing.h */,
-				5ED566CC139DC35100031CDF /* TUIStringDrawing.m */,
-				5ED566D3139DC35100031CDF /* TUITableView.h */,
-				5ED566D4139DC35100031CDF /* TUITableView.m */,
-				5ED566CF139DC35100031CDF /* TUITableView+Additions.h */,
-				5ED566D0139DC35100031CDF /* TUITableView+Additions.m */,
-				5ED566D1139DC35100031CDF /* TUITableView+Derepeater.h */,
-				5ED566D2139DC35100031CDF /* TUITableView+Derepeater.m */,
-				D3502AAC13EA0FE4007C5CA7 /* TUITableView+Cell.h */,
-				D3502AAD13EA0FE4007C5CA7 /* TUITableView+Cell.m */,
-				5ED566D5139DC35100031CDF /* TUITableViewCell.h */,
-				5ED566D6139DC35100031CDF /* TUITableViewCell.m */,
-				D3FA4CA713F85B7100860379 /* TUITableViewSectionHeader.h */,
-				D3FA4CA813F85B7100860379 /* TUITableViewSectionHeader.m */,
-				5ED56698139DC35100031CDF /* TUIActivityIndicatorView.h */,
-				5ED56699139DC35100031CDF /* TUIActivityIndicatorView.m */,
-				5ED56696139DC35100031CDF /* TUIAccessibility.h */,
-				5ED56697139DC35100031CDF /* TUIAccessibility.m */,
-				5ED566A5139DC35100031CDF /* TUIControl+TargetAction.m */,
-				5ED566AC139DC35100031CDF /* TUIGeometry.h */,
-				5ED566AD139DC35100031CDF /* TUIGeometry.m */,
-				5ED566AE139DC35100031CDF /* TUIImage+Drawing.h */,
-				5ED566AF139DC35100031CDF /* TUIImage+Drawing.m */,
-				5ED566A8139DC35100031CDF /* TUIFastIndexPath.h */,
-				5ED566A9139DC35100031CDF /* TUIFastIndexPath.m */,
-				5ED566B2139DC35100031CDF /* TUIImageView.h */,
-				5ED566B3139DC35100031CDF /* TUIImageView.m */,
-				5ED566E4139DC35100031CDF /* TUITextView.h */,
-				5ED566E5139DC35100031CDF /* TUITextView.m */,
-				5ED566E2139DC35100031CDF /* TUITextRenderer.h */,
-				5ED566E3139DC35100031CDF /* TUITextRenderer.m */,
-				5ED06F2A13F4C98800B34CAE /* TUITextViewEditor.h */,
-				5ED06F2B13F4C98800B34CAE /* TUITextViewEditor.m */,
-				5ED566DF139DC35100031CDF /* TUITextRenderer+Event.h */,
-				5ED566E0139DC35100031CDF /* TUITextRenderer+Event.m */,
-				5ED566E1139DC35100031CDF /* TUITextRenderer+KeyBindings.m */,
-				5ED566E6139DC35100031CDF /* TUITooltipWindow.h */,
-				5ED566E7139DC35100031CDF /* TUITooltipWindow.m */,
-				5ED566B6139DC35100031CDF /* TUILabel.h */,
-				5ED566B7139DC35100031CDF /* TUILabel.m */,
-				5ED566A1139DC35100031CDF /* TUIButton.h */,
-				5ED566A2139DC35100031CDF /* TUIButton.m */,
-				5ED566A0139DC35100031CDF /* TUIButton+Content.m */,
-				5ED566F5139DC35100031CDF /* TUIViewNSViewContainer.h */,
-				5C55D83013A663E2000ED768 /* TUIViewNSViewContainer.m */,
-				D3FA4CAE13F85BC100860379 /* TUIAccessibilityElement.h */,
-				D3FA4CAF13F85BC100860379 /* TUIAccessibilityElement.m */,
-				D3FA4CB013F85BC100860379 /* TUIButton+Accessibility.h */,
-				D3FA4CB113F85BC100860379 /* TUIButton+Accessibility.m */,
-				D3FA4CB213F85BC100860379 /* TUIControl+Accessibility.h */,
-				D3FA4CB313F85BC100860379 /* TUIControl+Accessibility.m */,
-				D3FA4CB413F85BC100860379 /* TUIControl+Private.h */,
-				D3FA4CB513F85BC100860379 /* TUIControl+Private.m */,
-				D3FA4CB613F85BC100860379 /* TUINSView+Accessibility.h */,
-				D3FA4CB713F85BC100860379 /* TUINSView+Accessibility.m */,
-				D3FA4CB813F85BC100860379 /* TUIView+Accessibility.h */,
-				D3FA4CB913F85BC100860379 /* TUIView+Accessibility.m */,
-				5C90DB9A13A6D52000ECDD14 /* Extras */,
+				D01D9CEB146F54B300147234 /* TwUI.framework */,
+				D01D9CED146F54B300147234 /* libtwui.dylib */,
+				D01D9CEF146F54B300147234 /* libtwui.a */,
+				D01D9CF1146F54B300147234 /* Tests.octest */,
 			);
-			name = TUIKit;
-			path = ../../lib/UIKit;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -437,6 +208,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D01D9CF3146F54BA00147234 /* PBXTargetDependency */,
 			);
 			name = Example;
 			productName = ConcordeExample;
@@ -461,12 +233,49 @@
 			mainGroup = 5ED56668139DC30300031CDF;
 			productRefGroup = 5ED56674139DC30300031CDF /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = D01D9CE1146F54B300147234 /* Products */;
+					ProjectRef = D01D9CE0146F54B300147234 /* TwUI.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				5ED56672139DC30300031CDF /* Example */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		D01D9CEB146F54B300147234 /* TwUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = TwUI.framework;
+			remoteRef = D01D9CEA146F54B300147234 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D01D9CED146F54B300147234 /* libtwui.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libtwui.dylib;
+			remoteRef = D01D9CEC146F54B300147234 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D01D9CEF146F54B300147234 /* libtwui.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libtwui.a;
+			remoteRef = D01D9CEE146F54B300147234 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D01D9CF1146F54B300147234 /* Tests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.octest;
+			remoteRef = D01D9CF0146F54B300147234 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5ED56671139DC30300031CDF /* Resources */ = {
@@ -490,70 +299,23 @@
 			files = (
 				5ED56685139DC30300031CDF /* main.m in Sources */,
 				5ED5668B139DC30300031CDF /* ExampleAppDelegate.m in Sources */,
-				5ED566F7139DC35100031CDF /* TUIAccessibility.m in Sources */,
-				5ED566F8139DC35100031CDF /* TUIActivityIndicatorView.m in Sources */,
-				5ED566F9139DC35100031CDF /* TUIAttributedString.m in Sources */,
-				5ED566FC139DC35100031CDF /* TUIButton+Content.m in Sources */,
-				5ED566FD139DC35100031CDF /* TUIButton.m in Sources */,
-				5ED566FE139DC35100031CDF /* TUIColor.m in Sources */,
-				5ED566FF139DC35100031CDF /* TUIControl+TargetAction.m in Sources */,
-				5ED56700139DC35100031CDF /* TUIControl.m in Sources */,
-				5ED56701139DC35100031CDF /* TUIFastIndexPath.m in Sources */,
-				5ED56702139DC35100031CDF /* TUIFont.m in Sources */,
-				5ED56703139DC35100031CDF /* TUIGeometry.m in Sources */,
-				5ED56704139DC35100031CDF /* TUIImage+Drawing.m in Sources */,
-				5ED56705139DC35100031CDF /* TUIImage.m in Sources */,
-				5ED56706139DC35100031CDF /* TUIImageView.m in Sources */,
-				5ED56707139DC35100031CDF /* TUIKit.m in Sources */,
-				5ED56708139DC35100031CDF /* TUILabel.m in Sources */,
-				5ED5670C139DC35100031CDF /* TUINSView+Hyperfocus.m in Sources */,
-				5ED5670D139DC35100031CDF /* TUINSView+NSTextInputClient.m in Sources */,
-				5ED5670E139DC35100031CDF /* TUINSView.m in Sources */,
-				5ED5670F139DC35100031CDF /* TUINSWindow.m in Sources */,
-				5ED56710139DC35100031CDF /* TUIResponder.m in Sources */,
-				5ED56711139DC35100031CDF /* TUIScrollKnob.m in Sources */,
-				5ED56712139DC35100031CDF /* TUIScrollView.m in Sources */,
-				5ED56713139DC35100031CDF /* TUIStringDrawing.m in Sources */,
-				5ED56715139DC35100031CDF /* TUITableView+Additions.m in Sources */,
-				5ED56716139DC35100031CDF /* TUITableView+Derepeater.m in Sources */,
-				5ED56717139DC35100031CDF /* TUITableView.m in Sources */,
-				5ED56718139DC35100031CDF /* TUITableViewCell.m in Sources */,
-				5ED5671B139DC35100031CDF /* TUITextEditor.m in Sources */,
-				5ED5671C139DC35100031CDF /* TUITextField.m in Sources */,
-				5ED5671D139DC35100031CDF /* TUITextRenderer+Event.m in Sources */,
-				5ED5671E139DC35100031CDF /* TUITextRenderer+KeyBindings.m in Sources */,
-				5ED5671F139DC35100031CDF /* TUITextRenderer.m in Sources */,
-				5ED56720139DC35100031CDF /* TUITextView.m in Sources */,
-				5ED56721139DC35100031CDF /* TUITooltipWindow.m in Sources */,
-				5ED56722139DC35100031CDF /* TUIView+Animation.m in Sources */,
-				5ED56723139DC35100031CDF /* TUIView+Event.m in Sources */,
-				5ED56724139DC35100031CDF /* TUIView+NSTextInputClient.m in Sources */,
-				5ED56725139DC35100031CDF /* TUIView+PasteboardDragging.m in Sources */,
-				5ED56726139DC35100031CDF /* TUIView+Private.m in Sources */,
-				5ED56727139DC35100031CDF /* TUIView.m in Sources */,
-				5ED56728139DC35100031CDF /* TUIViewController.m in Sources */,
-				5ED56736139DC35800031CDF /* CoreText+Additions.m in Sources */,
-				5C782FA513A541EC00CF69EF /* ABActiveRange.m in Sources */,
-				5C78300513A577B100CF69EF /* TUICGAdditions.m in Sources */,
-				5C55D83113A663E2000ED768 /* TUIViewNSViewContainer.m in Sources */,
 				5C55D83413A667A0000ED768 /* ExampleView.m in Sources */,
 				5C55D83713A66BD5000ED768 /* ExampleTableViewCell.m in Sources */,
 				5C90DB9D13A7C08E00ECDD14 /* ExampleTabBar.m in Sources */,
 				D3CE671313C6646B00D47B2D /* ExampleSectionHeaderView.m in Sources */,
-				D3502AAE13EA0FE4007C5CA7 /* TUITableView+Cell.m in Sources */,
-				5ED06F2C13F4C98800B34CAE /* TUITextViewEditor.m in Sources */,
-				D3FA4CA913F85B7100860379 /* TUITableViewSectionHeader.m in Sources */,
-				D3FA4CBA13F85BC100860379 /* TUIAccessibilityElement.m in Sources */,
-				D3FA4CBB13F85BC100860379 /* TUIButton+Accessibility.m in Sources */,
-				D3FA4CBC13F85BC100860379 /* TUIControl+Accessibility.m in Sources */,
-				D3FA4CBD13F85BC100860379 /* TUIControl+Private.m in Sources */,
-				D3FA4CBE13F85BC100860379 /* TUINSView+Accessibility.m in Sources */,
-				D3FA4CBF13F85BC100860379 /* TUIView+Accessibility.m in Sources */,
 				D3EC0C491432325A003C162C /* ExampleScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D01D9CF3146F54BA00147234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = TwUI;
+			targetProxy = D01D9CF2146F54BA00147234 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		5ED56680139DC30300031CDF /* InfoPlist.strings */ = {
@@ -587,6 +349,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
@@ -597,6 +360,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -605,6 +369,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -612,6 +377,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -625,6 +391,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ConcordeExample/Example-Prefix.pch";
+				HEADER_SEARCH_PATHS = "../lib/**";
 				INFOPLIST_FILE = "ConcordeExample/Example-Info.plist";
 				PRODUCT_NAME = Example;
 				WRAPPER_EXTENSION = app;
@@ -640,6 +407,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ConcordeExample/Example-Prefix.pch";
+				HEADER_SEARCH_PATHS = "../lib/**";
 				INFOPLIST_FILE = "ConcordeExample/Example-Info.plist";
 				PRODUCT_NAME = Example;
 				WRAPPER_EXTENSION = app;

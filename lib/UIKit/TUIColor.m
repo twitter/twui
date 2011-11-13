@@ -21,7 +21,7 @@
 
 + (TUIColor *)colorWithPatternImage:(TUIImage *)image
 {
-	return [[[self alloc] initWithPatternImage:image] autorelease];
+	return [[self alloc] initWithPatternImage:image];
 }
 
 + (TUIColor *)colorWithNSColor:(NSColor *)nsColor
@@ -34,17 +34,17 @@
 
 + (TUIColor *)colorWithWhite:(CGFloat)white alpha:(CGFloat)alpha
 {
-	return [[[self alloc] initWithWhite:white alpha:alpha] autorelease];
+	return [[self alloc] initWithWhite:white alpha:alpha];
 }
 
 + (TUIColor *)colorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
 {
-	return [[[self alloc] initWithRed:red green:green blue:blue alpha:alpha] autorelease];
+	return [[self alloc] initWithRed:red green:green blue:blue alpha:alpha];
 }
 
 + (TUIColor *)colorWithCGColor:(CGColorRef)cgColor
 {
-	return [[[self alloc] initWithCGColor:cgColor] autorelease];
+	return [[self alloc] initWithCGColor:cgColor];
 }
 
 - (TUIColor *)initWithWhite:(CGFloat)white alpha:(CGFloat)alpha
@@ -75,7 +75,7 @@
 
 static void patternDraw(void *info, CGContextRef ctx)
 {
-	TUIImage *image = (TUIImage *)info;
+	TUIImage *image = (__bridge TUIImage *)info;
 	CGRect rect;
 	rect.origin = CGPointZero;
 	rect.size = image.size;
@@ -84,8 +84,8 @@ static void patternDraw(void *info, CGContextRef ctx)
 
 static void patternRelease(void *info)
 {
-	TUIImage *image = (TUIImage *)info;
-	[image release];
+	// transfer the object back to ARC, thus releasing it
+	(void)(__bridge_transfer TUIImage *)info;
 }
 
 - (TUIColor *)initWithPatternImage:(TUIImage *)image
@@ -101,10 +101,8 @@ static void patternRelease(void *info)
 		callbacks.drawPattern = patternDraw;
 		callbacks.releaseInfo = patternRelease;
 		
-		[image retain]; // released in patternRelease
-		
 		CGColorSpaceRef colorSpace = CGColorSpaceCreatePattern(NULL);
-		CGPatternRef pattern = CGPatternCreate(image, bounds, CGAffineTransformIdentity, bounds.size.width, bounds.size.height, kCGPatternTilingConstantSpacing, YES, &callbacks);
+		CGPatternRef pattern = CGPatternCreate((__bridge_retained void *)image, bounds, CGAffineTransformIdentity, bounds.size.width, bounds.size.height, kCGPatternTilingConstantSpacing, YES, &callbacks);
 		CGFloat components[] = {1.0, 1.0, 1.0, 1.0};
 		_cgColor = CGColorCreateWithPattern(colorSpace, pattern, components);
 		CGPatternRelease(pattern);
@@ -116,8 +114,6 @@ static void patternRelease(void *info)
 - (void)dealloc
 {
 	CGColorRelease(_cgColor);
-	[_nsColor release];
-	[super dealloc];
 }
 
 - (CGColorRef)CGColor
@@ -151,9 +147,9 @@ static void patternRelease(void *info)
 
 #define CACHED_COLOR(NAME, IMPLEMENTATION) \
 + (TUIColor *)NAME { \
-	static TUIColor *c = nil; \
+	static __strong TUIColor *c = nil; \
 	if(!c) \
-		c = [IMPLEMENTATION retain]; \
+		c = (IMPLEMENTATION); \
 	return c; \
 }
 
@@ -187,10 +183,10 @@ CACHED_COLOR(graphiteColor,		[self colorWithRed:0.45 green:0.49 blue:0.58 alpha:
 		const CGFloat *components = CGColorGetComponents(_cgColor);
 		if(n == 4) {
 			// assume RGBA -- fixme
-			_nsColor = [[NSColor colorWithCalibratedRed:components[0] green:components[1] blue:components[2] alpha:components[3]] retain];
+			_nsColor = [NSColor colorWithCalibratedRed:components[0] green:components[1] blue:components[2] alpha:components[3]];
 		} else if(n == 2) {
 			// assume LA -- fixme
-			_nsColor = [[NSColor colorWithCalibratedWhite:components[0] alpha:components[1]] retain];
+			_nsColor = [NSColor colorWithCalibratedWhite:components[0] alpha:components[1]];
 		}
 	}
 	return _nsColor;

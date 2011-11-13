@@ -30,8 +30,8 @@
 + (TUIFont *)systemFontOfSize:(CGFloat)fontSize;
 + (TUIFont *)boldSystemFontOfSize:(CGFloat)fontSize;
 
-@property(nonatomic,readonly,retain) NSString *familyName;
-@property(nonatomic,readonly,retain) NSString *fontName;
+@property(nonatomic,readonly,strong) NSString *familyName;
+@property(nonatomic,readonly,strong) NSString *fontName;
 @property(nonatomic,readonly)        CGFloat   pointSize;
 @property(nonatomic,readonly)        CGFloat   ascender;
 @property(nonatomic,readonly)        CGFloat   descender;
@@ -40,7 +40,5 @@
 @property(nonatomic,readonly)        CGFloat   xHeight;
 
 @property (nonatomic, readonly) CTFontRef ctFont;
-
-+ (void)loadBundledFonts __attribute__((deprecated)); // don't use this
 
 @end

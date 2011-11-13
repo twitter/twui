@@ -29,13 +29,13 @@
 
 @interface ExampleTabBar : TUIView
 {
-	id<ExampleTabBarDelegate> delegate;
+	id<ExampleTabBarDelegate> __unsafe_unretained delegate;
 	NSArray *tabViews;
 }
 
 - (id)initWithNumberOfTabs:(NSInteger)nTabs;
 
-@property (nonatomic, assign) id<ExampleTabBarDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<ExampleTabBarDelegate> delegate;
 @property (nonatomic, readonly) NSArray *tabViews;
 
 @end

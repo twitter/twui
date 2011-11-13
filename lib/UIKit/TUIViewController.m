@@ -23,11 +23,6 @@
 	return [self init];
 }
 
-- (void)dealloc
-{
-	[_view release];
-	[super dealloc];
-}
 
 - (id)copyWithZone:(NSZone *)zone
 {
@@ -48,8 +43,6 @@
 
 - (void)setView:(TUIView *)v
 {
-	[v retain];
-	[_view release];
 	_view = v;
 	
 	if(!_view) {
@@ -114,7 +107,6 @@
 	TUIView *v = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
 	v.backgroundColor = [TUIColor colorWithWhite:0.96 alpha:1.0];
 	self.view = v;
-	[v release];
 	
 	return v;
 }

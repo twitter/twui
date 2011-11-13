@@ -16,6 +16,7 @@
 
 #import "TUIButton.h"
 #import "TUIControl+Private.h"
+#import "TUIImage.h"
 
 @interface TUIButtonContent : NSObject
 {
@@ -26,11 +27,11 @@
 	TUIImage *backgroundImage;
 }
 
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) TUIColor *titleColor;
-@property (nonatomic, retain) TUIColor *shadowColor;
-@property (nonatomic, retain) TUIImage *image;
-@property (nonatomic, retain) TUIImage *backgroundImage;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) TUIColor *titleColor;
+@property (nonatomic, strong) TUIColor *shadowColor;
+@property (nonatomic, strong) TUIImage *image;
+@property (nonatomic, strong) TUIImage *backgroundImage;
 
 @end
 
@@ -42,15 +43,6 @@
 @synthesize image;
 @synthesize backgroundImage;
 
-- (void)dealloc
-{
-	[title release];
-	[titleColor release];
-	[shadowColor release];
-	[image release];
-	[backgroundImage release];
-	[super dealloc];
-}
 
 @end
 
@@ -64,7 +56,6 @@
 	if(!c) {
 		c = [[TUIButtonContent alloc] init];
 		[_contentLookup setObject:c forKey:key];
-		[c release];
 	}
 	return c;
 }

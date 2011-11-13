@@ -21,7 +21,7 @@
 	void *context;
 	NSString *animationID;
 
-	id delegate;
+	id __unsafe_unretained delegate;
 	SEL animationWillStartSelector;
 	SEL animationDidStopSelector;
 	void (^animationCompletionBlock)(BOOL finished);
@@ -32,12 +32,12 @@
 @property (nonatomic, assign) void *context;
 @property (nonatomic, copy) NSString *animationID;
 
-@property (nonatomic, assign) id delegate;
+@property (nonatomic, unsafe_unretained) id delegate;
 @property (nonatomic, assign) SEL animationWillStartSelector;
 @property (nonatomic, assign) SEL animationDidStopSelector;
 @property (nonatomic, copy) void (^animationCompletionBlock)(BOOL finished);
 
-@property (nonatomic, readonly) CABasicAnimation *basicAnimation;
+@property (nonatomic, strong, readonly) CABasicAnimation *basicAnimation;
 
 @end
 
@@ -59,7 +59,7 @@
 {
 	if((self = [super init]))
 	{
-		basicAnimation = [[CABasicAnimation animation] retain];
+		basicAnimation = [CABasicAnimation animation];
 //		NSLog(@"+anims %d", ++animcount);
 	}
 	return self;
@@ -68,19 +68,17 @@
 - (void)dealloc
 {
 //	NSLog(@"-anims %d", --animcount);
-	[animationID release];
-	[basicAnimation release];
 	if(animationCompletionBlock != nil) {
 		animationCompletionBlock(NO);
 		NSLog(@"Error: completion block didn't complete! %@", self);
+		
+		NSAssert(animationCompletionBlock == nil, @"animationCompletionBlock should be nil after executing from dealloc");
 	}
-	[animationCompletionBlock release]; // should be nil at this point
-	[super dealloc];
 }
 
 - (void)runActionForKey:(NSString *)event object:(id)anObject arguments:(NSDictionary *)dict
 {
-	CAAnimation *animation = [[basicAnimation copyWithZone:nil] autorelease];
+	CAAnimation *animation = [basicAnimation copyWithZone:nil];
 	animation.delegate = self;
 	[animation runActionForKey:event object:anObject arguments:dict];
 }
@@ -149,7 +147,6 @@ static NSMutableArray *AnimationStack = nil;
 	animation.context = context;
 	animation.animationID = animationID;
 	[[self _animationStack] addObject:animation];
-	[animation release];
 	
 	// setup defaults
 	[self setAnimationDuration:0.25];

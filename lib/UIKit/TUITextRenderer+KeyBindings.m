@@ -16,6 +16,7 @@
 
 #import "TUITextRenderer.h"
 #import "TUITextEditor.h"
+#import "TUIView.h"
 
 @interface NSString (ABTokenizerAdditions)
 @end

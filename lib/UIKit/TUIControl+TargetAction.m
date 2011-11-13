@@ -18,13 +18,13 @@
 
 @interface TUIControlTargetAction : NSObject
 {
-	id target; // nil goes up the responder chain
+	id __unsafe_unretained target; // nil goes up the responder chain
 	SEL action;
 	void (^block)(void);
 	TUIControlEvents controlEvents;
 }
 
-@property (nonatomic, assign) id target;
+@property (nonatomic, unsafe_unretained) id target;
 @property (nonatomic, assign) SEL action;
 @property (nonatomic, copy) void(^block)(void);
 @property (nonatomic, assign) TUIControlEvents controlEvents;
@@ -38,11 +38,6 @@
 @synthesize block;
 @synthesize controlEvents;
 
-- (void)dealloc
-{
-	[block release];
-	[super dealloc];
-}
 
 @end
 
@@ -67,7 +62,6 @@
 		t.action = action;
 		t.controlEvents = controlEvents;
 		[[self _targetActions] addObject:t];
-		[t release];
 	}
 }
 
@@ -78,7 +72,6 @@
 		t.block = block;
 		t.controlEvents = controlEvents;
 		[[self _targetActions] addObject:t];
-		[t release];
 	}
 }
 

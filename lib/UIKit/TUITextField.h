@@ -30,7 +30,7 @@
 	} _textFieldFlags;
 }
 
-@property (nonatomic, retain) TUIButton *rightButton;
+@property (nonatomic, strong) TUIButton *rightButton;
 
 - (TUIButton *)clearButton;
 

@@ -43,8 +43,8 @@ typedef enum {
 - (void)prepareForReuse;                                                        // if the cell is reusable (has a reuse identifier), this is called just before the cell is returned from the table view method dequeueReusableCellWithIdentifier:.  If you override, you MUST call super.
 - (void)prepareForDisplay; // after frame is set, before it is brought onscreen
 
-@property (nonatomic, readonly) TUITableView *tableView;
-@property (nonatomic, readonly) TUIFastIndexPath *indexPath;
+@property (weak, nonatomic, readonly) TUITableView *tableView;
+@property (strong, nonatomic, readonly) TUIFastIndexPath *indexPath;
 
 @property (nonatomic, readonly, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic, assign, getter=isSelected) BOOL selected;

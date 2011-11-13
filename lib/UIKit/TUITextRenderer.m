@@ -49,17 +49,13 @@
 
 - (void)dealloc
 {
-	[attributedString release];
 	[self _resetFramesetter];
-	[hitRange release];
-	[shadowColor release];
-	[super dealloc];
 }
 
 - (void)_buildFramesetter
 {
 	if(!_ct_framesetter) {
-		_ct_framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attributedString);
+		_ct_framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)attributedString);
 		_ct_path = CGPathCreateMutable();
 		CGPathAddRect((CGMutablePathRef)_ct_path, NULL, frame);
 		_ct_frame = CTFramesetterCreateFrame(_ct_framesetter, CFRangeMake(0, 0), _ct_path, NULL);
@@ -200,7 +196,7 @@
 			[self.attributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
 				if(value == NULL) return;
 				
-				CGColorRef color = (CGColorRef) value;
+				CGColorRef color = (__bridge CGColorRef) value;
 				CGContextSetFillColorWithColor(context, color);
 				
 				CFIndex rectCount = 100;
@@ -292,8 +288,6 @@
 
 - (void)setAttributedString:(NSAttributedString *)a
 {
-	[a retain];
-	[attributedString release];
 	attributedString = a;
 	
 	[self _resetFramesetter];
@@ -332,7 +326,7 @@
 		[wrappedRects addObject:[NSValue valueWithRect:rects[i]]];
 	}
 	
-	return [[wrappedRects copy] autorelease];
+	return [wrappedRects copy];
 }
 
 - (BOOL)backgroundDrawingEnabled

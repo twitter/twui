@@ -25,7 +25,7 @@
 - (BOOL)resignFirstResponder;
  */
 
-@property (nonatomic, readonly) TUIResponder *initialFirstResponder;
+@property (strong, nonatomic, readonly) TUIResponder *initialFirstResponder;
 
 - (NSMenu *)menuForEvent:(NSEvent *)event;
 - (BOOL)acceptsFirstMouse:(NSEvent *)event;

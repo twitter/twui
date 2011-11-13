@@ -66,7 +66,7 @@
 			[TUIGraphicsGetImageForView(dragView) drawAtPoint:CGPointZero blendMode:kCGBlendModeNormal alpha:0.75];
 		});
 		
-		NSImage *dragNSImage = [[[NSImage alloc] initWithCGImage:dragImage.CGImage size:NSZeroSize] autorelease];
+		NSImage *dragNSImage = [[NSImage alloc] initWithCGImage:dragImage.CGImage size:NSZeroSize];
 		
 		NSPasteboard *pasteboard = [NSPasteboard pasteboardWithName:NSDragPboard];
 		[pasteboard clearContents];

@@ -23,8 +23,8 @@
 - (void)_checkSpelling;
 - (void)_replaceMisspelledWord:(NSMenuItem *)menuItem;
 
-@property (nonatomic, retain) NSArray *lastCheckResults;
-@property (nonatomic, retain) NSTextCheckingResult *selectedTextCheckingResult;
+@property (nonatomic, strong) NSArray *lastCheckResults;
+@property (nonatomic, strong) NSTextCheckingResult *selectedTextCheckingResult;
 @end
 
 @implementation TUITextView
@@ -73,7 +73,6 @@
 		cursor.userInteractionEnabled = NO;
 		cursor.backgroundColor = [TUIColor linkColor];
 		[self addSubview:cursor];
-		[cursor release];
 		
 		self.font = [TUIFont fontWithName:@"HelveticaNeue" size:12];
 		self.textColor = [TUIColor blackColor];
@@ -82,17 +81,6 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[renderer release];
-	[drawFrame release];
-	[font release];
-	[textColor release];
-	[placeholder release];
-	[lastCheckResults release];
-	[selectedTextCheckingResult release];
-	[super dealloc];
-}
 
 - (id)forwardingTargetForSelector:(SEL)sel
 {
@@ -127,16 +115,12 @@
 
 - (void)setFont:(TUIFont *)f
 {
-	[f retain];
-	[font release];
 	font = f;
 	[self _updateDefaultAttributes];
 }
 
 - (void)setTextColor:(TUIColor *)c
 {
-	[c retain];
-	[textColor release];
 	textColor = c;
 	[self _updateDefaultAttributes];
 }	
@@ -334,15 +318,13 @@ static CAAnimation *ThrobAnimation()
 			[menuItem setTarget:self];
 			[menuItem setRepresentedObject:guess];
 			[menu addItem:menuItem];
-			[menuItem release];
 		}
 	} else {
 		NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:@"No guesses" action:NULL keyEquivalent:@""];
 		[menu addItem:menuItem];
-		[menuItem release];
 	}
 	
-	return [menu autorelease];
+	return menu;
 }
 
 - (void)_replaceMisspelledWord:(NSMenuItem *)menuItem
@@ -444,14 +426,14 @@ static void TUITextViewDrawRoundedFrame(TUIView *view, CGFloat radius, BOOL over
 
 TUIViewDrawRect TUITextViewSearchFrame(void)
 {
-	return [[^(TUIView *view, CGRect rect) {
+	return [^(TUIView *view, CGRect rect) {
 		TUITextViewDrawRoundedFrame(view, 	floor(view.bounds.size.height / 2), NO);
-	} copy] autorelease];
+	} copy];
 }
 
 TUIViewDrawRect TUITextViewSearchFrameOverDark(void)
 {
-	return [[^(TUIView *view, CGRect rect) {
+	return [^(TUIView *view, CGRect rect) {
 		TUITextViewDrawRoundedFrame(view, 	floor(view.bounds.size.height / 2), YES);
-	} copy] autorelease];
+	} copy];
 }

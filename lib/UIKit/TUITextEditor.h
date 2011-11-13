@@ -30,8 +30,8 @@
 
 @property (nonatomic, copy) NSString *text;
 
-@property (nonatomic, retain) NSDictionary *defaultAttributes;
-@property (nonatomic, retain) NSDictionary *markedAttributes;
+@property (nonatomic, strong) NSDictionary *defaultAttributes;
+@property (nonatomic, strong) NSDictionary *markedAttributes;
 
 @property (nonatomic, assign) NSRange selectedRange;
 

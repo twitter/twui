@@ -25,16 +25,11 @@
 	if((self = [self initWithFrame:(image != nil) ? CGRectMake(0, 0, image.size.width, image.size.height) : CGRectZero]) != nil)
 	{
 		self.userInteractionEnabled = NO;
-		_image = [image retain];
+		_image = image;
 	}
 	return self;
 }
 
-- (void)dealloc
-{
-	[_image release];
-	[super dealloc];
-}
 
 - (TUIImage *)image
 {
@@ -43,8 +38,6 @@
 
 - (void)setImage:(TUIImage *)i
 {
-	[i retain];
-	[_image release];
 	_image = i;
 	[self setNeedsDisplay];
 }

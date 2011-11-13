@@ -23,7 +23,6 @@
 {
 	if(_hyperFocusView) {
 		_hyperCompletion(cancel);
-		[_hyperCompletion release];
 		_hyperCompletion = nil;
 		
 		TUIView *remove = _hyperFadeView;
@@ -79,7 +78,6 @@
 	[CATransaction flush];
 	[CATransaction commit];
 	
-	[fade release];
 	
 	[TUIView animateWithDuration:0.2 animations:^{
 		fade.alpha = 1.0;
