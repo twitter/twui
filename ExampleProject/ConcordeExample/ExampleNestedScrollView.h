@@ -14,45 +14,8 @@
  limitations under the License.
  */
 
-#import "TUIResponder.h"
+#import "TUIKit.h"
 
-@implementation TUIResponder
-
-- (BOOL)becomeFirstResponder
-{
-	return YES;
-}
-
-- (BOOL)resignFirstResponder
-{
-	return YES;
-}
-
-- (BOOL)acceptsFirstMouse:(NSEvent *)event
-{
-	return YES; // Controls default to NO
-}
-
-- (NSMenu *)menuForEvent:(NSEvent *)event
-{
-	return nil;
-}
-
-- (BOOL)performKeyAction:(NSEvent *)event
-{
-	return NO;
-}
-
-- (TUIResponder *)initialFirstResponder
-{
-	return self;
-}
-
-- (void)scrollWheel:(NSEvent *)event
-{
-    if([[self nextResponder] respondsToSelector:@selector(scrollWheel:)]){
-        [[self nextResponder] scrollWheel:event];
-    }
-}
+@interface ExampleNestedScrollView : TUIView
 
 @end

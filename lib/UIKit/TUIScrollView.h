@@ -144,6 +144,8 @@ typedef enum {
 		unsigned int delegateScrollViewDidShowScrollIndicator:1;
 		unsigned int delegateScrollViewWillHideScrollIndicator:1;
 		unsigned int delegateScrollViewDidHideScrollIndicator:1;
+        unsigned int inspectNextScrollDirection:1;
+        unsigned int forwardScrollsForPhase:1;
 	} _scrollViewFlags;
 }
 

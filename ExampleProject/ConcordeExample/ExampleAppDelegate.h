@@ -21,9 +21,10 @@
 {
   NSWindow    * tableViewWindow;
   NSWindow    * scrollViewWindow;
+  NSWindow    * nestedScrollViewWindow;
 }
 
 -(IBAction)showTableViewExampleWindow:(id)sender;
 -(IBAction)showScrollViewExampleWindow:(id)sender;
-
+-(IBAction)showNestedScrollViews:(id)sender;
 @end

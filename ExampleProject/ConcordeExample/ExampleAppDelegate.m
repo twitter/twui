@@ -17,6 +17,7 @@
 #import "ExampleAppDelegate.h"
 #import "ExampleView.h"
 #import "ExampleScrollView.h"
+#import "ExampleNestedScrollView.h"
 
 @implementation ExampleAppDelegate
 
@@ -60,7 +61,22 @@
 	ExampleScrollView *scrollExample = [[ExampleScrollView alloc] initWithFrame:b];
 	tuiScrollViewContainer.rootView = scrollExample;
 	[scrollExample release];
+
+    /** Scroll View */
+	nestedScrollViewWindow = [[NSWindow alloc] initWithContentRect:b styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:YES];
+	[nestedScrollViewWindow setReleasedWhenClosed:FALSE];
+	[nestedScrollViewWindow setMinSize:NSMakeSize(300, 250)];
+	[nestedScrollViewWindow setFrameTopLeftPoint:[scrollViewWindow cascadeTopLeftFromPoint:CGPointMake(scrollViewWindow.frame.origin.x, scrollViewWindow.frame.origin.y + scrollViewWindow.frame.size.height)]];
 	
+	/* TUINSView is the bridge between the standard AppKit NSView-based heirarchy and the TUIView-based heirarchy */
+	TUINSView *nestedScrollViewContainer = [[TUINSView alloc] initWithFrame:b];
+	[nestedScrollViewWindow setContentView:nestedScrollViewContainer];
+	[nestedScrollViewContainer release];
+
+    ExampleNestedScrollView *nestedScrollView = [[ExampleNestedScrollView alloc] initWithFrame:b];
+    nestedScrollViewContainer.rootView = nestedScrollView;
+    [nestedScrollView release];
+
 	[self showTableViewExampleWindow:nil];
 	
 }
@@ -77,6 +93,15 @@
  */
 -(IBAction)showScrollViewExampleWindow:(id)sender {
 	[scrollViewWindow makeKeyAndOrderFront:sender];
+}
+
+/**
+ * @brief show the nested sscroll view example
+ */
+
+-(IBAction)showNestedScrollViews:(id)sender
+{
+    [nestedScrollViewWindow makeKeyAndOrderFront:sender];
 }
 
 @end

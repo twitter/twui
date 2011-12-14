@@ -164,7 +164,7 @@
 
 - (void)scrollWheel:(NSEvent *)event
 {
-	[self.superview scrollWheel:event];
+    [self.superview scrollWheel:event];
 }
 
 - (void)beginGestureWithEvent:(NSEvent *)event

@@ -49,6 +49,7 @@ enum {
 - (void)_updateScrollKnobsAnimated:(BOOL)animated;
 - (void)_updateBounce;
 - (void)_startTimer:(int)scrollMode;
+- (BOOL)_forwardScrollEvent:(NSEvent *)event;
 
 @end
 
@@ -973,7 +974,6 @@ static float clampBounce(float x) {
 
 - (void)endGestureWithEvent:(NSEvent *)event
 {
-  
 	if(_scrollViewFlags.delegateScrollViewDidEndDragging){
 		[_delegate scrollViewDidEndDragging:self];
 	}
@@ -988,9 +988,46 @@ static float clampBounce(float x) {
 	
 }
 
+// Inspect the scroll direction on gesture. If it is perpendicular
+// to the scrollview, forward it up the responder chain.
+- (BOOL)_forwardScrollEvent:(NSEvent *)event
+{
+    if (!self.scrollEnabled) {
+        [[self superview] scrollWheel:event];
+        return YES;
+    }
+
+    if (!AtLeastLion) {
+        return NO;
+    }
+
+    // Need to see the first delta to determine the direction
+    if ([event phase] == NSEventPhaseBegan) {
+        _scrollViewFlags.forwardScrollsForPhase = NO;
+        _scrollViewFlags.inspectNextScrollDirection = YES;
+    } else if (_scrollViewFlags.inspectNextScrollDirection && [event phase] == NSEventPhaseChanged){
+        _scrollViewFlags.inspectNextScrollDirection = NO;
+        // Horizontal
+        if (fabs([event scrollingDeltaX]) > fabs([event scrollingDeltaY])) {
+            if (self.contentSize.width <= self.frame.size.width) {
+                _scrollViewFlags.forwardScrollsForPhase = YES;
+            }
+        } else if (fabs([event scrollingDeltaX]) < fabs([event scrollingDeltaY])) { // Vertical
+            if (self.contentSize.height <= self.frame.size.height) {
+                _scrollViewFlags.forwardScrollsForPhase = YES;
+            }
+        }
+    }
+    
+    if (_scrollViewFlags.forwardScrollsForPhase) {
+        [[self superview] scrollWheel:event];
+    }
+    return _scrollViewFlags.forwardScrollsForPhase;
+}
+
 - (void)scrollWheel:(NSEvent *)event
 {
-	if(self.scrollEnabled)
+	if(![self _forwardScrollEvent:event])
 	{
 		int phase = ScrollPhaseNormal;
 		
