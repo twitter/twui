@@ -179,8 +179,9 @@ static NSMutableArray *AnimationStack = nil;
 
 static CGFloat SlomoTime()
 {
-	if((NSUInteger)([NSEvent modifierFlags]&NSDeviceIndependentModifierFlagsMask) == (NSUInteger)(NSShiftKeyMask))
-		return 5.0;
+//	if((NSUInteger)([NSEvent modifierFlags]&NSDeviceIndependentModifierFlagsMask) == (NSUInteger)(NSShiftKeyMask))
+//		return 5.0;
+
 	return 1.0;
 }
 

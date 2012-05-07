@@ -1165,6 +1165,7 @@
 		CB5B267513BE6DA300579B1E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
@@ -1179,6 +1180,7 @@
 		CB5B267613BE6DA300579B1E /* App Store */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";

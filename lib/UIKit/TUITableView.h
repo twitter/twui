@@ -17,6 +17,9 @@
 #import "TUIScrollView.h"
 #import "TUIFastIndexPath.h"
 
+extern NSUInteger const TUIExtendSelectionKey;
+extern NSUInteger const TUIAddSelectionKey;
+
 typedef enum {
 	TUITableViewStylePlain,              // regular table view
 } TUITableViewStyle;
@@ -79,6 +82,12 @@ typedef enum {
 	NSMutableDictionary         * _visibleItems;
 	NSMutableDictionary         * _reusableTableCells;
 	
+    // additions for multipleSelections
+    NSMutableArray              * _arrayOfSelectedIndexes;
+    BOOL                        _multipleSelectionKeyIsPressed;
+    BOOL                        _extendMultipleSelectionKeyIsPressed;
+    NSUInteger                  _iterationCount;
+    
 	TUIFastIndexPath            * _selectedIndexPath;
 	TUIFastIndexPath            * _indexPathShouldBeFirstResponder;
 	NSInteger                     _futureMakeFirstResponderToken;
@@ -112,7 +121,9 @@ typedef enum {
 @property (nonatomic,unsafe_unretained) id <TUITableViewDataSource>  dataSource;
 @property (nonatomic,unsafe_unretained) id <TUITableViewDelegate>    delegate;
 
-@property (readwrite, assign) BOOL                        animateSelectionChanges;
+@property (readwrite, assign) BOOL animateSelectionChanges;
+@property (readwrite, assign) BOOL allowsMultipleSelection;
+
 @property (nonatomic, assign) BOOL maintainContentOffsetAfterReload;
 
 - (void)reloadData;

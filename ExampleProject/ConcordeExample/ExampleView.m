@@ -43,6 +43,7 @@
 		_tableView = [[TUITableView alloc] initWithFrame:b];
 		_tableView.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 		_tableView.dataSource = self;
+        _tableView.allowsMultipleSelection = TRUE;
 		_tableView.delegate = self;
 		_tableView.maintainContentOffsetAfterReload = TRUE;
 		[self addSubview:_tableView];
