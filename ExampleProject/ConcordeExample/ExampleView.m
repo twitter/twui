@@ -59,6 +59,18 @@
 		};
 		[self addSubview:_tabBar];
 		
+        arrayOfArrays = [[NSMutableArray alloc] init];
+        
+        for (int i = 0; i < 4; i++)
+        {
+            NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+            for (int j = 0; j < 10; j++)
+            {
+                [tempArray addObject:[NSNumber numberWithInt:j]];
+            }    
+            [arrayOfArrays addObject:tempArray];
+        }
+        
 		// setup individual tabs
 		for(TUIView *tabView in _tabBar.tabViews) {
 			tabView.backgroundColor = [TUIColor clearColor]; // will also set opaque=NO
@@ -119,12 +131,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(TUITableView *)tableView
 {
-	return 8;
+	return [arrayOfArrays  count];;
 }
 
 - (NSInteger)tableView:(TUITableView *)table numberOfRowsInSection:(NSInteger)section
 {
-	return 25;
+	return [[arrayOfArrays objectAtIndex:section ] count];
 }
 
 - (CGFloat)tableView:(TUITableView *)tableView heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
@@ -146,7 +158,8 @@
 {
 	ExampleTableViewCell *cell = reusableTableCellOfClass(tableView, ExampleTableViewCell);
 	
-	TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"example cell %d", indexPath.row]];
+	TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"example cell %i", 
+                                                                    [[[arrayOfArrays objectAtIndex:indexPath.section ] objectAtIndex:indexPath.row] intValue]]];
 	s.color = [TUIColor blackColor];
 	s.font = exampleFont1;
 	[s setFont:exampleFont2 inRange:NSMakeRange(8, 4)]; // make the word "cell" bold
@@ -174,6 +187,7 @@
 	return YES;
 }
 
+
 -(BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath {
   // return TRUE to enable row reordering by dragging; don't implement this method or return
   // FALSE to disable
@@ -184,6 +198,43 @@
   // update the model to reflect the changed index paths; since this example isn't backed by
   // a "real" model, after dropping a cell the table will revert to it's previous state
   NSLog(@"Move dragged row: %@ => %@", fromIndexPath, toIndexPath);
+
+    NSNumber *temp = [[arrayOfArrays objectAtIndex:fromIndexPath.section] objectAtIndex:fromIndexPath.row];
+    NSLog(@"move %i",[temp intValue]);
+    [[arrayOfArrays objectAtIndex:fromIndexPath.section] removeObjectAtIndex:fromIndexPath.row];
+    [[arrayOfArrays objectAtIndex:toIndexPath.section] insertObject:temp atIndex:toIndexPath.row];
+    
+    [tableView justSelectRowAtIndexPath:toIndexPath animated:NO scrollPosition:TUITableViewScrollPositionNone];
+    [tableView reloadData];
+
+}
+
+- (void)tableView:(TUITableView *)tableView moveRows:(NSArray*)arrayOfIdexes toIndexPath:(TUIFastIndexPath *)toIndexPath
+{
+    NSMutableArray * tempArray = [[NSMutableArray alloc] init];
+
+    NSLog(@"move %@",arrayOfIdexes);
+    for (TUIFastIndexPath *path in arrayOfIdexes )
+    {
+        NSNumber *temp = [[arrayOfArrays objectAtIndex:path.section] objectAtIndex:path.row];
+        [tempArray addObject:temp];
+    }
+    
+    for (NSMutableArray *subarray in arrayOfArrays)
+    {
+        [subarray removeObjectsInArray:tempArray];
+    }
+    
+    int factor = 0;
+    for (id object in tempArray )
+    {
+        [[arrayOfArrays objectAtIndex:toIndexPath.section] insertObject:object atIndex:toIndexPath.row +factor];
+        factor++;
+    }
+    
+
+    
+
 }
 
 -(TUIFastIndexPath *)tableView:(TUITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(TUIFastIndexPath *)fromPath toProposedIndexPath:(TUIFastIndexPath *)proposedPath {

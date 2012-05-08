@@ -22,6 +22,7 @@
 	TUITableView *_tableView;
 	ExampleTabBar *_tabBar;
 	
+    NSMutableArray *arrayOfArrays;
 	TUIFont *exampleFont1;
 	TUIFont *exampleFont2;
 }

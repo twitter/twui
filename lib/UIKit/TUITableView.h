@@ -81,7 +81,7 @@ typedef enum {
 	NSMutableIndexSet           * _visibleSectionHeaders;
 	NSMutableDictionary         * _visibleItems;
 	NSMutableDictionary         * _reusableTableCells;
-	
+	TUIView                     * _multiDragableView;
     // additions for multipleSelections
     NSMutableArray              * _arrayOfSelectedIndexes;
     BOOL                        _multipleSelectionKeyIsPressed;
@@ -165,6 +165,8 @@ typedef enum {
 - (TUIFastIndexPath *)indexPathForFirstRow;
 - (TUIFastIndexPath *)indexPathForLastRow;
 
+
+- (void)justSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition;
 - (void)selectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition;
 - (void)deselectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated;
 
@@ -200,9 +202,8 @@ typedef enum {
 - (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath;
 - (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath;
 
-// the following are required to support row reordering
-- (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath;
-- (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath;
+// the following are required to support row reordering for multiselection
+- (void)tableView:(TUITableView *)tableView moveRows:(NSArray*)arrayOfIdexes toIndexPath:(TUIFastIndexPath *)toIndexPath;
 
 /**
  Default is 1 if not implemented

@@ -18,10 +18,11 @@
 #import "TUITableView+Cell.h"
 #import "TUITableViewSectionHeader.h"
 #import "TUINSView.h"
+#import "TUITableViewMultiselection+Cell.h"
 
 
-NSUInteger const TUIExtendSelectionKey = NSShiftKeyMask;
-NSUInteger const TUIAddSelectionKey = NSCommandKeyMask;
+NSUInteger const TUIExtendSelectionKey = kCGEventFlagMaskShift;
+NSUInteger const TUIAddSelectionKey = kCGEventFlagMaskCommand;
 
 
 // header views need to be above the cells at all times
@@ -160,12 +161,18 @@ typedef struct {
 - (void)clearIndexPaths;
 - (void)checkEventModifiers:(NSEvent *)event;
 - (TUIFastIndexPath *)topIndexPath;
+- (TUIFastIndexPath *)bottomIndexPath;
+
+- (BOOL)indexPathIsBeforeTopSelectedIdex:(TUIFastIndexPath*)newPath;
 
 - (void)configureCellWithSingleClickShiftFlag:(TUITableViewCell*)cell
+                                    indexPath:(TUIFastIndexPath*)path
                                      animated:(BOOL)animated;
 - (void)configureCellWithSingleClickNoFlags:(TUITableViewCell*)cell
+                                  indexPath:(TUIFastIndexPath*)path
                                    animated:(BOOL)animated;
 - (void)configureCellWithSingleClickCommandFlag:(TUITableViewCell*)cell
+                                      indexPath:(TUIFastIndexPath*)path
                                        animated:(BOOL)animated;
 @end
 
@@ -1088,6 +1095,14 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 	}
 }
 
+
+- (void)justSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition
+{
+    [self selectRowAtIndexPath:indexPath animated:animated scrollPosition:scrollPosition];
+    _iterationCount = 0;
+}
+
+
 - (void)selectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition
 {
    
@@ -1102,7 +1117,7 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
      */
      
     TUIFastIndexPath *oldIndexPath = [self indexPathForSelectedRow];  
-	if([indexPath isEqual:oldIndexPath] && _iterationCount == 1)
+	if([indexPath isEqual:oldIndexPath] && _iterationCount != 0)
     {        
         _iterationCount = 0;
 	} 
@@ -1130,15 +1145,15 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
         {
                 if (!_multipleSelectionKeyIsPressed && !_extendMultipleSelectionKeyIsPressed)
                 {
-                    [self configureCellWithSingleClickNoFlags:cell animated:animated];
+                    [self configureCellWithSingleClickNoFlags:cell indexPath:indexPath animated:animated];
                 }
                 else if (!_extendMultipleSelectionKeyIsPressed)
                 {
-                    [self configureCellWithSingleClickCommandFlag:cell animated:animated];
+                    [self configureCellWithSingleClickCommandFlag:cell indexPath:indexPath animated:animated];
                 }    
                 else
                 {
-                    [self configureCellWithSingleClickShiftFlag:cell animated:animated];
+                    [self configureCellWithSingleClickShiftFlag:cell indexPath:indexPath animated:animated];
                 }
                     
         }
@@ -1248,6 +1263,7 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 			}
 			if(![_delegate respondsToSelector:@selector(tableView:shouldSelectRowAtIndexPath:forEvent:)] || [_delegate tableView:self shouldSelectRowAtIndexPath:newIndexPath forEvent:event]){
 				[self selectRowAtIndexPath:newIndexPath animated:self.animateSelectionChanges scrollPosition:TUITableViewScrollPositionToVisible];
+                _iterationCount = 0;
 			}
             
 			return YES;
@@ -1279,6 +1295,8 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 			
 			if(![_delegate respondsToSelector:@selector(tableView:shouldSelectRowAtIndexPath:forEvent:)] || [_delegate tableView:self shouldSelectRowAtIndexPath:newIndexPath forEvent:event]){
 				[self selectRowAtIndexPath:newIndexPath animated:self.animateSelectionChanges scrollPosition:TUITableViewScrollPositionToVisible];
+                _iterationCount = 0;
+
 			}
 			
 			return YES;
@@ -1308,14 +1326,18 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 
 // cell operations
 - (void)configureCellWithSingleClickShiftFlag:(TUITableViewCell*)cell
+                                    indexPath:(TUIFastIndexPath*)path
                                      animated:(BOOL)animated
 {
 
     if (_selectedIndexPath)
-    {        
-        NSMutableArray *arrayOfIndexes = [self arrayOfIndexesOfSectionsFromIndex:_selectedIndexPath to:cell.indexPath];
-        
-        [self clearIndexPaths];
+   {        
+
+       NSMutableArray *arrayOfIndexes = [[NSMutableArray alloc] init];
+       [arrayOfIndexes addObjectsFromArray:_arrayOfSelectedIndexes];
+       [arrayOfIndexes addObjectsFromArray:[self arrayOfIndexesOfSectionsFromIndex:_selectedIndexPath to:path]];
+
+       [self clearIndexPaths];
 
         for (TUIFastIndexPath *indexPath in arrayOfIndexes)
         {
@@ -1324,14 +1346,16 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
             [newCell setSelected:YES animated:animated];
             [cell setNeedsDisplay];
         }  
-        _selectedIndexPath = cell.indexPath;
+        _selectedIndexPath = path;
     }
 }
 
 
 - (void)configureCellWithSingleClickNoFlags:(TUITableViewCell*)cell
+                                  indexPath:(TUIFastIndexPath*)path
                                    animated:(BOOL)animated
 {
+    
     // clear all the selections
     [self clearIndexPaths];
     
@@ -1339,16 +1363,17 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
     [cell setSelected:YES animated:animated];
     
     // set the selected index path
-    _selectedIndexPath = cell.indexPath;
+    _selectedIndexPath = path;
     
     // add it to the array
     [self addSelectedIndexPath:_selectedIndexPath];
 }
 
 - (void)configureCellWithSingleClickCommandFlag:(TUITableViewCell*)cell
+                                      indexPath:(TUIFastIndexPath*)path
                                        animated:(BOOL)animated
 {
-    _selectedIndexPath = cell.indexPath;
+    _selectedIndexPath = path;
     
     if ([self indexPathExists:_selectedIndexPath])
     {
@@ -1363,24 +1388,28 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
     
 }
 
+- (BOOL)indexPathIsBeforeTopSelectedIdex:(TUIFastIndexPath*)newPath
+{
+    return [newPath compare:_selectedIndexPath] == NSOrderedAscending;
+}
+
 - (TUIFastIndexPath *)topIndexPath
 {
-    	
-	for (int aSection = 0; aSection <= [self numberOfSections]; aSection++)
+    if ([_arrayOfSelectedIndexes count]>0)
     {
-            for (int aRow = 0; aRow < [self numberOfRowsInSection:aSection]; aRow++) 
-            {
-                TUIFastIndexPath *indexPath = [TUIFastIndexPath indexPathForRow:aRow inSection:aSection];
-                if ([self indexPathExists:indexPath])
-                {
-                    return indexPath;
-                }
-            }
-	}
-	
+        return [_arrayOfSelectedIndexes objectAtIndex:0];
+    }
 	return nil;
 }
 
+- (TUIFastIndexPath *)bottomIndexPath
+{
+    if ([_arrayOfSelectedIndexes count]>0)
+    {
+        return [_arrayOfSelectedIndexes lastObject];
+    }
+	return nil;
+}
 
 - (NSMutableArray *)arrayOfIndexesOfSectionsFromIndex:(TUIFastIndexPath*)startIndex
                                                    to:(TUIFastIndexPath*)endIndex
@@ -1428,47 +1457,23 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 	return indexes;
 }
 
-
--(void)mouseDown:(NSEvent *)event onSubview:(TUIView *)subview 
-{   
-    
-#ifndef DEBUG
-    NSLog(@"%s",__FUNCTION__);
-#endif    
-        
-    [super mouseDown:event onSubview:subview];
-    [self checkEventModifiers:event];
-    
-}
-
--(void)mouseMoved:(NSEvent *)event
-{
-    
-#ifndef DEBUG
-    NSLog(@"%s",__FUNCTION__);
-#endif    
-    [super mouseMoved:event]; 
-    [self checkEventModifiers:event];
-    
-}
-
 - (void)checkEventModifiers:(NSEvent *)event
 {
     if (_allowsMultipleSelection)
     {
 
-        _multipleSelectionKeyIsPressed = (([event modifierFlags]&NSDeviceIndependentModifierFlagsMask) == 
-                                          TUIAddSelectionKey);
+        CGEventRef newEvent = CGEventCreate(NULL);
+        CGEventFlags modifiers = CGEventGetFlags(newEvent);
+        CFRelease(newEvent);
+        _multipleSelectionKeyIsPressed = (modifiers & kCGEventFlagMaskCommand) == TUIAddSelectionKey;
+        _extendMultipleSelectionKeyIsPressed = (modifiers & kCGEventFlagMaskShift) == TUIExtendSelectionKey;
         
-        _extendMultipleSelectionKeyIsPressed = (([event modifierFlags]&NSDeviceIndependentModifierFlagsMask) ==
-                                           TUIExtendSelectionKey);
+//#ifndef DEBUG
+//        NSLog(@"_extendMultipleSelectionKeyIsPressed %i",_extendMultipleSelectionKeyIsPressed);
+//        NSLog(@"multipleSelection %i",_multipleSelectionKeyIsPressed);
+//        NSLog(@"%lu",[event modifierFlags]);
+//#endif
         
-        
-#ifndef DEBUG
-        NSLog(@"_extendMultipleSelectionKeyIsPressed %i",_extendMultipleSelectionKeyIsPressed);
-        NSLog(@"multipleSelection %i",_multipleSelectionKeyIsPressed);
-        NSLog(@"%lu",[event modifierFlags]);
-#endif
     }
 }
 
@@ -1476,10 +1481,10 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 {
     if (indexPathToAdd)
     {
-#ifndef DEBUG
-        NSLog(@"%s",__FUNCTION__);
-#endif
         [_arrayOfSelectedIndexes insertObject:indexPathToAdd atIndex:0];
+        [_arrayOfSelectedIndexes sortUsingComparator:^(id a, id b) {
+            return [a compare:b];
+        }];        
     }    
 }
 
@@ -1487,38 +1492,24 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 {
     if (indexPathToRemove)
     {
-#ifndef DEBUG
-        NSLog(@"%s",__FUNCTION__);
-#endif
         [_arrayOfSelectedIndexes removeObject:indexPathToRemove];
     }
 }
 
 - (void)clearIndexPaths
 {
-    
-#ifndef DEBUG
-    NSLog(@"%s",__FUNCTION__);
-#endif
-
     for(TUIFastIndexPath *i in _arrayOfSelectedIndexes)
     {
         TUITableViewCell *cell = [self cellForRowAtIndexPath:i];                 
         [cell setSelected:NO animated:NO];     
         [cell setNeedsDisplay];
     }            
-        
     [_arrayOfSelectedIndexes removeAllObjects];
 }
 
 
 -(BOOL)indexPathExists:(TUIFastIndexPath*)indexPathToCheck
 {
-    
-#ifndef DEBUG
-    NSLog(@"%@",_arrayOfSelectedIndexes);
-#endif
-    
     if ([_arrayOfSelectedIndexes indexOfObject:indexPathToCheck inRange:NSMakeRange(0, [_arrayOfSelectedIndexes count])] != NSNotFound) 
     {
         return TRUE;
