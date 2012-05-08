@@ -18,6 +18,7 @@
 #import "TUITableView.h"
 #import "TUITableView+Cell.h"
 #import "TUINSWindow.h"
+#import "TUITableViewMultiselection+Cell.h"
 
 @implementation TUITableViewCell
 
@@ -72,20 +73,29 @@
  * @brief Accept first responder by default
  */
 -(BOOL)acceptsFirstResponder {
-  return TRUE;
+    return TRUE;
 }
 
 - (void)mouseDown:(NSEvent *)event
 {
-  // note the initial mouse location for dragging
-  _mouseOffset = [self localPointForLocationInWindow:[event locationInWindow]];
-  // notify our table view of the event
-  [self.tableView __mouseDownInCell:self offset:_mouseOffset event:event];
-  
+    // note the initial mouse location for dragging
+    _mouseOffset = [self localPointForLocationInWindow:[event locationInWindow]];
+    // notify our table view of the event
+   
+    
+    if ([self.tableView allowsMultipleSelection]) 
+    {
+        [self.tableView __mouseDownInMultipleCells:self offset:_mouseOffset event:event];
+    }
+    else
+    {
+        [self.tableView __mouseDownInCell:self offset:_mouseOffset event:event];
+    }
+    
 	TUITableView *tableView = self.tableView;
-  [self.nsWindow makeFirstResponder:tableView];
+    [self.nsWindow makeFirstResponder:tableView];
 	[tableView selectRowAtIndexPath:self.indexPath animated:YES scrollPosition:TUITableViewScrollPositionNone];
-
+    
 	[super mouseDown:event]; // may make the text renderer first responder, so we want to do the selection before this
 	
 	if(![tableView.delegate respondsToSelector:@selector(tableView:shouldSelectRowAtIndexPath:forEvent:)] || [tableView.delegate tableView:tableView shouldSelectRowAtIndexPath:self.indexPath forEvent:event]){
@@ -100,18 +110,33 @@
  * @brief The table cell was dragged
  */
 -(void)mouseDragged:(NSEvent *)event {
-  // propagate the event
-  [super mouseDragged:event];
-  // notify our table view of the event
-  [self.tableView __mouseDraggedCell:self offset:_mouseOffset event:event];
+    // propagate the event
+    [super mouseDragged:event];
+    // notify our table view of the event
+    if ([self.tableView allowsMultipleSelection]) 
+    {
+        [self.tableView __mouseDraggedMultipleCells:self offset:_mouseOffset event:event];
+    }
+    else
+    {
+        [self.tableView __mouseDraggedCell:self offset:_mouseOffset event:event];
+    }
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
 	[super mouseUp:event];
-  // notify our table view of the event
-  [self.tableView __mouseUpInCell:self offset:_mouseOffset event:event];
-  
+    // notify our table view of the event
+    
+    if ([self.tableView allowsMultipleSelection]) 
+    {
+        [self.tableView __mouseUpInMultipleCells:self offset:_mouseOffset event:event];
+    }
+    else
+    {
+        [self.tableView __mouseUpInCell:self offset:_mouseOffset event:event];
+    }
+    
 	_tableViewCellFlags.highlighted = 0;
 	[self setNeedsDisplay];
 	

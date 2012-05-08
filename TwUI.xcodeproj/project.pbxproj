@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44B39D3B1559185400747E1B /* TUITableViewMultiselection+Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B39D391559185400747E1B /* TUITableViewMultiselection+Cell.m */; };
+		44B39D3C1559185400747E1B /* TUITableViewMultiselection+Cell.h in Headers */ = {isa = PBXBuildFile; fileRef = 44B39D3A1559185400747E1B /* TUITableViewMultiselection+Cell.h */; };
 		5E6ECEB313BE791600109598 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
 		5E6ECEB413BE791600109598 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5E31B613BE6F49004B7899 /* QuartzCore.framework */; };
 		5E6ECEB613BE791C00109598 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
@@ -264,6 +266,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		44B39D391559185400747E1B /* TUITableViewMultiselection+Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUITableViewMultiselection+Cell.m"; sourceTree = "<group>"; };
+		44B39D3A1559185400747E1B /* TUITableViewMultiselection+Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUITableViewMultiselection+Cell.h"; sourceTree = "<group>"; };
 		5EE9839C13BE7650005F430D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		5EE983B713BE7809005F430D /* libtwui.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libtwui.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8819794213E26E0200AA39EB /* TUIView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Accessibility.h"; sourceTree = "<group>"; };
@@ -601,6 +605,8 @@
 				CBB74C7413BE6E1900C85CB5 /* TUITableViewCell.m */,
 				88D25F5313F5D96500CFAAA9 /* TUITableView+Cell.h */,
 				88D25F5413F5D96500CFAAA9 /* TUITableView+Cell.m */,
+				44B39D3A1559185400747E1B /* TUITableViewMultiselection+Cell.h */,
+				44B39D391559185400747E1B /* TUITableViewMultiselection+Cell.m */,
 				887F272A13F9969800D75DE6 /* TUITableViewSectionHeader.h */,
 				887F272B13F9969800D75DE6 /* TUITableViewSectionHeader.m */,
 				CBB74C7513BE6E1900C85CB5 /* TUITextEditor.h */,
@@ -711,6 +717,7 @@
 				88CC1F3713E3684700827793 /* TUIButton+Accessibility.h in Headers */,
 				88EFFB5113F417E200CF91A9 /* TUITextViewEditor.h in Headers */,
 				88D25F5513F5D96500CFAAA9 /* TUITableView+Cell.h in Headers */,
+				44B39D3C1559185400747E1B /* TUITableViewMultiselection+Cell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -987,6 +994,7 @@
 				88EFFB5413F417E200CF91A9 /* TUITextViewEditor.m in Sources */,
 				88D25F5813F5D96500CFAAA9 /* TUITableView+Cell.m in Sources */,
 				887F272F13F9969800D75DE6 /* TUITableViewSectionHeader.m in Sources */,
+				44B39D3B1559185400747E1B /* TUITableViewMultiselection+Cell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1090,27 +1098,27 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		5EE983BD13BE7809005F430D /* Debug */ = {
+		5EE983BD13BE7809005F430D /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				PRODUCT_NAME = twui;
 			};
-			name = Debug;
+			name = Development;
 		};
-		5EE983BE13BE7809005F430D /* Release */ = {
+		5EE983BE13BE7809005F430D /* App Store */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				PRODUCT_NAME = twui;
 			};
-			name = Release;
+			name = "App Store";
 		};
-		CB5B267213BE6DA300579B1E /* Debug */ = {
+		CB5B267213BE6DA300579B1E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1133,13 +1141,13 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
-			name = Debug;
+			name = Development;
 		};
-		CB5B267313BE6DA300579B1E /* Release */ = {
+		CB5B267313BE6DA300579B1E /* App Store */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1154,17 +1162,18 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "-DNS_BUILD_32_LIKE_64";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
-			name = Release;
+			name = "App Store";
 		};
-		CB5B267513BE6DA300579B1E /* Debug */ = {
+		CB5B267513BE6DA300579B1E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
@@ -1174,11 +1183,12 @@
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 			};
-			name = Debug;
+			name = Development;
 		};
-		CB5B267613BE6DA300579B1E /* Release */ = {
+		CB5B267613BE6DA300579B1E /* App Store */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
@@ -1188,9 +1198,9 @@
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 			};
-			name = Release;
+			name = "App Store";
 		};
-		CB5B267813BE6DA300579B1E /* Debug */ = {
+		CB5B267813BE6DA300579B1E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1200,9 +1210,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
-			name = Debug;
+			name = Development;
 		};
-		CB5B267913BE6DA300579B1E /* Release */ = {
+		CB5B267913BE6DA300579B1E /* App Store */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1212,25 +1222,25 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
-			name = Release;
+			name = "App Store";
 		};
-		CB5E321913BE7099004B7899 /* Debug */ = {
+		CB5E321913BE7099004B7899 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libtwui;
 			};
-			name = Debug;
+			name = Development;
 		};
-		CB5E321A13BE7099004B7899 /* Release */ = {
+		CB5E321A13BE7099004B7899 /* App Store */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libtwui;
 			};
-			name = Release;
+			name = "App Store";
 		};
 /* End XCBuildConfiguration section */
 
@@ -1238,47 +1248,47 @@
 		5EE983BC13BE7809005F430D /* Build configuration list for PBXNativeTarget "Static Library" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5EE983BD13BE7809005F430D /* Debug */,
-				5EE983BE13BE7809005F430D /* Release */,
+				5EE983BD13BE7809005F430D /* Development */,
+				5EE983BE13BE7809005F430D /* App Store */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "App Store";
 		};
 		CB5B264513BE6DA200579B1E /* Build configuration list for PBXProject "TwUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CB5B267213BE6DA300579B1E /* Debug */,
-				CB5B267313BE6DA300579B1E /* Release */,
+				CB5B267213BE6DA300579B1E /* Development */,
+				CB5B267313BE6DA300579B1E /* App Store */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "App Store";
 		};
 		CB5B267413BE6DA300579B1E /* Build configuration list for PBXNativeTarget "TwUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CB5B267513BE6DA300579B1E /* Debug */,
-				CB5B267613BE6DA300579B1E /* Release */,
+				CB5B267513BE6DA300579B1E /* Development */,
+				CB5B267613BE6DA300579B1E /* App Store */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "App Store";
 		};
 		CB5B267713BE6DA300579B1E /* Build configuration list for PBXNativeTarget "Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CB5B267813BE6DA300579B1E /* Debug */,
-				CB5B267913BE6DA300579B1E /* Release */,
+				CB5B267813BE6DA300579B1E /* Development */,
+				CB5B267913BE6DA300579B1E /* App Store */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "App Store";
 		};
 		CB5E321B13BE70B7004B7899 /* Build configuration list for PBXNativeTarget "Dynamic Library" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CB5E321913BE7099004B7899 /* Debug */,
-				CB5E321A13BE7099004B7899 /* Release */,
+				CB5E321913BE7099004B7899 /* Development */,
+				CB5E321A13BE7099004B7899 /* App Store */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "App Store";
 		};
 /* End XCConfigurationList section */
 	};
