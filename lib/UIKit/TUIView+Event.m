@@ -30,6 +30,11 @@
 	return [self textRendererAtPoint:p];
 }
 
+- (void)mouseMoved:(NSEvent *)event
+{
+	[self.superview mouseMoved:event];
+}
+
 - (void)mouseDown:(NSEvent *)event
 {
 	_currentTextRenderer = [self _textRendererForEvent:event];

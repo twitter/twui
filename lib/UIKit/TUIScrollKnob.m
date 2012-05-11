@@ -22,6 +22,7 @@
 @interface TUIScrollKnob ()
 - (void)_updateKnob;
 - (void)_updateKnobColor:(CGFloat)duration;
+- (void)_endFlashing;
 @end
 
 @implementation TUIScrollKnob
@@ -98,15 +99,26 @@
 
 - (void)flash
 {
+	_scrollKnobFlags.flashing = 1;
+	
+	static const CFTimeInterval duration = 0.6f;
 	CAKeyframeAnimation *animation = [CAKeyframeAnimation animation];
+	animation.duration = duration;
+	animation.keyPath = @"opacity";
 	animation.values = [NSArray arrayWithObjects:
 						[NSNumber numberWithDouble:0.5],
 						[NSNumber numberWithDouble:0.2],
-						[NSNumber numberWithDouble:0.5],
-						[NSNumber numberWithDouble:0.2],
-						[NSNumber numberWithDouble:0.5],
+						[NSNumber numberWithDouble:0.0],
 						nil];
 	[knob.layer addAnimation:animation forKey:@"opacity"];
+	[self performSelector:@selector(_endFlashing) withObject:nil afterDelay:(duration - 0.01)];
+}
+
+- (void)_endFlashing
+{
+	_scrollKnobFlags.flashing = 0;
+	
+	[self.scrollView setNeedsLayout];
 }
 
 -(unsigned int)scrollIndicatorStyle {
@@ -227,6 +239,11 @@
 	} else { // dragging in knob-track area
 		// ignore
 	}
+}
+
+- (BOOL)flashing
+{
+	return _scrollKnobFlags.flashing;
 }
 
 @end

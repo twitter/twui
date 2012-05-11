@@ -25,7 +25,6 @@
 - (CTFrameRef)ctFrame;
 - (CGPathRef)ctPath;
 - (CFRange)_selectedRange;
-- (CGRect)rectForRange:(CFRange)range;
 @end
 
 @implementation TUITextRenderer (Event)
@@ -48,6 +47,12 @@
 - (void)setDelegate:(id<TUITextRendererDelegate>)d
 {
 	delegate = d;
+	
+	_flags.delegateActiveRangesForTextRenderer = [delegate respondsToSelector:@selector(activeRangesForTextRenderer:)];
+	_flags.delegateWillBecomeFirstResponder = [delegate respondsToSelector:@selector(textRendererWillBecomeFirstResponder:)];
+	_flags.delegateDidBecomeFirstResponder = [delegate respondsToSelector:@selector(textRendererDidBecomeFirstResponder:)];
+	_flags.delegateWillResignFirstResponder = [delegate respondsToSelector:@selector(textRendererWillResignFirstResponder:)];
+	_flags.delegateDidResignFirstResponder = [delegate respondsToSelector:@selector(textRendererDidResignFirstResponder:)];
 }
 
 - (CGPoint)localPointForEvent:(NSEvent *)event
@@ -147,8 +152,12 @@
 	}
 	
 	CFIndex eventIndex = [self stringIndexForEvent:event];
-	id<ABActiveTextRange> hitActiveRange = [self rangeInRanges:[delegate activeRangesForTextRenderer:self]
-								   forStringIndex:eventIndex];
+	NSArray *ranges = nil;
+	if(_flags.delegateActiveRangesForTextRenderer) {
+		ranges = [delegate activeRangesForTextRenderer:self];
+	}
+	
+	id<ABActiveTextRange> hitActiveRange = [self rangeInRanges:ranges forStringIndex:eventIndex];
 	
 	if([event clickCount] > 1)
 		goto normal; // we want double-click-drag-select-by-word, not drag selected text
@@ -177,8 +186,17 @@
 			goto normal;
 	} else {
 normal:
-		_selectionStart = [self stringIndexForEvent:event];
-		_selectionEnd = _selectionStart;
+		if(([event modifierFlags] & NSShiftKeyMask) != 0) {
+			CFIndex newIndex = [self stringIndexForEvent:event];
+			if(newIndex < _selectionStart) {
+				_selectionStart = newIndex;
+			} else {
+				_selectionEnd = newIndex;
+			}
+		} else {
+			_selectionStart = [self stringIndexForEvent:event];
+			_selectionEnd = _selectionStart;
+		}
 		
 		self.hitRange = hitActiveRange;
 	}
@@ -193,8 +211,10 @@ normal:
 {
 	CGRect previousSelectionRect = [self rectForCurrentSelection];
 	
-	CFIndex i = [self stringIndexForEvent:event];
-	_selectionEnd = i;
+	if(([event modifierFlags] & NSShiftKeyMask) == 0) {
+		CFIndex i = [self stringIndexForEvent:event];
+		_selectionEnd = i;
+	}
 	
 	// fixup selection based on selection affinity
 	BOOL flip = _selectionEnd < _selectionStart;
@@ -285,9 +305,21 @@ normal:
 	return YES;
 }
 
+- (BOOL)becomeFirstResponder
+{
+	// TODO: obviously these shouldn't be called at exactly the same time...
+	if(_flags.delegateWillBecomeFirstResponder) [delegate textRendererWillBecomeFirstResponder:self];
+	if(_flags.delegateDidBecomeFirstResponder) [delegate textRendererDidBecomeFirstResponder:self];
+	
+	return YES;
+}
+
 - (BOOL)resignFirstResponder
 {
+	// TODO: obviously these shouldn't be called at exactly the same time...
+	if(_flags.delegateWillResignFirstResponder) [delegate textRendererWillResignFirstResponder:self];
 	[self resetSelection];
+	if(_flags.delegateDidResignFirstResponder) [delegate textRendererDidResignFirstResponder:self];
 	return YES;
 }
 

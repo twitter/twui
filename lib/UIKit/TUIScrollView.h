@@ -77,7 +77,7 @@ typedef enum {
   CGSize          resizeKnobSize;
   TUIEdgeInsets   _contentInset;
 	
-	id _delegate;
+	__unsafe_unretained id _delegate;
 	
   TUIScrollKnob * _verticalScrollKnob;
   TUIScrollKnob * _horizontalScrollKnob;
@@ -182,6 +182,7 @@ typedef enum {
 @property (nonatomic, readonly) CGPoint bounceOffset;
 
 @property (nonatomic, readonly, getter=isDragging) BOOL dragging;
+@property (nonatomic, readonly, getter=isDecelerating) BOOL decelerating;
 
 @end
 

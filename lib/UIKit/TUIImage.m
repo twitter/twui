@@ -124,9 +124,11 @@
  * @param image an NSImage
  * @return TUIImage
  */
-+ (TUIImage *)imageWithNSImage:(NSImage *)image {
-  
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
++ (TUIImage *)imageWithNSImage:(NSImage *)image
+{
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+	return [self imageWithCGImage:[image CGImageForProposedRect:NULL context:NULL hints:nil]];
+#elif MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
   // first, attempt to find an NSBitmapImageRep representation, (the easy way)
   for(NSImageRep *rep in [image representations]){
     CGImageRef cgImage;

@@ -97,11 +97,6 @@ doClear:
 	[[self _textField] _tabToNext];
 }
 
-- (void)moveDown:(id)sender
-{
-	[[self _textField] _tabToNext];
-}
-
 - (void)insertNewline:(id)sender
 {
 	if([self _textField]->_textFieldFlags.delegateTextFieldShouldReturn)

@@ -16,7 +16,6 @@
 
 #import "TUIKit.h"
 
-CGFloat Screen_Scale = 1.0;
 BOOL AtLeastLion = NO;
 
 CGContextRef TUIGraphicsGetCurrentContext(void)

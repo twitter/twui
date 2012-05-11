@@ -18,6 +18,10 @@
 #import "TUIColor.h"
 #import "TUIAccessibility.h"
 
+extern NSString * const TUIViewWillMoveToWindowNotification; // both notification's userInfo will contain the new window under the key TUIViewWindow
+extern NSString * const TUIViewDidMoveToWindowNotification;
+extern NSString * const TUIViewWindow;
+
 enum {
 	TUIViewAutoresizingNone                 = 0,
 	TUIViewAutoresizingFlexibleLeftMargin   = 1 << 0,
@@ -41,6 +45,21 @@ typedef enum {
 typedef enum {
 	TUIViewAnimationTransitionNone,
 } TUIViewAnimationTransition;
+
+typedef enum {
+    TUIViewContentModeCenter,
+    TUIViewContentModeTop,
+    TUIViewContentModeBottom,
+    TUIViewContentModeLeft,
+    TUIViewContentModeRight,
+    TUIViewContentModeTopLeft,
+    TUIViewContentModeTopRight,
+    TUIViewContentModeBottomLeft,
+    TUIViewContentModeBottomRight,
+	TUIViewContentModeScaleToFill,
+    TUIViewContentModeScaleAspectFit,
+    TUIViewContentModeScaleAspectFill,
+} TUIViewContentMode;
 
 @class TUIView;
 @class TUINSView;
@@ -66,7 +85,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 	
 	CGPoint		startDrag;
 	
-	id<TUIViewDelegate> _viewDelegate;
+	__unsafe_unretained id<TUIViewDelegate> _viewDelegate;
 	
 	TUIViewDrawRect	drawRect;
 	TUIViewLayout		layout;
@@ -83,6 +102,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		BOOL lastOpaque;
 		CGContextRef context;
 		CGRect dirtyRect;
+		CGFloat lastContentsScale;
 	} _context;
 	
 	struct {
@@ -96,6 +116,8 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 		unsigned int pasteboardDraggingIsDragging:1;
 		unsigned int dragDistanceLock:1;
 		unsigned int clearsContextBeforeDrawing:1;
+		unsigned int drawInBackground:1;
+		unsigned int needsDisplayWhenWindowsKeyednessChanges:1;
 		
 		unsigned int delegateMouseEntered:1;
 		unsigned int delegateMouseExited:1;
@@ -108,6 +130,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 	NSString *accessibilityValue;
 	TUIAccessibilityTraits accessibilityTraits;
 	CGRect accessibilityFrame;
+	NSOperationQueue *drawQueue;
 }
 
 /**
@@ -140,11 +163,6 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 @property (nonatomic,readonly,strong) CALayer *layer;
 
 /**
- Supply a block as an alternative to subclassing and overriding -drawRect:
- */
-@property (nonatomic, copy) TUIViewDrawRect drawRect;
-
-/**
  Supply a block as an alternative to overriding -layoutSubviews
  */
 @property (nonatomic, copy) TUIViewLayout layout;
@@ -167,10 +185,41 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 @property (nonatomic, assign) NSTimeInterval toolTipDelay;
 
+@property (nonatomic, assign) TUIViewContentMode contentMode;
+
+/**
+ If YES, drawing will be done in a background queue. If `drawQueue` is nil, it will be performed in the DISPATCH_QUEUE_PRIORITY_DEFAULT global queue. Note that `-viewWillDisplayLayer:` will still be called on the main thread.
+ 
+ Defaults to NO.
+ */
+@property (nonatomic, assign) BOOL drawInBackground;
+
+/**
+ The queue in which drawing should be performed. Only used if `drawInBackground` is YES.
+ 
+ Defaults to nil.
+ */
+@property (nonatomic, retain) NSOperationQueue *drawQueue;
+
 /**
  Make this view the first responder. Returns NO if it fails.
  */
 - (BOOL)makeFirstResponder;
+
+/**
+ * The window become key.
+ */
+- (void)windowDidBecomeKey;
+
+/**
+ * The window resigned key.
+ */
+- (void)windowDidResignKey;
+
+/**
+ * Does this view need to be redisplayed when the view's window's keyedness changes? If YES, the view will get automatically marked as needing display when the window's keyedness changes. Defaults to NO.
+ */
+@property (nonatomic, assign) BOOL needsDisplayWhenWindowsKeyednessChanges;
 
 @end
 
@@ -222,6 +271,8 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 - (CGSize)sizeThatFits:(CGSize)size;
 - (void)sizeToFit;                       // calls sizeThatFits: with current view bounds and changes bounds size.
+
+- (NSArray *)sortedSubviews;
 
 @end
 
@@ -279,6 +330,11 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 @end
 
 @interface TUIView (TUIViewRendering)
+
+/**
+ Supply a block as an alternative to subclassing and overriding -drawRect:
+ */
+@property (nonatomic, copy) TUIViewDrawRect drawRect;
 
 /**
  Forces an immediate update of the backing view's layer.contents. May be inside an animation block to cross-fade.

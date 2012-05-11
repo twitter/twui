@@ -60,6 +60,10 @@
 
 - (void)ab_setIsOpaque:(BOOL)o __attribute__((deprecated)); // don't use this
 
+- (void)tui_setOpaque:(BOOL)o;
+
+- (BOOL)isWindowKey;
+
 @end
 
 #import "TUINSView+Hyperfocus.h"

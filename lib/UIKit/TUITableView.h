@@ -19,6 +19,7 @@
 
 typedef enum {
 	TUITableViewStylePlain,              // regular table view
+	TUITableViewStyleGrouped, // grouped table view—headers stick to the top of the table view and scroll with it
 } TUITableViewStyle;
 
 typedef enum {
@@ -121,6 +122,9 @@ typedef enum {
  The table view itself has mechanisms for maintaining scroll position. During a live resize the table view should automatically "do the right thing".  This method may be useful during a reload if you want to stay in the same spot.  Use it instead of -reloadData.
  */
 - (void)reloadDataMaintainingVisibleIndexPath:(TUIFastIndexPath *)indexPath relativeOffset:(CGFloat)relativeOffset;
+
+// Forces a re-calculation and re-layout of the table. This is most useful for animating the relayout. It is potentially _more_ expensive than -reloadData since it has to allow for animating.
+- (void)reloadLayout;
 
 - (NSInteger)numberOfSections;
 - (NSInteger)numberOfRowsInSection:(NSInteger)section;

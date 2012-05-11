@@ -39,6 +39,8 @@
 		_buttonFlags.buttonType = TUIButtonTypeCustom;
 		_buttonFlags.dimsInBackground = 1;
 		_buttonFlags.firstDraw = 1;
+		self.backgroundColor = [TUIColor clearColor];
+		self.needsDisplayWhenWindowsKeyednessChanges = YES;
 	}
 	return self;
 }
@@ -163,11 +165,16 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	
 	CGRect bounds = self.bounds;
 
-	BOOL key = [self.nsWindow isKeyWindow];
+	BOOL key = [self.nsView isWindowKey];
 	BOOL down = self.state == TUIControlStateHighlighted;
-	CGFloat alpha = down?0.7:1.0;
+	CGFloat alpha = (self.buttonType == TUIButtonTypeCustom ? 1.0 : down?0.7:1.0);
 	if(_buttonFlags.dimsInBackground)
 		alpha = key?alpha:0.5;
+	
+	if(self.backgroundColor != nil) {
+		[self.backgroundColor setFill];
+		CGContextFillRect(TUIGraphicsGetCurrentContext(), self.bounds);
+	}
 	
 	TUIImage *backgroundImage = self.currentBackgroundImage;
 	TUIImage *image = self.currentImage;

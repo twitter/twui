@@ -153,6 +153,7 @@ NSInteger makeFirstResponderCount = 0;
 			[self setContentView:contentView];
 		} else {
 			[self setOpaque:YES];
+            [self setHasShadow:YES];
 		}
 
 		b.size.height -= ([self toolbarHeight]-22);
@@ -165,7 +166,6 @@ NSInteger makeFirstResponderCount = 0;
 	}
 	return self;
 }
-
 
 - (void)drawBackground:(CGRect)rect
 {
@@ -187,6 +187,11 @@ NSInteger makeFirstResponderCount = 0;
 	[super resignKeyWindow];
 	[nsView endHyperFocus:YES];
 	[self setEverythingNeedsDisplay];
+}
+
+- (BOOL)canBecomeKeyWindow
+{
+	return YES;
 }
 
 @end

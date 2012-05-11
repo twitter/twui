@@ -18,10 +18,13 @@
 
 - (void)doCommandBySelector:(SEL)selector
 {
-	BOOL consumed = [[self _textView] doCommandBySelector:selector];
-	if(!consumed) {
-		[super doCommandBySelector:selector];
-	}
+	return [super doCommandBySelector:selector];
+}
+
+- (BOOL)becomeFirstResponder
+{
+	self.selectedRange = NSMakeRange(self.text.length, 0);
+	return [super becomeFirstResponder];
 }
 
 @end

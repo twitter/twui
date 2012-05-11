@@ -41,7 +41,7 @@ CGSize AB_CTFrameGetSize(CTFrameRef frame)
 		// Get the origin of the last line. We add the descent to this
 		// (below) to get the bottom edge of the last line of text.
 		CGPoint lastLineOrigin;
-		CTFrameGetLineOrigins(frame, CFRangeMake(lines.count - 1, 1), &lastLineOrigin);
+		CTFrameGetLineOrigins(frame, CFRangeMake(lines.count - 1, 0), &lastLineOrigin);
 		
 		CGPathRef framePath = CTFrameGetPath(frame);
 		CGRect frameRect = CGPathGetBoundingBox(framePath);
@@ -59,7 +59,7 @@ CGFloat AB_CTFrameGetHeight(CTFrameRef f)
 {
 	NSArray *lines = (__bridge NSArray *)CTFrameGetLines(f);
 	NSInteger n = (NSInteger)[lines count];
-	CGPoint lineOrigins[n];
+	CGPoint *lineOrigins = (CGPoint *) malloc(sizeof(CGPoint) * n);
 	CTFrameGetLineOrigins(f, CFRangeMake(0, n), lineOrigins);
 	
 	CGPoint first, last;
@@ -78,9 +78,11 @@ CGFloat AB_CTFrameGetHeight(CTFrameRef f)
 			last = lineOrigins[i];
 			h += first.y - last.y;
 			h += descent;
+			free(lineOrigins);
 			return ceil(h);
 		}
 	}
+	free(lineOrigins);
 	return 0.0;
 }
 
@@ -93,7 +95,7 @@ CFIndex AB_CTFrameGetStringIndexForPosition(CTFrameRef frame, CGPoint p)
 	NSArray *lines = (__bridge NSArray *)CTFrameGetLines(frame);
 	
 	CFIndex linesCount = [lines count];
-	CGPoint lineOrigins[linesCount];
+	CGPoint *lineOrigins = (CGPoint *) malloc(sizeof(CGPoint) * linesCount);
 	CTFrameGetLineOrigins(frame, CFRangeMake(0, linesCount), lineOrigins);
 	
 	CTLineRef line = NULL;
@@ -107,12 +109,15 @@ CFIndex AB_CTFrameGetStringIndexForPosition(CTFrameRef frame, CGPoint p)
 		CTLineGetTypographicBounds(line, &ascent, &descent, NULL);
 		if(p.y > (floor(lineOrigin.y) - floor(descent))) { // above bottom of line
 			if(i == 0 && (p.y > (ceil(lineOrigin.y) + ceil(ascent)))) { // above top of first line
+				free(lineOrigins);
 				return 0;
 			} else {
 				goto found;
 			}
 		}
 	}
+	
+	free(lineOrigins);
 	
 	// didn't find a line, must be beneath the last line
 	return CTFrameGetStringRange(frame).length; // last character index
@@ -124,8 +129,11 @@ found:
 	
 	if(line) {
 		CFIndex i = CTLineGetStringIndexForPosition(line, p);
+		free(lineOrigins);
 		return i;
 	}
+	
+	free(lineOrigins);
 	
 	return 0;
 }
@@ -147,34 +155,46 @@ void AB_CTFrameGetRectsForRangeWithAggregationType(CTFrameRef frame, CFRange ran
 	CGRect bounds;
 	CGPathIsRect(CTFrameGetPath(frame), &bounds);
 	
+	NSArray *lines = (__bridge NSArray *)CTFrameGetLines(frame);
+	CFIndex linesCount = [lines count];
+	CGPoint *lineOrigins = (CGPoint *) malloc(sizeof(CGPoint) * linesCount);
+	CTFrameGetLineOrigins(frame, CFRangeMake(0, linesCount), lineOrigins);
+	
+	AB_CTLinesGetRectsForRangeWithAggregationType(lines, lineOrigins, bounds, range, aggregationType, rects, rectCount);
+	free(lineOrigins);
+}
+
+void AB_CTLinesGetRectsForRangeWithAggregationType(NSArray *lines, CGPoint *lineOrigins, CGRect bounds, CFRange range, AB_CTLineRectAggregationType aggregationType, CGRect rects[], CFIndex *rectCount)
+{
 	CFIndex maxRects = *rectCount;
 	CFIndex rectIndex = 0;
 	
 	CFIndex startIndex = range.location;
 	CFIndex endIndex = startIndex + range.length;
 	
-	NSArray *lines = (__bridge NSArray *)CTFrameGetLines(frame);
 	CFIndex linesCount = [lines count];
-	CGPoint lineOrigins[linesCount];
-	CTFrameGetLineOrigins(frame, CFRangeMake(0, linesCount), lineOrigins);
 	
 	for(CFIndex i = 0; i < linesCount; ++i) {
 		CTLineRef line = (__bridge CTLineRef)[lines objectAtIndex:i];
-		
-		CGPoint lineOrigin = lineOrigins[i];
-		CGFloat ascent, descent, leading;
-		CGFloat lineWidth = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
-		lineWidth = lineWidth;
-		CGFloat lineHeight = ascent + descent + leading;
-		CGFloat line_y = lineOrigin.y - descent + bounds.origin.y;
 		
 		CFRange lineRange = CTLineGetStringRange(line);
 		CFIndex lineStartIndex = lineRange.location;
 		CFIndex lineEndIndex = lineStartIndex + lineRange.length;
 		BOOL containsStartIndex = RangeContainsIndex(lineRange, startIndex);
 		BOOL containsEndIndex = RangeContainsIndex(lineRange, endIndex);
-
+		
 		if(containsStartIndex && containsEndIndex) {
+			CGPoint lineOrigin = lineOrigins[i];
+			CGFloat ascent, descent, leading;
+			CGFloat lineWidth = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+			lineWidth = lineWidth;
+			
+			// If we have more than 1 line, we want to find the real height of the line by measuring the distance between the current line and previous line. If it's only 1 line, then we'll guess the line's height.
+			BOOL useRealHeight = i < linesCount - 1;
+			CGFloat neighborLineY = i > 0 ? lineOrigins[i - 1].y : (linesCount - 1 > i ? lineOrigins[i + 1].y : 0.0f);
+			CGFloat lineHeight = ceil(useRealHeight ? abs(neighborLineY - lineOrigin.y) : ascent + descent + leading);
+			CGFloat line_y = round(useRealHeight ? lineOrigin.y + bounds.origin.y - lineHeight/2 + descent : lineOrigin.y - descent + bounds.origin.y);
+			
 			CGFloat startOffset = CTLineGetOffsetForStringIndex(line, startIndex, NULL);
 			CGFloat endOffset = CTLineGetOffsetForStringIndex(line, endIndex, NULL);
 			CGRect r = CGRectMake(bounds.origin.x + lineOrigin.x + startOffset, line_y, endOffset - startOffset, lineHeight);
@@ -188,11 +208,34 @@ void AB_CTFrameGetRectsForRangeWithAggregationType(CTFrameRef frame, CFRange ran
 		} else if(containsStartIndex) {
 			if(startIndex == lineEndIndex)
 				continue;
+			
+			CGPoint lineOrigin = lineOrigins[i];
+			CGFloat ascent, descent, leading;
+			CGFloat lineWidth = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+			lineWidth = lineWidth;
+			
+			// If we have more than 1 line, we want to find the real height of the line by measuring the distance between the current line and previous line. If it's only 1 line, then we'll guess the line's height.
+			BOOL useRealHeight = i < linesCount - 1;
+			CGFloat neighborLineY = i > 0 ? lineOrigins[i - 1].y : (linesCount > i ? lineOrigins[i + 1].y : 0.0f);
+			CGFloat lineHeight = ceil(useRealHeight ? abs(neighborLineY - lineOrigin.y) : ascent + descent + leading);
+			CGFloat line_y = round(useRealHeight ? lineOrigin.y + bounds.origin.y - lineHeight/2 + descent : lineOrigin.y - descent + bounds.origin.y);
+			
 			CGFloat startOffset = CTLineGetOffsetForStringIndex(line, startIndex, NULL);
 			CGRect r = CGRectMake(bounds.origin.x + lineOrigin.x + startOffset, line_y, bounds.size.width - startOffset, lineHeight);
 			if(rectIndex < maxRects)
 				rects[rectIndex++] = r;
 		} else if(containsEndIndex) {
+			CGPoint lineOrigin = lineOrigins[i];
+			CGFloat ascent, descent, leading;
+			CGFloat lineWidth = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+			lineWidth = lineWidth;
+			
+			// If we have more than 1 line, we want to find the real height of the line by measuring the distance between the current line and previous line. If it's only 1 line, then we'll guess the line's height.
+			BOOL useRealHeight = i < linesCount - 1;
+			CGFloat neighborLineY = i > 0 ? lineOrigins[i - 1].y : (linesCount > i ? lineOrigins[i + 1].y : 0.0f);
+			CGFloat lineHeight = ceil(useRealHeight ? abs(neighborLineY - lineOrigin.y) : ascent + descent + leading);
+			CGFloat line_y = round(useRealHeight ? lineOrigin.y + bounds.origin.y - lineHeight/2 + descent : lineOrigin.y - descent + bounds.origin.y);
+			
 			CGFloat endOffset = CTLineGetOffsetForStringIndex(line, endIndex, NULL);
 			CGRect r = CGRectMake(bounds.origin.x + lineOrigin.x, line_y, endOffset, lineHeight);
 			if(aggregationType == AB_CTLineRectAggregationTypeBlock) {
@@ -202,6 +245,17 @@ void AB_CTFrameGetRectsForRangeWithAggregationType(CTFrameRef frame, CFRange ran
 			if(rectIndex < maxRects)
 				rects[rectIndex++] = r;
 		} else if(RangeContainsIndex(range, lineRange.location)) {
+			CGPoint lineOrigin = lineOrigins[i];
+			CGFloat ascent, descent, leading;
+			CGFloat lineWidth = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+			lineWidth = lineWidth;
+			
+			// If we have more than 1 line, we want to find the real height of the line by measuring the distance between the current line and previous line. If it's only 1 line, then we'll guess the line's height.
+			BOOL useRealHeight = i < linesCount - 1;
+			CGFloat neighborLineY = i > 0 ? lineOrigins[i - 1].y : (linesCount > i ? lineOrigins[i + 1].y : 0.0f);
+			CGFloat lineHeight = ceil(useRealHeight ? abs(neighborLineY - lineOrigin.y) : ascent + descent + leading);
+			CGFloat line_y = round(useRealHeight ? lineOrigin.y + bounds.origin.y - lineHeight/2 + descent : lineOrigin.y - descent + bounds.origin.y);
+			
 			CGRect r = CGRectMake(bounds.origin.x + lineOrigin.x, line_y, bounds.size.width, lineHeight);
 			if(rectIndex < maxRects)
 				rects[rectIndex++] = r;

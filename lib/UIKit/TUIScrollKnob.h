@@ -30,12 +30,14 @@
 		unsigned int active:1;
 		unsigned int trackingInsideKnob:1;
 		unsigned int scrollIndicatorStyle:2;
+		unsigned int flashing:1;
 	} _scrollKnobFlags;
 }
 
 @property (nonatomic, unsafe_unretained) TUIScrollView * scrollView;
 @property (nonatomic, assign) unsigned int    scrollIndicatorStyle;
 @property (nonatomic, readonly) TUIView     * knob;
+@property (nonatomic, readonly) BOOL flashing;
 
 - (void)flash;
 

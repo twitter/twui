@@ -39,6 +39,10 @@
 #import "TUIStringDrawing.h"
 #import "TUIViewController.h"
 #import "TUICGAdditions.h"
+#import "CoreText+Additions.h"
+#import "TUITextEditor.h"
+#import "TUIPopover.h"
+#import "CAAnimation+TUIExtensions.h"
 
 extern CGContextRef TUIGraphicsGetCurrentContext(void);
 extern void TUIGraphicsPushContext(CGContextRef context);
@@ -62,5 +66,4 @@ extern TUIImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
  */
 extern NSData *TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef));
 
-extern CGFloat Screen_Scale; // set this at launch for experimental hidpi support
 extern BOOL AtLeastLion; // set at launch

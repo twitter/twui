@@ -19,6 +19,10 @@
 #import "TUIView+Private.h"
 #import "TUIViewController.h"
 
+NSString * const TUIViewWillMoveToWindowNotification = @"TUIViewWillMoveToWindowNotification";
+NSString * const TUIViewDidMoveToWindowNotification = @"TUIViewDidMoveToWindowNotification";
+NSString * const TUIViewWindow = @"TUIViewWindow";
+
 CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 @class TUIViewController;
@@ -57,15 +61,21 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 @implementation TUIView
 
-@synthesize subviews = _subviews;
-@synthesize drawRect;
 @synthesize layout;
 @synthesize toolTip;
 @synthesize toolTipDelay;
+@synthesize drawQueue;
+// use the accessor from the main implementation block
+@synthesize subviews = _subviews;
 
 - (void)setSubviews:(NSArray *)s
 {
-	[self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+	NSMutableArray *toRemove = [NSMutableArray array];
+	for(CALayer *sublayer in self.layer.sublayers) {
+		TUIView *associatedView = [sublayer associatedView];
+		if(associatedView != nil) [toRemove addObject:associatedView];
+	}
+	[toRemove makeObjectsPerformSelector:@selector(removeFromSuperview)];
 	
 	for(TUIView *subview in s) {
 		[self addSubview:subview];
@@ -95,6 +105,7 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 - (void)dealloc
 {
 	[self setTextRenderers:nil];
+	_layer.delegate = nil;
 	if(_context.context) {
 		CGContextRelease(_context.context);
 		_context.context = NULL;
@@ -185,6 +196,34 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 	_viewFlags.disableSubpixelTextRendering = !b;
 }
 
+- (BOOL)needsDisplayWhenWindowsKeyednessChanges
+{
+	return _viewFlags.needsDisplayWhenWindowsKeyednessChanges;
+}
+
+- (void)setNeedsDisplayWhenWindowsKeyednessChanges:(BOOL)needsDisplay
+{
+	_viewFlags.needsDisplayWhenWindowsKeyednessChanges = needsDisplay;
+}
+
+- (void)windowDidBecomeKey
+{
+	if(self.needsDisplayWhenWindowsKeyednessChanges) {
+		[self setNeedsDisplay];
+	}
+	
+	[self.subviews makeObjectsPerformSelector:@selector(windowDidBecomeKey)];
+}
+
+- (void)windowDidResignKey
+{
+	if(self.needsDisplayWhenWindowsKeyednessChanges) {
+		[self setNeedsDisplay];
+	}
+	
+	[self.subviews makeObjectsPerformSelector:@selector(windowDidResignKey)];
+}
+
 - (id<TUIViewDelegate>)viewDelegate
 {
 	return _viewDelegate;
@@ -204,8 +243,6 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 // actionForLayer:forKey: implementetd in TUIView+Animation
 
-extern CGFloat Screen_Scale;
-
 - (BOOL)_disableDrawRect
 {
 	return NO;
@@ -217,12 +254,14 @@ extern CGFloat Screen_Scale;
 	NSInteger w = b.size.width;
 	NSInteger h = b.size.height;
 	BOOL o = self.opaque;
+	CGFloat currentScale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f;
 	
 	if(_context.context) {
 		// kill if we're a different size
 		if(w != _context.lastWidth || 
 		   h != _context.lastHeight ||
-		   o != _context.lastOpaque) 
+		   o != _context.lastOpaque ||
+		   fabs(currentScale - _context.lastContentsScale) > 0.1f) 
 		{
 			CGContextRelease(_context.context);
 			_context.context = NULL;
@@ -234,9 +273,10 @@ extern CGFloat Screen_Scale;
 		_context.lastWidth = w;
 		_context.lastHeight = h;
 		_context.lastOpaque = o;
+		_context.lastContentsScale = currentScale;
 
-		b.size.width *= Screen_Scale;
-		b.size.height *= Screen_Scale;
+		b.size.width *= currentScale;
+		b.size.height *= currentScale;
 		if(b.size.width < 1) b.size.width = 1;
 		if(b.size.height < 1) b.size.height = 1;
 		CGContextRef ctx = TUICreateGraphicsContextWithOptions(b.size, o);
@@ -270,7 +310,8 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	TUIGraphicsPushContext(context); \
 	if(_viewFlags.clearsContextBeforeDrawing) \
 		CGContextClearRect(context, b); \
-	CGContextScaleCTM(context, Screen_Scale, Screen_Scale); \
+	CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f; \
+	CGContextScaleCTM(context, scale, scale); \
 	CGContextSetAllowsAntialiasing(context, true); \
 	CGContextSetShouldAntialias(context, true); \
 	CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
@@ -279,26 +320,42 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	CA_COLOR_OVERLAY_DEBUG \
 	TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext(); \
 	layer.contents = (id)image.CGImage; \
-	TUIGraphicsPopContext();
-	
+	CGContextScaleCTM(context, 1.0f / scale, 1.0f / scale); \
+	TUIGraphicsPopContext(); \
+	if(self.drawInBackground) [CATransaction flush];
+
 	CGRect rectToDraw = self.bounds;
 	if(!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
 		rectToDraw = _context.dirtyRect;
 		_context.dirtyRect = CGRectZero;
 	}
 	
-	if(drawRect) {
-		// drawRect is implemented via a block
-		PRE_DRAW
-		drawRect(self, rectToDraw);
-		POST_DRAW
-	} else if((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
-		// drawRect is overridden by subclass
-		PRE_DRAW
-		drawRectIMP(self, drawRectSEL, rectToDraw);
-		POST_DRAW
+	void (^drawBlock)(void) = ^{
+		if(drawRect) {
+			// drawRect is implemented via a block
+			PRE_DRAW
+			drawRect(self, rectToDraw);
+			POST_DRAW
+		} else if((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
+			// drawRect is overridden by subclass
+			PRE_DRAW
+			drawRectIMP(self, drawRectSEL, rectToDraw);
+			POST_DRAW
+		} else {
+			// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
+		}
+	};
+	
+	if(self.drawInBackground) {
+		layer.contents = nil;
+		
+		if(self.drawQueue != nil) {
+			[self.drawQueue addOperationWithBlock:drawBlock];
+		} else {
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), drawBlock);
+		}
 	} else {
-		// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
+		drawBlock();
 	}
 }
 
@@ -324,9 +381,81 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	[self _blockLayout];
 }
 
+- (BOOL)drawInBackground
+{
+	return _viewFlags.drawInBackground;
+}
+
+- (void)setDrawInBackground:(BOOL)drawInBackground
+{
+	_viewFlags.drawInBackground = drawInBackground;
+}
+
 - (NSTimeInterval)toolTipDelay
 {
 	return toolTipDelay;
+}
+
+- (TUIViewContentMode)contentMode
+{
+	if(_layer.contentsGravity == kCAGravityCenter) {
+		return TUIViewContentModeCenter;
+	} else if(_layer.contentsGravity == kCAGravityTop) {
+		return TUIViewContentModeTop;
+	} else if(_layer.contentsGravity == kCAGravityBottom) {
+		return TUIViewContentModeBottom;
+	} else if(_layer.contentsGravity == kCAGravityLeft) {
+		return TUIViewContentModeLeft;
+	} else if(_layer.contentsGravity == kCAGravityRight) {
+		return TUIViewContentModeRight;
+	} else if(_layer.contentsGravity == kCAGravityTopLeft) {
+		return TUIViewContentModeTopLeft;
+	} else if(_layer.contentsGravity == kCAGravityTopRight) {
+		return TUIViewContentModeTopRight;
+	} else if(_layer.contentsGravity == kCAGravityBottomLeft) {
+		return TUIViewContentModeBottomLeft;
+	} else if(_layer.contentsGravity == kCAGravityBottomRight) {
+		return TUIViewContentModeBottomRight;
+	} else if(_layer.contentsGravity == kCAGravityResize) {
+		return TUIViewContentModeScaleToFill;
+	} else if(_layer.contentsGravity == kCAGravityResizeAspect) {
+		return TUIViewContentModeScaleAspectFit;
+	} else if(_layer.contentsGravity == kCAGravityResizeAspectFill) {
+		return TUIViewContentModeScaleAspectFill;
+	} else {
+		return TUIViewContentModeScaleToFill;
+	}
+}
+
+- (void)setContentMode:(TUIViewContentMode)contentMode
+{
+	if(contentMode == TUIViewContentModeCenter) {
+		_layer.contentsGravity = kCAGravityCenter;
+	} else if(contentMode == TUIViewContentModeTop) {
+		_layer.contentsGravity = kCAGravityTop;
+	} else if(contentMode == TUIViewContentModeBottom) {
+		_layer.contentsGravity = kCAGravityBottom;
+	} else if(contentMode == TUIViewContentModeLeft) {
+		_layer.contentsGravity = kCAGravityLeft;
+	} else if(contentMode == TUIViewContentModeRight) {
+		_layer.contentsGravity = kCAGravityRight;
+	} else if(contentMode == TUIViewContentModeTopLeft) {
+		_layer.contentsGravity = kCAGravityTopLeft;
+	} else if(contentMode == TUIViewContentModeTopRight) {
+		_layer.contentsGravity = kCAGravityTopRight;
+	} else if(contentMode == TUIViewContentModeBottomLeft) {
+		_layer.contentsGravity = kCAGravityBottomLeft;
+	} else if(contentMode == TUIViewContentModeBottomRight) {
+		_layer.contentsGravity = kCAGravityBottomRight;
+	} else if(contentMode == TUIViewContentModeScaleToFill) {
+		_layer.contentsGravity = kCAGravityResize;
+	} else if(contentMode == TUIViewContentModeScaleAspectFit) {
+		_layer.contentsGravity = kCAGravityResizeAspect;
+	} else if(contentMode == TUIViewContentModeScaleAspectFill) {
+		_layer.contentsGravity = kCAGravityResizeAspectFill;
+	} else {
+		NSAssert1(NO, @"%lu is not a valid contentMode.", contentMode);
+	}
 }
 
 @end
@@ -458,7 +587,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 @end
 
 @implementation TUIView (TUIViewHierarchy)
-// use the accessor from the main implementation block
+
 @dynamic subviews;
 
 - (TUIView *)superview
@@ -557,11 +686,15 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	}
 }
 
-#define PRE_ADDSUBVIEW \
+#define PRE_ADDSUBVIEW(index) \
 	if (!_subviews) \
 		_subviews = [[NSMutableArray alloc] init]; \
 	\
-	[self.subviews addObject:view]; \
+	if (index == NSUIntegerMax) {\
+		[self.subviews addObject:view]; \
+	} else {\
+		[self.subviews insertObject:view atIndex:index];\
+	}\
  	[view removeFromSuperview]; /* will call willAdd:nil and didAdd (nil) */ \
 	[view willMoveToSuperview:self]; \
 	view.nsView = _nsView;
@@ -576,28 +709,36 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 {
 	if(!view)
 		return;
-	PRE_ADDSUBVIEW
+	PRE_ADDSUBVIEW(NSUIntegerMax)
 	[self.layer addSublayer:view.layer];
 	POST_ADDSUBVIEW
 }
 
 - (void)insertSubview:(TUIView *)view atIndex:(NSInteger)index
 {
-	PRE_ADDSUBVIEW
+	PRE_ADDSUBVIEW(index)
 	[self.layer insertSublayer:view.layer atIndex:(unsigned int)index];
 	POST_ADDSUBVIEW
 }
 
 - (void)insertSubview:(TUIView *)view belowSubview:(TUIView *)siblingSubview
 {
-	PRE_ADDSUBVIEW
+	NSUInteger siblingIndex = [self.subviews indexOfObject:siblingSubview];
+	if (siblingIndex == NSNotFound)
+		return;
+	
+	PRE_ADDSUBVIEW(siblingIndex + 1)
 	[self.layer insertSublayer:view.layer below:siblingSubview.layer];
 	POST_ADDSUBVIEW
 }
 
 - (void)insertSubview:(TUIView *)view aboveSubview:(TUIView *)siblingSubview
 {
-	PRE_ADDSUBVIEW
+	NSUInteger siblingIndex = [self.subviews indexOfObject:siblingSubview];
+	if (siblingIndex == NSNotFound)
+		return;
+	
+	PRE_ADDSUBVIEW(siblingIndex)
 	[self.layer insertSublayer:view.layer above:siblingSubview.layer];
 	POST_ADDSUBVIEW
 }
@@ -639,8 +780,21 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	}
 }
 
-- (void)willMoveToWindow:(TUINSWindow *)newWindow {}
-- (void)didMoveToWindow {}
+- (void)willMoveToWindow:(TUINSWindow *)newWindow {
+	for(TUIView *subview in self.subviews) {
+		[subview willMoveToWindow:newWindow];
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:TUIViewWillMoveToWindowNotification object:self userInfo:newWindow != nil ? [NSDictionary dictionaryWithObject:newWindow forKey:TUIViewWindow] : nil];
+}
+
+- (void)didMoveToWindow {
+	[self _updateLayerScaleFactor];
+	
+	[self.subviews makeObjectsPerformSelector:_cmd];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:TUIViewDidMoveToWindowNotification object:self userInfo:self.nsView.window != nil ? [NSDictionary dictionaryWithObject:self.nsView.window forKey:TUIViewWindow] : nil];
+}
 - (void)didAddSubview:(TUIView *)subview {}
 - (void)willRemoveSubview:(TUIView *)subview {}
 - (void)willMoveToSuperview:(TUIView *)newSuperview {}
@@ -718,6 +872,11 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
 	[self.backgroundColor set];
 	CGContextFillRect(ctx, self.bounds);
+}
+
+- (TUIViewDrawRect)drawRect
+{
+	return drawRect;
 }
 
 - (void)setDrawRect:(TUIViewDrawRect)d
@@ -816,9 +975,11 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 {
 	if(n != _nsView) {
 		[self willMoveToWindow:(TUINSWindow *)[n window]];
+		[[NSNotificationCenter defaultCenter] postNotificationName:TUIViewWillMoveToWindowNotification object:self userInfo:[n window] ? [NSDictionary dictionaryWithObject:[n window] forKey:TUIViewWindow] : nil];
 		_nsView = n;
 		[self.subviews makeObjectsPerformSelector:@selector(setNSView:) withObject:n];
 		[self didMoveToWindow];
+		[[NSNotificationCenter defaultCenter] postNotificationName:TUIViewDidMoveToWindowNotification object:self userInfo:[n window] ? [NSDictionary dictionaryWithObject:[n window] forKey:TUIViewWindow] : nil];
 	}
 }
 

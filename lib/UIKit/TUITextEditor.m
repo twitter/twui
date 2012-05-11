@@ -102,9 +102,43 @@
 	[self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
 }
 
+- (void)patchMenuWithStandardEditingMenuItems:(NSMenu *)menu
+{
+	NSMenuItem *item = [menu addItemWithTitle:NSLocalizedString(@"Cut", @"") action:@selector(cut:) keyEquivalent:@""];
+	[item setTarget:self];
+	item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"") action:@selector(copy:) keyEquivalent:@""];
+	[item setTarget:self];
+	item = [menu addItemWithTitle:NSLocalizedString(@"Paste", @"") action:@selector(paste:) keyEquivalent:@""];
+	[item setTarget:self];
+}
+
 - (void)keyDown:(NSEvent *)event
 {
 	[inputContext handleEvent:event]; // transform into commands
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+	BOOL handled = [inputContext handleEvent:event];
+	if(handled) return;
+	
+	[super mouseDown:event];
+}
+
+- (void)mouseDragged:(NSEvent *)event
+{
+	BOOL handled = [inputContext handleEvent:event];
+	if(handled) return;
+	
+	[super mouseDragged:event];
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+	BOOL handled = [inputContext handleEvent:event];
+	if(handled) return;
+	
+	[super mouseUp:event];
 }
 
 - (void)deleteCharactersInRange:(NSRange)range // designated delete
@@ -144,6 +178,17 @@
 - (void)doCommandBySelector:(SEL)selector
 {
 	[super doCommandBySelector:selector];
+	
+	wasValidKeyEquivalentSelector = selector != @selector(noop:);
+}
+
+- (BOOL)performKeyEquivalent:(NSEvent *)event
+{
+	// Some key equivalents--most notably command-arrows--should be handled and translated into selectors by our input context. But the input context will claim it consumed the event when it really just translated it into the `noop:` selector. So in that case, we want to go ahead and send the event up the responder chain.
+	BOOL consumed = [inputContext handleEvent:event];
+	if(consumed && wasValidKeyEquivalentSelector) return YES;
+
+	return [super performKeyEquivalent:event];
 }
 
 - (void)insertText:(id)aString
@@ -289,24 +334,17 @@
  */
 - (NSRect)firstRectForCharacterRange:(NSRange)aRange actualRange:(NSRangePointer)actualRange
 {
-	NSRange r = NSIntersectionRange(aRange, NSMakeRange(0, [backingStore length]));
 	if(actualRange)
-		*actualRange = r;
-	CGRect f = [self firstRectForCharacterRange:CFRangeMake(r.location, r.length)];
-	NSRect vf = [view frameInNSView];
+        *actualRange = aRange;
+    CGRect f = [self firstRectForCharacterRange:CFRangeMake(aRange.location, aRange.length)];
 	
-	NSPoint globalViewOffset = [[view nsWindow] convertBaseToScreen:[[view nsView] convertPointToBase:NSZeroPoint]];
+    NSRect vf = [self.view convertRect:f toView:nil];
+    NSRect windowRelativeRect = [self.view.nsView convertRect:vf toView:nil];
 	
-	NSPoint origin;
-	origin.x = globalViewOffset.x + vf.origin.x + f.origin.x;
-	origin.y = globalViewOffset.y + vf.origin.y + f.origin.y;
+    NSRect screenRect = windowRelativeRect;
+    screenRect.origin = [self.view.nsWindow convertBaseToScreen:windowRelativeRect.origin];
 	
-	NSRect screenRect;
-	screenRect.origin = origin;
-	screenRect.size.width = f.size.width;
-	screenRect.size.height = f.size.height;
-	
-	return screenRect;
+    return screenRect;
 }
 
 /* Returns the index for character that is nearest to aPoint. aPoint is in the 

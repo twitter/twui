@@ -1,5 +1,5 @@
 /*
- Copyright 2011 Twitter, Inc.
+ Copyright 2012 Twitter, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this work except in compliance with the License.
@@ -14,15 +14,16 @@
  limitations under the License.
  */
 
-#import "TUIView.h"
-#import "TUITextRenderer.h"
+#import <Cocoa/Cocoa.h>
 
-@interface TUIView (Private)
+#import <QuartzCore/QuartzCore.h>
 
-@property (nonatomic, retain) NSArray *textRenderers;
+typedef void (^TUICAAnimationCompletionBlock)();
 
-- (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;
+//Note this is slightly flawed as we set ourself as the delegate, really we should create a chained proxy, if we need that I will add it.
 
-- (void)_updateLayerScaleFactor;
+@interface CAAnimation (TUIExtensions)
+
+@property (nonatomic, copy) TUICAAnimationCompletionBlock tui_completionBlock;
 
 @end

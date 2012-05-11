@@ -21,6 +21,10 @@
 #import "TUIKit.h"
 #import "CoreText+Additions.h"
 
+@interface TUITextRenderer ()
+@property (nonatomic, retain) NSMutableDictionary *lineRects;
+@end
+
 @implementation TUITextRenderer
 
 @synthesize attributedString;
@@ -30,13 +34,11 @@
 @synthesize shadowColor;
 @synthesize shadowOffset;
 @synthesize shadowBlur;
+@synthesize verticalAlignment;
+@synthesize lineRects;
 
-- (void)_resetFramesetter
+- (void)_resetFrame
 {
-	if(_ct_framesetter) {
-		CFRelease(_ct_framesetter);
-		_ct_framesetter = NULL;
-	}
 	if(_ct_frame) {
 		CFRelease(_ct_frame);
 		_ct_frame = NULL;
@@ -45,6 +47,18 @@
 		CGPathRelease(_ct_path);
 		_ct_path = NULL;
 	}
+	
+	lineRects = nil;
+}
+
+- (void)_resetFramesetter
+{
+	if(_ct_framesetter) {
+		CFRelease(_ct_framesetter);
+		_ct_framesetter = NULL;
+	}
+	
+	[self _resetFrame];
 }
 
 - (void)dealloc
@@ -52,14 +66,45 @@
 	[self _resetFramesetter];
 }
 
+- (void)_buildFrameWithEffectiveFrame:(CGRect)effectiveFrame
+{
+	[self _resetFrame];
+	
+	_ct_path = CGPathCreateMutable();
+	CGPathAddRect((CGMutablePathRef)_ct_path, NULL, effectiveFrame);
+	_ct_frame = CTFramesetterCreateFrame(_ct_framesetter, CFRangeMake(0, 0), _ct_path, NULL);
+}
+
+- (void)_buildFrame
+{
+	if(!_ct_path) {
+		[self _buildFrameWithEffectiveFrame:frame];
+		
+		// TUITextVerticalAlignmentTop is easy since that's how Core Text always draws. For Middle and Bottom we have to shift the CTFrame down.
+		if(verticalAlignment != TUITextVerticalAlignmentTop) {
+			CGRect effectiveFrame = frame;
+			
+			CGSize size = AB_CTFrameGetSize(_ct_frame);
+			if(verticalAlignment == TUITextVerticalAlignmentMiddle) {
+				effectiveFrame.origin.y = size.height/2 - frame.size.height/2;
+			} else if(verticalAlignment == TUITextVerticalAlignmentBottom) {
+				effectiveFrame.origin.y = size.height;
+			}
+			
+			effectiveFrame = CGRectIntegral(effectiveFrame);
+			
+			[self _buildFrameWithEffectiveFrame:effectiveFrame];
+		}
+	}
+}
+
 - (void)_buildFramesetter
 {
 	if(!_ct_framesetter) {
 		_ct_framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)attributedString);
-		_ct_path = CGPathCreateMutable();
-		CGPathAddRect((CGMutablePathRef)_ct_path, NULL, frame);
-		_ct_frame = CTFramesetterCreateFrame(_ct_framesetter, CFRangeMake(0, 0), _ct_path, NULL);
 	}
+	
+	[self _buildFrame];
 }
 
 - (CTFramesetterRef)ctFramesetter
@@ -179,13 +224,18 @@
 				
 				CGContextSaveGState(context);
 				
-				CFIndex rectCount = 100;
+				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
+				NSArray *rectsArray = [self rectsForCharacterRange:CFRangeMake(range.location, range.length) aggregationType:aggregationType];
+				
+				CFIndex rectCount = rectsArray.count;
 				CGRect rects[rectCount];
-				CFRange r = {range.location, range.length};
-				AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
+				for(NSUInteger i = 0; i < rectCount; i++) {
+					rects[i] = [[rectsArray objectAtIndex:i] rectValue];
+				}
+				
 				TUIAttributedStringPreDrawBlock block = value;
 				block(self.attributedString, range, rects, rectCount);
-				
+					
 				CGContextRestoreGState(context);
 			}];
 		}
@@ -199,10 +249,15 @@
 				CGColorRef color = (__bridge CGColorRef) value;
 				CGContextSetFillColorWithColor(context, color);
 				
-				CFIndex rectCount = 100;
+				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
+				NSArray *rectsArray = [self rectsForCharacterRange:CFRangeMake(range.location, range.length) aggregationType:aggregationType];
+				
+				CFIndex rectCount = rectsArray.count;
 				CGRect rects[rectCount];
-				CFRange r = {range.location, range.length};
-				AB_CTFrameGetRectsForRangeWithAggregationType(f, r, (AB_CTLineRectAggregationType)[[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue], rects, &rectCount);
+				for(NSUInteger i = 0; i < rectCount; i++) {
+					rects[i] = [[rectsArray objectAtIndex:i] rectValue];
+				}
+				
 				for(CFIndex i = 0; i < rectCount; ++i) {
 					CGRect r = rects[i];
 					r = CGRectInset(r, -2, -1);
@@ -239,7 +294,6 @@
 		}
 		
 		CFRange selectedRange = [self _selectedRange];
-		
 		if(selectedRange.length > 0) {
 			[[NSColor selectedTextBackgroundColor] set];
 			// draw (or mask) selection
@@ -249,12 +303,7 @@
 			if(_flags.drawMaskDragSelection) {
 				CGContextClipToRects(context, rects, rectCount);
 			} else {
-				for(CFIndex i = 0; i < rectCount; ++i) {
-					CGRect r = rects[i];
-					r = CGRectIntegral(r);
-					if(r.size.width > 1)
-						CGContextFillRect(context, r);
-				}
+				[self drawSelectionWithRects:rects count:rectCount];
 			}
 		}
 		
@@ -269,6 +318,16 @@
 	}
 }
 
+- (void)drawSelectionWithRects:(CGRect *)rects count:(CFIndex)count {
+	CGContextRef context = TUIGraphicsGetCurrentContext();
+	for(CFIndex i = 0; i < count; ++i) {
+		CGRect r = rects[i];
+		r = CGRectIntegral(r);
+		if(r.size.width > 1)
+			CGContextFillRect(context, r);
+	}
+}
+
 - (CGSize)size
 {
 	if(attributedString) {
@@ -280,10 +339,26 @@
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width
 {
 	if(attributedString) {
-		// height needs to be something big but not CGFLOAT_MAX big
-		return [attributedString ab_sizeConstrainedToSize:CGSizeMake(width, 1000000.0f)];
+		CGRect oldFrame = frame;
+		self.frame = CGRectMake(0.0f, 0.0f, width, 1000000.0f);
+
+		CGSize size = [self size];
+		
+		self.frame = oldFrame;
+		
+		return size;
 	}
 	return CGSizeZero;
+}
+
+- (CGSize)sizeConstrainedToWidth:(CGFloat)width numberOfLines:(NSUInteger)numberOfLines
+{
+	NSMutableAttributedString *fake = [self.attributedString mutableCopy];
+	[fake replaceCharactersInRange:NSMakeRange(0, [fake length]) withString:@"M"];
+	CGFloat singleLineHeight = [fake ab_sizeConstrainedToWidth:width].height;
+	CGFloat maxHeight = singleLineHeight * numberOfLines;
+	CGSize size = [self sizeConstrainedToWidth:width];
+	return CGSizeMake(size.width, MIN(maxHeight, size.height));
 }
 
 - (void)setAttributedString:(NSAttributedString *)a
@@ -296,7 +371,7 @@
 - (void)setFrame:(CGRect)f
 {
 	frame = f;
-	[self _resetFramesetter];
+	[self _resetFrame];
 }
 
 - (void)reset
@@ -317,16 +392,32 @@
 
 - (NSArray *)rectsForCharacterRange:(CFRange)range
 {
-	CFIndex rectCount = 100;
-	CGRect rects[rectCount];
-	AB_CTFrameGetRectsForRange([self ctFrame], range, rects, &rectCount);
-	
-	NSMutableArray *wrappedRects = [NSMutableArray arrayWithCapacity:rectCount];
-	for(CFIndex i = 0; i < rectCount; i++) {
-		[wrappedRects addObject:[NSValue valueWithRect:rects[i]]];
+	return [self rectsForCharacterRange:range aggregationType:AB_CTLineRectAggregationTypeInline];
+}
+
+- (NSArray *)rectsForCharacterRange:(CFRange)range aggregationType:(AB_CTLineRectAggregationType)aggregationType
+{
+	if(self.lineRects == nil) {
+		self.lineRects = [NSMutableDictionary dictionary];
 	}
 	
-	return [wrappedRects copy];
+	NSValue *cacheKey = [NSValue valueWithRange:NSMakeRange(range.location, range.length)];
+	NSArray *cachedRects = [self.lineRects objectForKey:cacheKey];
+	if(cachedRects == nil) {
+		CFIndex rectCount = 100;
+		CGRect rects[rectCount];
+		AB_CTFrameGetRectsForRangeWithAggregationType([self ctFrame], range, aggregationType, rects, &rectCount);
+		
+		NSMutableArray *wrappedRects = [NSMutableArray arrayWithCapacity:rectCount];
+		for(CFIndex i = 0; i < rectCount; i++) {
+			[wrappedRects addObject:[NSValue valueWithRect:rects[i]]];
+		}
+		
+		[self.lineRects setObject:wrappedRects forKey:cacheKey];
+		cachedRects = wrappedRects;
+	}
+	
+	return cachedRects;
 }
 
 - (BOOL)backgroundDrawingEnabled
@@ -347,6 +438,15 @@
 - (void)setPreDrawBlocksEnabled:(BOOL)enabled
 {
 	_flags.preDrawBlocksEnabled = enabled;
+}
+
+- (void)setVerticalAlignment:(TUITextVerticalAlignment)alignment
+{
+	if(verticalAlignment == alignment) return;
+	
+	verticalAlignment = alignment;
+	
+	[self _resetFrame];
 }
 
 @end

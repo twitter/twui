@@ -20,7 +20,7 @@
  Twitter for Mac timelines only use 1-section table views, with <1000 tweets in a list at a time
  This pre-allocated hunk of instances is all we ever really need to touch.  Was a measurable win for us.
  */
-#define CACHE_COMMON_INDEX_PATHS 1024
+#define CACHE_COMMON_INDEX_PATHS 1024*10
 
 static struct TUIFastIndexPath_staticStruct {
 	Class isa;

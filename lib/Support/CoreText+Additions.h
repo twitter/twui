@@ -32,3 +32,4 @@ extern CFIndex AB_CTFrameGetStringIndexForPosition(CTFrameRef frame, CGPoint p);
 
 extern void AB_CTFrameGetRectsForRange(CTFrameRef frame, CFRange range, CGRect rects[], CFIndex *rectCount);
 extern void AB_CTFrameGetRectsForRangeWithAggregationType(CTFrameRef frame, CFRange range, AB_CTLineRectAggregationType aggregationType, CGRect rects[], CFIndex *rectCount);
+extern void AB_CTLinesGetRectsForRangeWithAggregationType(NSArray *lines, CGPoint *lineOrigins, CGRect bounds, CFRange range, AB_CTLineRectAggregationType aggregationType, CGRect rects[], CFIndex *rectCount);

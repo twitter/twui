@@ -31,6 +31,12 @@
 
 @protocol TUITextRendererDelegate <NSObject>
 
+@optional
 - (NSArray *)activeRangesForTextRenderer:(TUITextRenderer *)t;
+
+- (void)textRendererWillBecomeFirstResponder:(TUITextRenderer *)textRenderer;
+- (void)textRendererDidBecomeFirstResponder:(TUITextRenderer *)textRenderer;
+- (void)textRendererWillResignFirstResponder:(TUITextRenderer *)textRenderer;
+- (void)textRendererDidResignFirstResponder:(TUITextRenderer *)textRenderer;
 
 @end
