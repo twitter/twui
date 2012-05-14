@@ -14,18 +14,10 @@
 @synthesize accessibilityContainer;
 @synthesize accessibilityLabel;
 
-- (void)dealloc
-{
-	[accessibilityLabel release];
-	
-	[super dealloc];
-}
-
 - (id)initWithAccessibilityContainer:(id)container
 {
     self = [super init];
     if(self == nil) {
-		[self release];
 		return nil;
 	}
 	
