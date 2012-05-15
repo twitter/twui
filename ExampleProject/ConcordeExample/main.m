@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 		AtLeastLion = YES;
 	}
 	
-	Screen_Scale = [[NSScreen mainScreen] userSpaceScaleFactor]; // hidpi is still a work in progress
+	double Screen_Scale = [[NSScreen mainScreen] userSpaceScaleFactor]; // hidpi is still a work in progress
 
 	return NSApplicationMain(argc, (const char **)argv);
 }
