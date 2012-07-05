@@ -205,10 +205,11 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	CGContextTranslateCTM(ctx, _titleEdgeInsets.left, _titleEdgeInsets.bottom);
 	if(!key)
 		CGContextSetAlpha(ctx, 0.5);
-	CGRect titleFrame = self.bounds;
-	titleFrame.size.width -= (_titleEdgeInsets.left + _titleEdgeInsets.right);
-	_titleView.frame = titleFrame;
-	[_titleView drawRect:_titleView.bounds];
+    _titleView.frame = CGRectMake(_titleEdgeInsets.left, 
+                                  _titleEdgeInsets.top, 
+                                  bounds.size.width - _titleEdgeInsets.left - _titleEdgeInsets.right,
+                                  bounds.size.height - _titleEdgeInsets.top - _titleEdgeInsets.bottom);
+    [_titleView drawRect:_titleView.bounds];
 	CGContextRestoreGState(ctx);
 }
 
