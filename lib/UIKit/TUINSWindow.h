@@ -15,8 +15,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-
-@class TUINSView;
+#import "TUINSView.h"
 
 @interface NSWindow (TUIWindowAdditions)
 

@@ -15,12 +15,12 @@
  */
 
 #import "TUIPopover.h"
-#import "CAAnimation+TUIExtensions.h"
-#import "NSColor+TUIExtensions.h"
-#import "TUICGAdditions.h"
-#import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUIViewController.h"
+
+#import "CAAnimation+TUIExtensions.h"
+
+//#import "GHUICoreGraphics.h"
 
 //***************************************************************************
 
@@ -173,7 +173,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
     BOOL (^checkPopoverSizeForScreenWithPopoverEdge)(CGRectEdge) = ^ (CGRectEdge popoverEdge) 
     {
         CGRect popoverRect = popoverRectForEdge(popoverEdge);
-        return NSContainsRect(positioningView.nsWindow.screen.visibleFrame, popoverRect);
+        return NSContainsRect(positioningView.nsWindow.screen.frame, popoverRect);
     };
     
     //This is as ugly as sin… but it gets the job done. I couldn't think of a nice way to code this but still get the desired behaviour
@@ -196,7 +196,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
         };
 		
 		CGRect (^fitRectToScreen)(CGRect) = ^ (CGRect proposedRect) {
-			NSRect screenRect = positioningView.nsWindow.screen.visibleFrame;
+			NSRect screenRect = positioningView.nsWindow.screen.frame;
 			
 			if (proposedRect.origin.y < NSMinY(screenRect))
 				proposedRect.origin.y = NSMinY(screenRect);
@@ -479,8 +479,8 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
     
 	_popoverEdge = popoverEdge;
 	_screenOriginRect = originScreenRect;
-	_strokeColor = [NSColor blackColor];
-	_fillColor = [NSColor whiteColor];
+	_strokeColor = [TUIColor blackColor];
+	_fillColor = [TUIColor whiteColor];
 	
 	__block __unsafe_unretained TUIPopoverBackgroundView *weakSelf = self;
     self.drawRect = ^ (TUIView *view, CGRect rect) 
@@ -488,11 +488,11 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
 		TUIPopoverBackgroundView *strongSelf = weakSelf;
         CGContextRef context = TUIGraphicsGetCurrentContext();
         CGPathRef outerBorder = [strongSelf newPopoverPathForEdge:self.popoverEdge inFrame:self.bounds];
-        CGContextSetStrokeColorWithColor(context, self.strokeColor.tui_CGColor);
+        CGContextSetStrokeColorWithColor(context, self.strokeColor.CGColor);
         CGContextAddPath(context, outerBorder);
         CGContextStrokePath(context);
         
-        CGContextSetFillColorWithColor(context, self.fillColor.tui_CGColor);
+        CGContextSetFillColorWithColor(context, self.fillColor.CGColor);
         CGContextAddPath(context, outerBorder);
         CGContextFillPath(context);
 		

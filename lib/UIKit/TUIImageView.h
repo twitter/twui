@@ -16,10 +16,15 @@
 
 #import "TUIView.h"
 
+@class TUIImage;
+
 @interface TUIImageView : TUIView
+{
+	TUIImage *_image;
+}
 
-- (id)initWithImage:(NSImage *)image;
+- (id)initWithImage:(TUIImage *)image;
 
-@property(nonatomic, strong) NSImage *image;
+@property(nonatomic,strong) TUIImage *image;
 
 @end

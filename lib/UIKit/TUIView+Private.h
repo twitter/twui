@@ -15,15 +15,14 @@
  */
 
 #import "TUIView.h"
+#import "TUITextRenderer.h"
 
-@class TUITextRenderer;
+@interface TUIView (Private)
 
-@interface TUIView ()
 @property (nonatomic, retain) NSArray *textRenderers;
 
 - (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;
+
 - (void)_updateLayerScaleFactor;
 
 @end
-
-extern CGFloat TUICurrentContextScaleFactor(void);

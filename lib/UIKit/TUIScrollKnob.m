@@ -14,8 +14,9 @@
  limitations under the License.
  */
 
+#import "TUIKit.h"
+
 #import "TUIScrollKnob.h"
-#import "TUICGAdditions.h"
 #import "TUIScrollView.h"
 
 @interface TUIScrollKnob ()
@@ -36,7 +37,7 @@
 		knob = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 12, 12)];
 		knob.layer.cornerRadius = 4.0;
 		knob.userInteractionEnabled = NO;
-		knob.backgroundColor = [NSColor blackColor];
+		knob.backgroundColor = [TUIColor blackColor];
 		[self addSubview:knob];
 		[self _updateKnob];
 		[self _updateKnobColor:0.0];
@@ -128,11 +129,11 @@
   _scrollKnobFlags.scrollIndicatorStyle = style;
   switch(style){
     case TUIScrollViewIndicatorStyleLight:
-      knob.backgroundColor = [NSColor whiteColor];
+      knob.backgroundColor = [TUIColor whiteColor];
       break;
     case TUIScrollViewIndicatorStyleDark:
     default:
-      knob.backgroundColor = [NSColor blackColor];
+      knob.backgroundColor = [TUIColor blackColor];
       break;
   }
 }

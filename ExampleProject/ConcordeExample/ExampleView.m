@@ -25,11 +25,11 @@
 - (id)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
-		self.backgroundColor = [NSColor colorWithCalibratedWhite:0.9 alpha:1.0];
+		self.backgroundColor = [TUIColor colorWithWhite:0.9 alpha:1.0];
 		
 		// if you're using a font a lot, it's best to allocate it once and re-use it
-		exampleFont1 = [NSFont fontWithName:@"HelveticaNeue" size:15];
-		exampleFont2 = [NSFont fontWithName:@"HelveticaNeue-Bold" size:15];
+		exampleFont1 = [TUIFont fontWithName:@"HelveticaNeue" size:15];
+		exampleFont2 = [TUIFont fontWithName:@"HelveticaNeue-Bold" size:15];
 		
 		CGRect b = self.bounds;
 		b.origin.y += TAB_HEIGHT;
@@ -60,24 +60,21 @@
 		
 		// setup individual tabs
 		for(TUIView *tabView in _tabBar.tabViews) {
-			tabView.backgroundColor = [NSColor clearColor]; // will also set opaque=NO
+			tabView.backgroundColor = [TUIColor clearColor]; // will also set opaque=NO
 			
 			// let's just teach the tabs how to draw themselves right here - no need to subclass anything
 			tabView.drawRect = ^(TUIView *v, CGRect rect) {
 				CGRect b = v.bounds;
 				CGContextRef ctx = TUIGraphicsGetCurrentContext();
 				
-				NSImage *image = [NSImage imageNamed:@"clock"];
+				TUIImage *image = [TUIImage imageNamed:@"clock.png" cache:YES];
 				CGRect imageRect = ABIntegralRectWithSizeCenteredInRect([image size], b);
 
 				if([v.nsView isTrackingSubviewOfView:v]) { // simple way to check if the mouse is currently down inside of 'v'.  See the other methods in TUINSView for more.
 					
 					// first draw a slight white emboss below
 					CGContextSaveGState(ctx);
-					
-					CGImageRef cgImage = [image CGImageForProposedRect:&imageRect context:nil hints:nil];
-					CGContextClipToMask(ctx, CGRectOffset(imageRect, 0, -1), cgImage);
-
+					CGContextClipToMask(ctx, CGRectOffset(imageRect, 0, -1), image.CGImage);
 					CGContextSetRGBFillColor(ctx, 1, 1, 1, 0.5);
 					CGContextFillRect(ctx, b);
 					CGContextRestoreGState(ctx);
@@ -85,20 +82,20 @@
 					// replace image with a dynamically generated fancy inset image
 					// 1. use the image as a mask to draw a blue gradient
 					// 2. generate an inner shadow image based on the mask, then overlay that on top
-					image = [NSImage tui_imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
+					image = [TUIImage imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
 						CGRect r;
 						r.origin = CGPointZero;
 						r.size = imageRect.size;
 						
-						CGContextClipToMask(ctx, r, image.tui_CGImage);
+						CGContextClipToMask(ctx, r, image.CGImage);
 						CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, r.size.height), (CGFloat[]){0,0,1,1}, CGPointZero, (CGFloat[]){0,0.6,1,1});
-						NSImage *innerShadow = [image tui_innerShadowWithOffset:CGSizeMake(0, -1) radius:3.0 color:[NSColor blackColor] backgroundColor:[NSColor cyanColor]];
+						TUIImage *innerShadow = [image innerShadowWithOffset:CGSizeMake(0, -1) radius:3.0 color:[TUIColor blackColor] backgroundColor:[TUIColor cyanColor]];
 						CGContextSetBlendMode(ctx, kCGBlendModeOverlay);
-						CGContextDrawImage(ctx, r, innerShadow.tui_CGImage);
+						CGContextDrawImage(ctx, r, innerShadow.CGImage);
 					}];
 				}
 
-				[image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0]; // draw 'image' (might be the regular one, or the dynamically generated one)
+				[image drawInRect:imageRect]; // draw 'image' (might be the regular one, or the dynamically generated one)
 
 				// draw the index
 				TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"%ld", v.tag]];
@@ -129,7 +126,7 @@
 	return 25;
 }
 
-- (CGFloat)tableView:(TUITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(TUITableView *)tableView heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 {
 	return 50.0;
 }
@@ -137,19 +134,19 @@
 - (TUIView *)tableView:(TUITableView *)tableView headerViewForSection:(NSInteger)section
 {
 	ExampleSectionHeaderView *view = [[ExampleSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
-	TUIAttributedString *title = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"Example Section %d", (int)section]];
-	title.color = [NSColor blackColor];
+	TUIAttributedString *title = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"Example Section %d", section]];
+	title.color = [TUIColor blackColor];
 	title.font = exampleFont2;
 	view.labelRenderer.attributedString = title;
 	return view;
 }
 
-- (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 {
 	ExampleTableViewCell *cell = reusableTableCellOfClass(tableView, ExampleTableViewCell);
 	
-	TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"example cell %d", (int)indexPath.row]];
-	s.color = [NSColor blackColor];
+	TUIAttributedString *s = [TUIAttributedString stringWithString:[NSString stringWithFormat:@"example cell %d", indexPath.row]];
+	s.color = [TUIColor blackColor];
 	s.font = exampleFont1;
 	[s setFont:exampleFont2 inRange:NSMakeRange(8, 4)]; // make the word "cell" bold
 	cell.attributedString = s;
@@ -157,7 +154,7 @@
 	return cell;
 }
 
-- (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(NSIndexPath *)indexPath withEvent:(NSEvent *)event
+- (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event
 {
 	if([event clickCount] == 1) {
 		// do something cool
@@ -167,7 +164,7 @@
 		// show context menu
 	}
 }
-- (BOOL)tableView:(TUITableView *)tableView shouldSelectRowAtIndexPath:(NSIndexPath *)indexPath forEvent:(NSEvent *)event{
+- (BOOL)tableView:(TUITableView *)tableView shouldSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath forEvent:(NSEvent *)event{
 	switch (event.type) {
 		case NSRightMouseDown:
 			return NO;
@@ -176,19 +173,19 @@
 	return YES;
 }
 
--(BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+-(BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath {
   // return TRUE to enable row reordering by dragging; don't implement this method or return
   // FALSE to disable
   return TRUE;
 }
 
--(void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+-(void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath {
   // update the model to reflect the changed index paths; since this example isn't backed by
   // a "real" model, after dropping a cell the table will revert to it's previous state
   NSLog(@"Move dragged row: %@ => %@", fromIndexPath, toIndexPath);
 }
 
--(NSIndexPath *)tableView:(TUITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)fromPath toProposedIndexPath:(NSIndexPath *)proposedPath {
+-(TUIFastIndexPath *)tableView:(TUITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(TUIFastIndexPath *)fromPath toProposedIndexPath:(TUIFastIndexPath *)proposedPath {
   // optionally revise the drag-to-reorder drop target index path by returning a different index path
   // than proposedPath.  if proposedPath is suitable, return that.  if this method is not implemented,
   // proposedPath is used by default.

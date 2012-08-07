@@ -15,8 +15,6 @@
  */
 
 #import "TUIView.h"
-#import "TUIView+Private.h"
-#import "TUICAAction.h"
 
 @interface TUIViewAnimation : NSObject <CAAction>
 {
@@ -145,8 +143,6 @@ static NSMutableArray *AnimationStack = nil;
 
 + (void)beginAnimations:(NSString *)animationID context:(void *)context
 {
-	[NSAnimationContext beginGrouping];
-
 	TUIViewAnimation *animation = [[TUIViewAnimation alloc] init];
 	animation.context = context;
 	animation.animationID = animationID;
@@ -162,7 +158,6 @@ static NSMutableArray *AnimationStack = nil;
 + (void)commitAnimations
 {
 	[[self _animationStack] removeLastObject];
-	[NSAnimationContext endGrouping];
 	
 //	NSLog(@"--- %d", [[self _animationStack] count]);
 }
@@ -191,9 +186,7 @@ static CGFloat SlomoTime()
 
 + (void)setAnimationDuration:(NSTimeInterval)duration
 {
-	duration *= SlomoTime();
-	[self _currentAnimation].basicAnimation.duration = duration;
-	[NSAnimationContext currentContext].duration = duration;
+	[self _currentAnimation].basicAnimation.duration = duration * SlomoTime();
 }
 
 + (void)setAnimationDelay:(NSTimeInterval)delay                    // default = 0.0
@@ -293,22 +286,16 @@ static BOOL animateContents = NO;
 
 - (id<CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event
 {
-	id defaultAction = [NSNull null];
-
-	if(disableAnimations)
-		return defaultAction;
-
-	if((animateContents == NO) && [event isEqualToString:@"contents"])
-		return defaultAction; // default - don't animate contents
-
-	id animation = [TUIView _currentAnimation];
-	if (!animation)
-		return defaultAction;
-
-	if ([TUICAAction interceptsActionForKey:event])
-		return [TUICAAction actionWithAction:animation];
-	else
-		return animation;
+	if(disableAnimations == NO) {
+		if((animateContents == NO) && [event isEqualToString:@"contents"])
+			return (id<CAAction>)[NSNull null]; // default - don't animate contents
+		
+		id<CAAction>animation = [TUIView _currentAnimation];
+		if(animation)
+			return animation;
+	}
+	
+	return (id<CAAction>)[NSNull null];
 }
 
 @end

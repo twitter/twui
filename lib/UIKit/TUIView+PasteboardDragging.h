@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-#import "TUIView.h"
+@class TUIView;
 
 @interface TUIView (PasteboardDragging)
 

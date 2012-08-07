@@ -15,13 +15,11 @@
  */
 
 #import "TUITextRenderer.h"
-#import "ABActiveRange.h"
-#import "NSColor+TUIExtensions.h"
-#import "TUIAttributedString.h"
-#import "TUICGAdditions.h"
-#import "TUIStringDrawing.h"
 #import "TUITextRenderer+Event.h"
-#import "TUIView.h"
+#import "TUIFont.h"
+#import "TUIColor.h"
+#import "TUIKit.h"
+#import "CoreText+Additions.h"
 
 @interface TUITextRenderer ()
 @property (nonatomic, retain) NSMutableDictionary *lineRects;
@@ -286,10 +284,9 @@
 				rect = CGRectInset(rect, -2, -1);
 				rect.size.height -= 1;
 				rect = CGRectIntegral(rect);
-				NSColor *color = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
-				[color setFill];
-
-				CGContextSetShadowWithColor(context, CGSizeMake(0, 0), 8, color.tui_CGColor);
+				TUIColor *color = [TUIColor colorWithWhite:1.0 alpha:1.0];
+				[color set];
+				CGContextSetShadowWithColor(context, CGSizeMake(0, 0), 8, color.CGColor);
 				CGContextFillRoundRect(context, rect, 10);
 			}
 			
@@ -313,7 +310,7 @@
 		CGContextSetTextMatrix(context, CGAffineTransformIdentity);
 		
 		if(shadowColor)
-			CGContextSetShadowWithColor(context, shadowOffset, shadowBlur, shadowColor.tui_CGColor);
+			CGContextSetShadowWithColor(context, shadowOffset, shadowBlur, shadowColor.CGColor);
 
 		CTFrameDraw(f, context); // draw actual text
 				
@@ -450,11 +447,6 @@
 	verticalAlignment = alignment;
 	
 	[self _resetFrame];
-}
-
-- (void)setNeedsDisplay {
-	[self _resetFramesetter];
-	[view setNeedsDisplay];
 }
 
 @end

@@ -13,7 +13,6 @@
 		5C782FD013A54FFF00CF69EF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C782FCF13A54FFD00CF69EF /* ApplicationServices.framework */; };
 		5C782FD713A556A900CF69EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C782FD613A556A800CF69EF /* QuartzCore.framework */; };
 		5C90DB9D13A7C08E00ECDD14 /* ExampleTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C90DB9C13A7C08D00ECDD14 /* ExampleTabBar.m */; };
-		5E8A28C81590CB34000D5D2B /* clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E8A28C71590CB34000D5D2B /* clock@2x.png */; };
 		5ED56678139DC30300031CDF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ED56677139DC30300031CDF /* Cocoa.framework */; };
 		5ED56682139DC30300031CDF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ED56680139DC30300031CDF /* InfoPlist.strings */; };
 		5ED56685139DC30300031CDF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED56684139DC30300031CDF /* main.m */; };
@@ -74,7 +73,6 @@
 		5C782FD613A556A800CF69EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5C90DB9B13A7C08D00ECDD14 /* ExampleTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleTabBar.h; sourceTree = "<group>"; };
 		5C90DB9C13A7C08D00ECDD14 /* ExampleTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleTabBar.m; sourceTree = "<group>"; };
-		5E8A28C71590CB34000D5D2B /* clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock@2x.png"; sourceTree = "<group>"; };
 		5ED56673139DC30300031CDF /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ED56677139DC30300031CDF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		5ED5667A139DC30300031CDF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -175,7 +173,6 @@
 			isa = PBXGroup;
 			children = (
 				D3EC0C481432325A003C162C /* large-image.jpeg */,
-				5E8A28C71590CB34000D5D2B /* clock@2x.png */,
 				5C57CF3C13A7E7C00032AC1F /* clock.png */,
 				5ED5667F139DC30300031CDF /* Example-Info.plist */,
 				5ED56680139DC30300031CDF /* InfoPlist.strings */,
@@ -290,7 +287,6 @@
 				5ED5668E139DC30300031CDF /* MainMenu.xib in Resources */,
 				5C57CF3D13A7E7C00032AC1F /* clock.png in Resources */,
 				D3EC0C4A1432325A003C162C /* large-image.jpeg in Resources */,
-				5E8A28C81590CB34000D5D2B /* clock@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,7 +350,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
@@ -375,7 +370,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BUILD_32_LIKE_64;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;

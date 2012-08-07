@@ -15,9 +15,9 @@
  */
 
 #import "TUITableViewCell.h"
-#import "TUINSWindow.h"
-#import "TUITableView+Cell.h"
 #import "TUITableView.h"
+#import "TUITableView+Cell.h"
+#import "TUINSWindow.h"
 
 @implementation TUITableViewCell
 
@@ -58,7 +58,7 @@
 	return (TUITableView *)self.superview;
 }
 
-- (NSIndexPath *)indexPath
+- (TUIFastIndexPath *)indexPath
 {
 	return [self.tableView indexPathForCell:self];
 }

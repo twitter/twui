@@ -16,47 +16,54 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CAAnimation+TUIExtensions.h"
-#import "CoreText+Additions.h"
-#import "NSClipView+TUIExtensions.h"
-#import "NSColor+TUIExtensions.h"
-#import "NSImage+TUIExtensions.h"
-#import "NSScrollView+TUIExtensions.h"
-#import "NSView+TUIExtensions.h"
-#import "TUIActivityIndicatorView.h"
-#import "TUIAttributedString.h"
-#import "TUIBridgedScrollView.h"
-#import "TUIBridgedView.h"
-#import "TUIButton.h"
-#import "TUICGAdditions.h"
-#import "TUIHostView.h"
-#import "TUIImageView.h"
-#import "TUILabel.h"
-#import "TUILayoutConstraint.h"
-#import "TUINSView.h"
-#import "TUINSView+Hyperfocus.h"
-#import "TUINSView+NSTextInputClient.h"
-#import "TUINSWindow.h"
-#import "TUIPopover.h"
-#import "TUIProgressBar.h"
 #import "TUIResponder.h"
+#import "TUIFont.h"
+#import "TUIColor.h"
+#import "TUIImage.h"
+#import "TUIView.h"
 #import "TUIScrollView.h"
-#import "TUIScrollView+TUIBridgedScrollView.h"
-#import "TUIStretchableImage.h"
-#import "TUIStringDrawing.h"
-#import "TUIStyledView.h"
-#import "TUITableView+Additions.h"
+#import "TUIFastIndexPath.h"
 #import "TUITableView.h"
+#import "TUITableView+Additions.h"
 #import "TUITableViewCell.h"
 #import "TUITableViewSectionHeader.h"
-#import "TUITextEditor.h"
-#import "TUITextField.h"
+#import "TUILabel.h"
+#import "TUIImageView.h"
+#import "TUIButton.h"
 #import "TUITextView.h"
-#import "TUIView.h"
-#import "TUIView+Layout.h"
-#import "TUIView+TUIBridgedView.h"
+#import "TUITextField.h"
+#import "TUIAttributedString.h"
+#import "TUIActivityIndicatorView.h"
+#import "TUINSView.h"
+#import "TUINSWindow.h"
+#import "TUIStringDrawing.h"
 #import "TUIViewController.h"
-#import "TUIViewNSViewContainer.h"
-#import "NSFont+TUIExtensions.h"
+#import "TUICGAdditions.h"
+#import "CoreText+Additions.h"
+#import "TUITextEditor.h"
+#import "TUIPopover.h"
+#import "CAAnimation+TUIExtensions.h"
+
+extern CGContextRef TUIGraphicsGetCurrentContext(void);
+extern void TUIGraphicsPushContext(CGContextRef context);
+extern void TUIGraphicsPopContext(void);
+
+extern TUIImage *TUIGraphicsContextGetImage(CGContextRef ctx);
+
+extern void TUIGraphicsBeginImageContext(CGSize size);
+extern void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale);
+extern TUIImage *TUIGraphicsGetImageFromCurrentImageContext(void);
+extern void TUIGraphicsEndImageContext(void); 
+
+extern TUIImage *TUIGraphicsGetImageForView(TUIView *view);
+
+extern TUIImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void));
+
+/**
+ Draw drawing as a PDF
+ @param optionalMediaBox may be NULL
+ @returns NSData encapsulating the PDF drawing, suitable for writing to a file or the pasteboard
+ */
+extern NSData *TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef));
 
 extern BOOL AtLeastLion; // set at launch

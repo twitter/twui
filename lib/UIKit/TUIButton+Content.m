@@ -16,21 +16,34 @@
 
 #import "TUIButton.h"
 #import "TUIControl+Private.h"
+#import "TUIImage.h"
 
 @interface TUIButtonContent : NSObject
+{
+	NSString *title;
+	TUIColor *titleColor;
+	TUIColor *shadowColor;
+	TUIImage *image;
+	TUIImage *backgroundImage;
+}
+
 @property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSColor *titleColor;
-@property (nonatomic, strong) NSColor *shadowColor;
-@property (nonatomic, strong) NSImage *image;
-@property (nonatomic, strong) NSImage *backgroundImage;
+@property (nonatomic, strong) TUIColor *titleColor;
+@property (nonatomic, strong) TUIColor *shadowColor;
+@property (nonatomic, strong) TUIImage *image;
+@property (nonatomic, strong) TUIImage *backgroundImage;
+
 @end
 
 @implementation TUIButtonContent
-@synthesize title = title;
-@synthesize titleColor = titleColor;
-@synthesize shadowColor = shadowColor;
-@synthesize image = image;
-@synthesize backgroundImage = backgroundImage;
+
+@synthesize title;
+@synthesize titleColor;
+@synthesize shadowColor;
+@synthesize image;
+@synthesize backgroundImage;
+
+
 @end
 
 
@@ -55,7 +68,7 @@
 	[self _stateDidChange];
 }
 
-- (void)setTitleColor:(NSColor *)color forState:(TUIControlState)state
+- (void)setTitleColor:(TUIColor *)color forState:(TUIControlState)state
 {
 	[self _stateWillChange];
 	[[self _contentForState:state] setTitleColor:color];
@@ -63,7 +76,7 @@
 	[self _stateDidChange];
 }
 
-- (void)setTitleShadowColor:(NSColor *)color forState:(TUIControlState)state
+- (void)setTitleShadowColor:(TUIColor *)color forState:(TUIControlState)state
 {
 	[self _stateWillChange];
 	[[self _contentForState:state] setShadowColor:color];
@@ -71,7 +84,7 @@
 	[self _stateDidChange];
 }
 
-- (void)setImage:(NSImage *)i forState:(TUIControlState)state
+- (void)setImage:(TUIImage *)i forState:(TUIControlState)state
 {
 	[self _stateWillChange];
 	[[self _contentForState:state] setImage:i];
@@ -79,7 +92,7 @@
 	[self _stateDidChange];
 }
 
-- (void)setBackgroundImage:(NSImage *)i forState:(TUIControlState)state
+- (void)setBackgroundImage:(TUIImage *)i forState:(TUIControlState)state
 {
 	[self _stateWillChange];
 	[[self _contentForState:state] setBackgroundImage:i];
@@ -92,22 +105,22 @@
 	return [[self _contentForState:state] title];
 }
 
-- (NSColor *)titleColorForState:(TUIControlState)state
+- (TUIColor *)titleColorForState:(TUIControlState)state
 {
 	return [[self _contentForState:state] titleColor];
 }
 
-- (NSColor *)titleShadowColorForState:(TUIControlState)state
+- (TUIColor *)titleShadowColorForState:(TUIControlState)state
 {
 	return [[self _contentForState:state] shadowColor];
 }
 
-- (NSImage *)imageForState:(TUIControlState)state
+- (TUIImage *)imageForState:(TUIControlState)state
 {
 	return [[self _contentForState:state] image];
 }
 
-- (NSImage *)backgroundImageForState:(TUIControlState)state
+- (TUIImage *)backgroundImageForState:(TUIControlState)state
 {
 	return [[self _contentForState:state] backgroundImage];
 }
@@ -122,9 +135,9 @@
 	return title;
 }
 
-- (NSColor *)currentTitleColor
+- (TUIColor *)currentTitleColor
 {
-	NSColor *color = [self titleColorForState:self.state];
+	TUIColor *color = [self titleColorForState:self.state];
 	if(color == nil) {
 		color = [self titleColorForState:TUIControlStateNormal];
 	}
@@ -132,9 +145,9 @@
 	return color;
 }
 
-- (NSColor *)currentTitleShadowColor
+- (TUIColor *)currentTitleShadowColor
 {
-	NSColor *color = [self titleShadowColorForState:self.state];
+	TUIColor *color = [self titleShadowColorForState:self.state];
 	if(color == nil) {
 		color = [self titleShadowColorForState:TUIControlStateNormal];
 	}
@@ -142,9 +155,9 @@
 	return color;
 }
 
-- (NSImage *)currentImage
+- (TUIImage *)currentImage
 {
-	NSImage *image = [self imageForState:self.state];
+	TUIImage *image = [self imageForState:self.state];
 	if(image == nil) {
 		image = [self imageForState:TUIControlStateNormal];
 	}
@@ -152,9 +165,9 @@
 	return image;
 }
 
-- (NSImage *)currentBackgroundImage
+- (TUIImage *)currentBackgroundImage
 {
-	NSImage *image = [self backgroundImageForState:self.state];
+	TUIImage *image = [self backgroundImageForState:self.state];
 	if(image == nil) {
 		image = [self backgroundImageForState:TUIControlStateNormal];
 	}

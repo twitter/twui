@@ -22,6 +22,7 @@
 #import "TUIControl.h"
 #import "TUIGeometry.h"
 
+@class TUIImage;
 @class TUILabel;
 @class TUIImageView;
 
@@ -44,7 +45,6 @@ typedef enum {
 		unsigned int dimsInBackground:1;
         unsigned int buttonType:8;
 		unsigned int firstDraw:1;
-		unsigned int reversesTitleShadowWhenHighlighted:1;
     } _buttonFlags;
 }
 
@@ -62,8 +62,6 @@ typedef enum {
 @property(nonatomic,readonly,strong) TUILabel     *titleLabel;
 @property(nonatomic,readonly,strong) TUIImageView *imageView;
 
-@property (nonatomic, assign) BOOL reversesTitleShadowWhenHighlighted;
-
 - (CGRect)backgroundRectForBounds:(CGRect)bounds;
 - (CGRect)contentRectForBounds:(CGRect)bounds;
 - (CGRect)titleRectForContentRect:(CGRect)contentRect;
@@ -74,20 +72,21 @@ typedef enum {
 @interface TUIButton (Content)
 
 - (void)setTitle:(NSString *)title forState:(TUIControlState)state;
-- (void)setTitleColor:(NSColor *)color forState:(TUIControlState)state;
-- (void)setTitleShadowColor:(NSColor *)color forState:(TUIControlState)state;
-- (void)setImage:(NSImage *)image forState:(TUIControlState)state;
-- (void)setBackgroundImage:(NSImage *)image forState:(TUIControlState)state;
+- (void)setTitleColor:(TUIColor *)color forState:(TUIControlState)state;
+- (void)setTitleShadowColor:(TUIColor *)color forState:(TUIControlState)state;
+- (void)setImage:(TUIImage *)image forState:(TUIControlState)state;
+- (void)setBackgroundImage:(TUIImage *)image forState:(TUIControlState)state;
 
 - (NSString *)titleForState:(TUIControlState)state;
-- (NSColor *)titleColorForState:(TUIControlState)state;
-- (NSColor *)titleShadowColorForState:(TUIControlState)state;
-- (NSImage *)imageForState:(TUIControlState)state;
-- (NSImage *)backgroundImageForState:(TUIControlState)state;
+- (TUIColor *)titleColorForState:(TUIControlState)state;
+- (TUIColor *)titleShadowColorForState:(TUIControlState)state;
+- (TUIImage *)imageForState:(TUIControlState)state;
+- (TUIImage *)backgroundImageForState:(TUIControlState)state;
 
-@property(nonatomic, readonly, strong) NSString *currentTitle;
-@property(nonatomic, readonly, strong) NSColor *currentTitleColor;
-@property(nonatomic, readonly, strong) NSColor *currentTitleShadowColor;
-@property(nonatomic, readonly, strong) NSImage *currentImage;
-@property(nonatomic, readonly, strong) NSImage *currentBackgroundImage;
+@property(nonatomic,readonly,retain) NSString *currentTitle;
+@property(nonatomic,readonly,retain) TUIColor  *currentTitleColor;
+@property(nonatomic,readonly,retain) TUIColor  *currentTitleShadowColor;
+@property(nonatomic,readonly,retain) TUIImage  *currentImage;
+@property(nonatomic,readonly,retain) TUIImage  *currentBackgroundImage;
+
 @end

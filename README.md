@@ -1,4 +1,4 @@
-# TwUI 0.4.0
+# TwUI 0.2.0
 
 TwUI is a hardware accelerated UI framework for Mac, inspired by UIKit.  It enables:
 
@@ -14,35 +14,42 @@ It differs from UIKit in a few ways:
 
 # Setup
 
-To use the current development version, include all the files in your project and import TUIKit.h. Set your target to link to the ApplicationServices and QuartzCore frameworks.
+To use the current development version, include all the files in your project and import TUIKit.h. Set your target to link to the ApplicationServices and QuartzCore frameworks.  Be sure to add NS_BUILD_32_LIKE_64 to your preprocessor flags.
 
 # Usage
 
-Your `TUIView`-based view hierarchy is hosted inside an `TUINSView`, which is the bridge between AppKit and TwUI.  You may set a `TUINSView` as the content view of your window, if you'd like to build your whole UI with TwUI.  Or you may opt to have a few smaller `TUINSViews`, using TwUI just where it makes sense and continue to use AppKit everywhere else.
-
-You can also add `NSViews` to a TwUI hierarchy using `TUIViewNSViewContainer`, which bridges back into AppKit from TwUI.
+Your TUIView-based view hierarchy is hosted inside an TUINSView, which is the bridge between AppKit and TwUI.  You may set a TUINSView as the content view of your window, if you'd like to build your whole UI with TwUI.  Or you may opt to have a few smaller TUINSViews, using TwUI just where it makes sense and continue to use AppKit everywhere else.
 
 # Example Project
 
-An included example project shows off the basic construction of a pure TwUI-based app.  A `TUINSView` is added as the content view of the window, and some `TUIView`-based views are hosted in that.  Within the table view cells, some `NSTextFields` are also added using `TUIViewNSViewContainer`.  It includes a table view and a tab bar (which is a good example of how you might build your own custom controls).
+An included example project shows off the basic construction of a pure TwUI-based app.  A TUINSView is added as the content view of the window, and some TUIView-based views are hosted in that.  It includes a table view, and a tab bar (which is a good example of how you might build your own custom controls).
 
 # Status
 
-TwUI is currently shipping in Twitter for Mac and GitHub for Mac, in use 24/7 by many, many users, and has proven itself very stable.
+TwUI should be considered an alpha project.  It is current shipping in Twitter for Mac, in use 24/7 by many, many users and has proven itself very stable.  The code still has a few Twitter-for-Mac-isms that should be refactored and cleaned up.
 
-This project follows the [SemVer](http://semver.org/) standard. The API may change in backwards-incompatible ways between major releases.
+This project follows the [SemVer](http://semver.org/) standard. The API may change in backwards-incompatible ways before the 1.0 release.
 
-The goal of TwUI is to build a high-quality UI framework designed specifically for the Mac.  Much inspiration comes from UIKit, but diverging to try new things (i.e. block-based layout and drawRect), and optimizing for Mac-specific interactions is encouraged.
+The goal of TwUI is to build a high-quality UI framework designed specifically for the Mac.  Much inspiration comes from UIKit, but diverging to try new things (i.e. block-based layout and drawRect), and to optimize for Mac-specific interactions is encouraged.
 
-# Contributing
+# Known limitations
 
-We will happily accept pull requests that meet one of the following criteria:
+There are many places where TwUI could be improved:
 
- 1. It fixes some functionality that is already in TwUI. This might be a bug, or something not working as expected.
- 2. It's something so basic or important that TwUI really should have it.
- 3. It has to integrate with TwUI internals, and so can't easily be done outside of the framework. This one is the most ambiguous, because interesting things may match this criterion, but still be way out of scope. In some cases, a fork might be more appropriate. Use your best judgment.
+* Accessibility.  It would be great to bridge the AppKit accessibility APIs to something simpler, again, inspired by UIKit.
 
-# Community
+* Text editing.  TUITextEditor is a simple text editor (built on TUITextRenderer).  It provides basic editing support and handles a number of standard keybindings.  Fleshing this out to be indistinguishable from NSTextView (read: spellchecking, autocorrect) would be useful.  If the logic around this were self-contained it would even be great as a standalone project, useful for anyone looking to build a custom text editor for the Mac.
+
+* Reverse-hosting.  Right now TUIViews may be hosted inside of an existing NSView hierarchy.  It would be useful if the reverse were possible, adding NSViews inside of TUIViews.  Doing so in a robust way so event routing, the responder chain, and CAAnimations all just work is a challenge.
+
+# Documentation
+
+You can generate documentation with [doxygen](http://www.doxygen.org). Install it, and then run:
+
+    cd docs
+    doxygen
+
+Documentation is a work in progress, but the API will be familiar if you have used UIKit.  (TODO: [appledoc](http://gentlebytes.com/appledoc/) looks very cool, moving to that might be nice).
 
 TwUI has a mailing list, subscribe by sending an email to <twui@librelist.com>.
 

@@ -34,26 +34,10 @@
 		 set before it can be drawn, we do that in drawRect: below.
 		 */
 		self.textRenderers = [NSArray arrayWithObjects:textRenderer, nil];
-
-		NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 180, 91, 22)];
-		[textField.cell setUsesSingleLineMode:YES];
-		[textField.cell setScrollable:YES];
-
-		self.textFieldContainer = [[TUIViewNSViewContainer alloc] initWithNSView:textField];
-		self.textFieldContainer.backgroundColor = [NSColor blueColor];
-		[self addSubview:self.textFieldContainer];
 	}
 	return self;
 }
 
-- (void)layoutSubviews {
-	[super layoutSubviews];
-	
-	CGSize textFieldSize = self.textFieldContainer.bounds.size;
-	CGFloat textFieldLeft = CGRectGetWidth(self.bounds) - textFieldSize.width - 16;
-
-	self.textFieldContainer.frame = CGRectMake(textFieldLeft, 14, textFieldSize.width, textFieldSize.height);
-}
 
 - (NSAttributedString *)attributedString
 {

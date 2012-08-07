@@ -15,7 +15,6 @@
  */
 
 #import "TUICGAdditions.h"
-#import "TUIView.h"
 
 CGContextRef TUICreateOpaqueGraphicsContext(CGSize size)
 {
@@ -58,53 +57,21 @@ CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx) // autoreleased
 	return CGBitmapContextCreateImage(ctx);
 }
 
-CGPathRef TUICGPathCreateRoundedRect(CGRect rect, CGFloat radius) {
-	return TUICGPathCreateRoundedRectWithCorners(rect, radius, TUICGRoundedRectCornerAll);
-}
-
-CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUICGRoundedRectCorner corners) {
-	CGMutablePathRef path = CGPathCreateMutable();
-	CGPathMoveToPoint(path, NULL, rect.origin.x, rect.origin.y + radius);
-	CGPathAddLineToPoint(path, NULL, rect.origin.x, rect.origin.y + rect.size.height - radius);
-	
-	if((corners & TUICGRoundedRectCornerTopLeft) != 0) {
-		CGPathAddArc(path, NULL, rect.origin.x + radius, rect.origin.y + rect.size.height - radius, radius, M_PI, M_PI / 2, 1);
-	} else {
-		CGPathAddLineToPoint(path, NULL, rect.origin.x, rect.origin.y + rect.size.height);
-	}
-	
-	CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height);
-	
-	if((corners & TUICGRoundedRectCornerTopRight) != 0) {
-		CGPathAddArc(path, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height - radius, radius, M_PI / 2, 0.0f, 1);
-	} else {
-		CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
-	}
-	
-	CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y + radius);
-	
-	if((corners & TUICGRoundedRectCornerBottomRight) != 0) {
-		CGPathAddArc(path, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
-	} else {
-		CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y);
-	}
-	
-	CGPathAddLineToPoint(path, NULL, rect.origin.x + radius, rect.origin.y);
-	
-	if((corners & TUICGRoundedRectCornerBottomLeft) != 0) {
-		CGPathAddArc(path, NULL, rect.origin.x + radius, rect.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
-	} else {
-		CGPathAddLineToPoint(path, NULL, rect.origin.x, rect.origin.y);
-	}
-	
-	return path;
-}
-
 void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius)
 {
-	CGPathRef path = TUICGPathCreateRoundedRect(rect, radius);
-	CGContextAddPath(context, path);
-	CGPathRelease(path);
+	radius = MIN(radius, rect.size.width / 2);
+	radius = MIN(radius, rect.size.height / 2);
+	radius = floor(radius);
+	
+	CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
+	CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height - radius);
+	CGContextAddArc(context, rect.origin.x + radius, rect.origin.y + rect.size.height - radius, radius, M_PI, M_PI / 2, 1);
+	CGContextAddLineToPoint(context, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height);
+	CGContextAddArc(context, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height - radius, radius, M_PI / 2, 0.0f, 1);
+	CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + radius);
+	CGContextAddArc(context, rect.origin.x + rect.size.width - radius, rect.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
+	CGContextAddLineToPoint(context, rect.origin.x + radius, rect.origin.y);
+	CGContextAddArc(context, rect.origin.x + radius, rect.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
 }
 
 void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius)
@@ -174,93 +141,4 @@ void CGContextDrawLinearGradientBetweenPoints(CGContextRef context, CGPoint a, C
 	CGContextDrawLinearGradient(context, gradient, a, b, 0);
 	CGColorSpaceRelease(colorspace);
 	CGGradientRelease(gradient);
-}
-
-CGContextRef TUIGraphicsGetCurrentContext(void)
-{
-	return (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-}
-
-void TUIGraphicsPushContext(CGContextRef context)
-{
-	NSGraphicsContext *c = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
-	[NSGraphicsContext saveGraphicsState];
-	[NSGraphicsContext setCurrentContext:c];
-}
-
-void TUIGraphicsPopContext(void)
-{
-	[NSGraphicsContext restoreGraphicsState];
-}
-
-NSImage *TUIGraphicsContextGetImage(CGContextRef ctx)
-{
-	CGImageRef CGImage = TUICreateCGImageFromBitmapContext(ctx);
-	CGSize size = CGSizeMake(CGImageGetWidth(CGImage), CGImageGetHeight(CGImage));
-	NSImage *image = [[NSImage alloc] initWithCGImage:CGImage size:size];
-	CGImageRelease(CGImage);
-
-	return image;
-}
-
-void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
-{
-	size.width *= scale;
-	size.height *= scale;
-	if(size.width < 1) size.width = 1;
-	if(size.height < 1) size.height = 1;
-	CGContextRef ctx = TUICreateGraphicsContextWithOptions(size, opaque);
-	TUIGraphicsPushContext(ctx);
-	CGContextRelease(ctx);
-}
-
-void TUIGraphicsBeginImageContext(CGSize size)
-{
-	TUIGraphicsBeginImageContextWithOptions(size, NO, 1.0f);
-}
-
-NSImage *TUIGraphicsGetImageFromCurrentImageContext(void)
-{
-	return TUIGraphicsContextGetImage(TUIGraphicsGetCurrentContext());
-}
-
-NSImage *TUIGraphicsGetImageForView(TUIView *view)
-{
-	TUIGraphicsBeginImageContext(view.frame.size);
-	[view.layer renderInContext:TUIGraphicsGetCurrentContext()];
-	NSImage *image = TUIGraphicsGetImageFromCurrentImageContext();
-	TUIGraphicsEndImageContext();
-
-	return image;
-}
-
-void TUIGraphicsEndImageContext(void)
-{
-	TUIGraphicsPopContext();
-}
-
-NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void))
-{
-	TUIGraphicsBeginImageContext(size);
-	draw();
-	NSImage *image = TUIGraphicsGetImageFromCurrentImageContext();
-	TUIGraphicsEndImageContext();
-
-	return image;
-}
-
-NSData* TUIGraphicsDrawAsPDF(CGRect *optionalMediaBox, void(^draw)(CGContextRef))
-{
-	NSMutableData *data = [NSMutableData data];
-	CGDataConsumerRef dataConsumer = CGDataConsumerCreateWithCFData((__bridge CFMutableDataRef)data);
-	CGContextRef ctx = CGPDFContextCreate(dataConsumer, optionalMediaBox, NULL);
-	CGPDFContextBeginPage(ctx, NULL);
-	TUIGraphicsPushContext(ctx);
-	draw(ctx);
-	TUIGraphicsPopContext();
-	CGPDFContextEndPage(ctx);
-	CGPDFContextClose(ctx);
-	CGContextRelease(ctx);
-	CGDataConsumerRelease(dataConsumer);
-	return data;
 }

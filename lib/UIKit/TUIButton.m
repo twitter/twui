@@ -14,14 +14,11 @@
  limitations under the License.
  */
 
+#import "TUIImage.h"
 #import "TUIButton.h"
-#import "TUICGAdditions.h"
-#import "TUIControl+Private.h"
-#import "TUIImageView.h"
 #import "TUILabel.h"
 #import "TUINSView.h"
-#import "TUIStretchableImage.h"
-#import "TUITextRenderer.h"
+#import "TUIControl+Private.h"
 
 @interface TUIButton ()
 
@@ -42,9 +39,8 @@
 		_buttonFlags.buttonType = TUIButtonTypeCustom;
 		_buttonFlags.dimsInBackground = 1;
 		_buttonFlags.firstDraw = 1;
-		self.backgroundColor = [NSColor clearColor];
+		self.backgroundColor = [TUIColor clearColor];
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
-		self.reversesTitleShadowWhenHighlighted = NO;
 	}
 	return self;
 }
@@ -96,7 +92,7 @@
 	if(!_titleView) {
 		_titleView = [[TUILabel alloc] initWithFrame:CGRectZero];
 		_titleView.userInteractionEnabled = NO;
-		_titleView.backgroundColor = [NSColor clearColor];
+		_titleView.backgroundColor = [TUIColor clearColor];
 		_titleView.hidden = YES; // we'll be drawing it ourselves
 		[self addSubview:_titleView];
 	}
@@ -107,7 +103,7 @@
 {
 	if(!_imageView) {
 		_imageView = [[TUIImageView alloc] initWithFrame:CGRectZero];
-		_imageView.backgroundColor = [NSColor clearColor];
+		_imageView.backgroundColor = [TUIColor clearColor];
 		_imageView.hidden = YES;
 	}
 	return _imageView;
@@ -172,10 +168,6 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	return r;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size {
-	return self.currentImage.size;
-}
-
 
 - (void)drawRect:(CGRect)r
 {
@@ -197,14 +189,14 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), self.bounds);
 	}
 	
-	NSImage *backgroundImage = self.currentBackgroundImage;
-	NSImage *image = self.currentImage;
+	TUIImage *backgroundImage = self.currentBackgroundImage;
+	TUIImage *image = self.currentImage;
 	
-	[backgroundImage drawInRect:[self backgroundRectForBounds:bounds] fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+	[backgroundImage drawInRect:[self backgroundRectForBounds:bounds] blendMode:kCGBlendModeNormal alpha:1.0];
 	
 	if(image) {
 		CGRect imageRect;
-		if([image isKindOfClass:[TUIStretchableImage class]]) {
+		if(image.leftCapWidth || image.topCapHeight) {
 			// stretchable
 			imageRect = self.bounds;
 		} else {
@@ -218,25 +210,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 			b.size.height -= _imageEdgeInsets.bottom + _imageEdgeInsets.top;
 			imageRect = ButtonRectRoundOrigin(ButtonRectCenteredInRect(imageRect, b));
 		}
-
-		[image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:alpha];
-	}
-	
-	NSString *title = self.currentTitle;
-	if(title != nil) {
-		_titleView.text = title;
-	}
-	
-	NSColor *color = self.currentTitleColor;
-	if(color != nil) {
-		_titleView.textColor = color;
-	}
-	
-	NSColor *shadowColor = self.currentTitleShadowColor;
-	// they may have manually set the renderer's shadow color, in which case we 
-	// don't want to reset it to nothing
-	if(shadowColor != nil) {
-		_titleView.renderer.shadowColor = shadowColor;
+		[image drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:alpha];
 	}
 	
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
@@ -275,7 +249,8 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 }
 
 - (void)_update {
-	
+	_titleView.text = self.currentTitle;
+	_titleView.textColor = self.currentTitleColor;
 }
 
 - (void)_stateDidChange {
@@ -284,22 +259,6 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	[self _update];
 	
 	[self setNeedsDisplay];
-}
-
-- (void)setHighlighted:(BOOL)highlighted {
-	if(self.highlighted != highlighted && self.reversesTitleShadowWhenHighlighted) {
-		_titleView.renderer.shadowOffset = CGSizeMake(_titleView.renderer.shadowOffset.width, -_titleView.renderer.shadowOffset.height);
-	}
-	
-	[super setHighlighted:highlighted];
-}
-
-- (BOOL)reversesTitleShadowWhenHighlighted {
-	return _buttonFlags.reversesTitleShadowWhenHighlighted;
-}
-
-- (void)setReversesTitleShadowWhenHighlighted:(BOOL)reversesTitleShadowWhenHighlighted {
-	_buttonFlags.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted;
 }
 
 @end

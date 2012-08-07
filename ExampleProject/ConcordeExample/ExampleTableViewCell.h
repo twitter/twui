@@ -22,6 +22,5 @@
 }
 
 @property (nonatomic, copy) NSAttributedString *attributedString;
-@property (nonatomic, strong) TUIView *textFieldContainer;
 
 @end

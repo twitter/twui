@@ -14,12 +14,7 @@
  limitations under the License.
  */
 
-#import "TUINSView+NSTextInputClient.h"
-#import "TUINSView+Private.h"
-#import "TUINSWindow.h"
-#import "TUITextRenderer.h"
-
-@implementation TUINSView (NSTextInputClient)
+#ifdef ENABLE_NSTEXT_INPUT_CLIENT
 
 /*
  This file is jank - TUITextRenderer and friends can shoulder this stuff
@@ -158,4 +153,4 @@
 	[self tryToPerform:aSelector with:self];
 }
 
-@end
+#endif

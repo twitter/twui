@@ -17,13 +17,13 @@
 #import "TUIView.h"
 
 enum {
-  TUIControlEventMouseDown           = 1 <<  0,
-  TUIControlEventMouseDownRepeat     = 1 <<  1,
-  TUIControlEventMouseUpInside       = 1 <<  6,
-  TUIControlEventMouseUpOutside      = 1 <<  7,
+  TUIControlEventTouchDown           = 1 <<  0,
+  TUIControlEventTouchDownRepeat     = 1 <<  1,
+  TUIControlEventTouchUpInside       = 1 <<  6,
+  TUIControlEventTouchUpOutside      = 1 <<  7,
   TUIControlEventValueChanged        = 1 << 12,
   TUIControlEventEditingDidEndOnExit = 1 << 19,
-  TUIControlEventAllMouseEvents      = 0x00000FFF,
+  TUIControlEventAllTouchEvents      = 0x00000FFF,
   TUIControlEventAllEditingEvents    = 0x000F0000,
   TUIControlEventApplicationReserved = 0x0F000000,
   TUIControlEventSystemReserved      = 0xF0000000,
@@ -50,7 +50,6 @@ typedef NSUInteger TUIControlState;
 		unsigned int selected:1;
 		unsigned int acceptsFirstMouse:1;
 		unsigned int tracking:1;
-		unsigned int highlighted:1;
 	} _controlFlags;
 }
 
@@ -59,7 +58,6 @@ typedef NSUInteger TUIControlState;
 @property(nonatomic,readonly) TUIControlState state;
 @property(nonatomic,readonly,getter=isTracking) BOOL tracking;
 @property(nonatomic,assign) BOOL selected;
-@property (nonatomic, assign) BOOL highlighted;
 
 @property (nonatomic, assign) BOOL acceptsFirstMouse;
 

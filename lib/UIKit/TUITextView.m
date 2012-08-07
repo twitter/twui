@@ -14,10 +14,8 @@
  limitations under the License.
  */
 
+#import "TUIKit.h"
 #import "TUITextView.h"
-#import "TUICGAdditions.h"
-#import "TUINSView.h"
-#import "TUINSWindow.h"
 #import "TUITextViewEditor.h"
 #import "TUITextRenderer+Event.h"
 
@@ -81,33 +79,18 @@
 @synthesize autocorrectedResults;
 @synthesize placeholderRenderer;
 
-- (NSFont *)font {
-	// Fall back to the system font if none (or an invalid one) was set.
-	// Otherwise, text rendering becomes dog slow.
-	return font ?: [NSFont systemFontOfSize:[NSFont systemFontSize]];
-}
-
-- (void)dealloc {
-	renderer.delegate = nil;
-}
-
 - (void)_updateDefaultAttributes
 {
-	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-	
-	if (self.textColor != nil) {
-		[attributes setObject:(__bridge id)self.textColor.CGColor forKey:(__bridge id)kCTForegroundColorAttributeName];
-	}
-
-	NSParagraphStyle *style = ABNSParagraphStyleForTextAlignment(textAlignment);
-	if (style != nil) {
-		[attributes setObject:style forKey:NSParagraphStyleAttributeName];
-	}
-
-	[attributes setObject:self.font forKey:(__bridge id)kCTFontAttributeName];
-
-	renderer.defaultAttributes = attributes;
-	renderer.markedAttributes = attributes;
+	renderer.defaultAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+						 (id)[self.font ctFont], kCTFontAttributeName,
+						 [self.textColor CGColor], kCTForegroundColorAttributeName,
+						 ABNSParagraphStyleForTextAlignment(textAlignment), NSParagraphStyleAttributeName,
+						 nil];
+	renderer.markedAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+						[NSFont fontWithName:self.font.fontName size:self.font.pointSize], kCTFontAttributeName, // NSFont and CTFont are toll-free bridged. *BUT* for reasons beyond my understanding, advanced input methods like Japanese and simplified Pinyin break unless this is an NSFont. So there we go.
+						[self.textColor CGColor], kCTForegroundColorAttributeName,
+						ABNSParagraphStyleForTextAlignment(textAlignment), NSParagraphStyleAttributeName,
+						nil];
 }
 
 - (Class)textEditorClass
@@ -118,7 +101,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame])) {
-		self.backgroundColor = [NSColor clearColor];
+		self.backgroundColor = [TUIColor clearColor];
 		
 		renderer = [[[self textEditorClass] alloc] init];
 		renderer.delegate = self;
@@ -126,16 +109,14 @@
 		
 		cursor = [[TUIView alloc] initWithFrame:CGRectZero];
 		cursor.userInteractionEnabled = NO;
-		cursor.backgroundColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
+		cursor.backgroundColor = [TUIColor linkColor];
 		[self addSubview:cursor];
 		
 		self.autocorrectedResults = [NSMutableDictionary dictionary];
 		
-		self.font = [NSFont fontWithName:@"HelveticaNeue" size:12];
-		self.textColor = [NSColor blackColor];
+		self.font = [TUIFont fontWithName:@"HelveticaNeue" size:12];
+		self.textColor = [TUIColor blackColor];
 		[self _updateDefaultAttributes];
-		
-		self.drawFrame = TUITextViewStandardFrame();
 	}
 	return self;
 }
@@ -175,13 +156,13 @@
 	return renderer.initialFirstResponder;
 }
 
-- (void)setFont:(NSFont *)f
+- (void)setFont:(TUIFont *)f
 {
 	font = f;
 	[self _updateDefaultAttributes];
 }
 
-- (void)setTextColor:(NSColor *)c
+- (void)setTextColor:(TUIColor *)c
 {
 	textColor = c;
 	[self _updateDefaultAttributes];
@@ -332,7 +313,7 @@ static CAAnimation *ThrobAnimation()
 	// Ugh. So this seems to be a decent approximation for the height of the cursor. It doesn't always match the native cursor but what ev.
 	CGRect r = CGRectIntegral([renderer firstRectForCharacterRange:ABCFRangeFromNSRange(selection)]);
 	r.size.width = 2.0f;
-	CGRect fontBoundingBox = CTFontGetBoundingBox((__bridge CTFontRef)self.font);
+	CGRect fontBoundingBox = CTFontGetBoundingBox(self.font.ctFont);
 	r.size.height = round(fontBoundingBox.origin.y + fontBoundingBox.size.height);
 	r.origin.y += floor(self.font.leading);
 	//NSLog(@"ascent: %f, descent: %f, leading: %f, cap height: %f, x-height: %f, bounding: %@", self.font.ascender, self.font.descender, self.font.leading, self.font.capHeight, self.font.xHeight, NSStringFromRect(CTFontGetBoundingBox(self.font.ctFont)));
@@ -431,7 +412,7 @@ static CAAnimation *ThrobAnimation()
 						NSLog(@"Autocorrection result that's out of range: %@", result);
 					}
 				} else if(result.resultType == NSTextCheckingTypeSpelling) {
-					[[renderer backingStore] addAttribute:NSUnderlineColorAttributeName value:[NSColor redColor] range:result.range];
+					[[renderer backingStore] addAttribute:(id)kCTUnderlineColorAttributeName value:(id)[TUIColor redColor].CGColor range:result.range];
 					[[renderer backingStore] addAttribute:(id)kCTUnderlineStyleAttributeName value:[NSNumber numberWithInteger:kCTUnderlineStyleThick | kCTUnderlinePatternDot] range:result.range];
 				}
 			}
@@ -747,42 +728,5 @@ TUIViewDrawRect TUITextViewSearchFrameOverDark(void)
 {
 	return [^(TUIView *view, CGRect rect) {
 		TUITextViewDrawRoundedFrame(view, 	floor(view.bounds.size.height / 2), YES);
-	} copy];
-}
-
-TUIViewDrawRect TUITextViewStandardFrame(void)
-{
-	return [^(TUIView *view, CGRect rect) {
-		static const CGFloat outlineCornerRadius = 3.0f;
-		static const CGFloat innerShadowCornerRadius = 2.1f;
-		static const CGFloat contentAreaCornerRadius = 2.0f;
-		CGRect bounds = view.bounds;
-		
-		// bottom white highlight
-		NSRect hightlightFrame = NSMakeRect(0.0, 0.0, bounds.size.width, bounds.size.height-10.0);
-		[[NSColor colorWithDeviceWhite:1.0 alpha:0.5] set];
-		[[NSBezierPath bezierPathWithRoundedRect:hightlightFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] fill];
-		
-		// black outline
-		NSRect blackOutlineFrame = NSMakeRect(0.0, 1.0, bounds.size.width, bounds.size.height-2.0);
-		NSGradient *gradient = nil;
-		if([NSApp isActive]) {
-			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.7 alpha:1.0]];
-		} else {
-			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.55 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.558 alpha:1.0]];
-		}
-		[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:blackOutlineFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] angle:-90];
-		
-		// main white area
-		NSRect whiteFrame = NSMakeRect(1, 2, bounds.size.width-2.0, bounds.size.height-4.0);
-		[[NSColor whiteColor] set];
-		[[NSBezierPath bezierPathWithRoundedRect:whiteFrame xRadius:contentAreaCornerRadius yRadius:contentAreaCornerRadius] fill];
-		
-		// top inner shadow
-		NSRect shadowFrame = NSMakeRect(1, bounds.size.height-5, bounds.size.width-2.0, 3.0);
-		if(shadowFrame.size.width > 0.0f && shadowFrame.size.height > 0.0f) {
-			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:1.0 alpha:1.0]];
-			[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:shadowFrame xRadius:innerShadowCornerRadius yRadius:innerShadowCornerRadius] angle:-90];
-		}
 	} copy];
 }
