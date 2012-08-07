@@ -121,7 +121,7 @@
   [self beginContinuousScrollForDragAtPoint:location animated:TRUE];
   
   TUITableViewInsertionMethod insertMethod = TUITableViewInsertionMethodAtIndex;
-  TUIFastIndexPath *currentPath = nil;
+  NSIndexPath *currentPath = nil;
   NSInteger sectionIndex = -1;
   
   // determine the current index path the cell is occupying
@@ -131,13 +131,13 @@
         // if we're on a section header (but not the first one, which can't move) which is above the origin
         // index path we insert after the last index in the section above
         NSInteger targetSectionIndex = sectionIndex - 1;
-        currentPath = [TUIFastIndexPath indexPathForRow:[self numberOfRowsInSection:targetSectionIndex] - 1 inSection:targetSectionIndex];
+        currentPath = [NSIndexPath indexPathForRow:[self numberOfRowsInSection:targetSectionIndex] - 1 inSection:targetSectionIndex];
         insertMethod = TUITableViewInsertionMethodAfterIndex;
       }else{
         // if we're on a section header below the origin index we insert before the first index in the
         // section below
         NSInteger targetSectionIndex = sectionIndex;
-        currentPath = [TUIFastIndexPath indexPathForRow:0 inSection:targetSectionIndex];
+        currentPath = [NSIndexPath indexPathForRow:0 inSection:targetSectionIndex];
         insertMethod = TUITableViewInsertionMethodBeforeIndex;
       }
     }
@@ -148,7 +148,7 @@
   
   // allow the delegate to revise the proposed index path if it wants to
   if(self.delegate != nil && [self.delegate respondsToSelector:@selector(tableView:targetIndexPathForMoveFromRowAtIndexPath:toProposedIndexPath:)]){
-    TUIFastIndexPath *proposedPath = currentPath;
+    NSIndexPath *proposedPath = currentPath;
     currentPath = [self.delegate tableView:self targetIndexPathForMoveFromRowAtIndexPath:cell.indexPath toProposedIndexPath:currentPath];
     // revised index paths always use the "at" insertion method
     switch([currentPath compare:proposedPath]){
@@ -175,8 +175,8 @@
   NSComparisonResult currentDragDirection = (_previousDragToReorderIndexPath != nil) ? [currentPath compare:_previousDragToReorderIndexPath] : NSOrderedSame;
   
   // ordered index paths for enumeration
-  TUIFastIndexPath *fromIndexPath = nil;
-  TUIFastIndexPath *toIndexPath = nil;
+  NSIndexPath *fromIndexPath = nil;
+  NSIndexPath *toIndexPath = nil;
   
   if(currentDragDirection == NSOrderedAscending){
     fromIndexPath = currentPath;
@@ -224,7 +224,7 @@
     }
     
     // update rows
-    [self enumerateIndexPathsFromIndexPath:fromIndexPath toIndexPath:toIndexPath withOptions:0 usingBlock:^(TUIFastIndexPath *indexPath, BOOL *stop) {
+    [self enumerateIndexPathsFromIndexPath:fromIndexPath toIndexPath:toIndexPath withOptions:0 usingBlock:^(NSIndexPath *indexPath, BOOL *stop) {
       TUITableViewCell *displacedCell;
       if((displacedCell = [self cellForRowAtIndexPath:indexPath]) != nil && ![displacedCell isEqual:cell]){
         CGRect frame = [self rectForRowAtIndexPath:indexPath];
@@ -280,7 +280,7 @@
   
   // finalize drag to reorder if we have a drag index
   if(_currentDragToReorderIndexPath != nil){
-    TUIFastIndexPath *targetIndexPath;
+    NSIndexPath *targetIndexPath;
     
     switch(_currentDragToReorderInsertionMethod){
       case TUITableViewInsertionMethodBeforeIndex:
@@ -289,7 +289,7 @@
         targetIndexPath = _currentDragToReorderIndexPath;
         break;
       case TUITableViewInsertionMethodAfterIndex:
-        targetIndexPath = [TUIFastIndexPath indexPathForRow:_currentDragToReorderIndexPath.row + 1 inSection:_currentDragToReorderIndexPath.section];
+        targetIndexPath = [NSIndexPath indexPathForRow:_currentDragToReorderIndexPath.row + 1 inSection:_currentDragToReorderIndexPath.section];
         break;
       case TUITableViewInsertionMethodAtIndex:
       default:

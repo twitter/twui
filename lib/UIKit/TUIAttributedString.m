@@ -15,8 +15,6 @@
  */
 
 #import "TUIAttributedString.h"
-#import "TUIFont.h"
-#import "TUIColor.h"
 
 NSString * const TUIAttributedStringBackgroundColorAttributeName = @"TUIAttributedStringBackgroundColorAttributeName";
 NSString * const TUIAttributedStringBackgroundFillStyleName = @"TUIAttributedStringBackgroundFillStyleName";
@@ -38,14 +36,19 @@ NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreD
 	return NSMakeRange(0, [self length]);
 }
 
-- (void)setFont:(TUIFont *)font inRange:(NSRange)range
+- (void)setFont:(NSFont *)font inRange:(NSRange)range
 {
-	[self addAttribute:(NSString *)kCTFontAttributeName value:(id)[font ctFont] range:range];
+	if (font != nil) {
+		// NSFont and CTFont are toll-free bridged.
+		[self addAttribute:(NSString *)kCTFontAttributeName value:font range:range];
+	} else {
+		[self removeAttribute:(NSString *)kCTFontAttributeName range:range];
+	}
 }
 
-- (void)setColor:(TUIColor *)color inRange:(NSRange)range
+- (void)setColor:(NSColor *)color inRange:(NSRange)range
 {
-	[self addAttribute:(NSString *)kCTForegroundColorAttributeName value:(id)[color CGColor] range:range];
+	[self addAttribute:NSForegroundColorAttributeName value:color range:range];
 }
 
 - (void)setShadow:(NSShadow *)shadow inRange:(NSRange)range
@@ -58,24 +61,24 @@ NSString * const TUIAttributedStringPreDrawBlockName = @"TUIAttributedStringPreD
 	[self addAttribute:(NSString *)kCTKernAttributeName value:[NSNumber numberWithFloat:k] range:range];
 }
 
-- (void)setFont:(TUIFont *)font
+- (void)setFont:(NSFont *)font
 {
 	[self setFont:font inRange:[self _stringRange]];
 }
 
-- (void)setColor:(TUIColor *)color
+- (void)setColor:(NSColor *)color
 {
 	[self setColor:color inRange:[self _stringRange]];
 }
 
-- (void)setBackgroundColor:(TUIColor *)color
+- (void)setBackgroundColor:(NSColor *)color
 {
 	[self setBackgroundColor:color inRange:[self _stringRange]];
 }
 
-- (void)setBackgroundColor:(TUIColor *)color inRange:(NSRange)range
+- (void)setBackgroundColor:(NSColor *)color inRange:(NSRange)range
 {
-	[self addAttribute:TUIAttributedStringBackgroundColorAttributeName value:(id)[color CGColor] range:range];
+	[self addAttribute:TUIAttributedStringBackgroundColorAttributeName value:color range:range];
 }
 
 - (void)setBackgroundFillStyle:(TUIBackgroundFillStyle)fillStyle
@@ -199,12 +202,12 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	[self setAlignment:alignment lineBreakMode:TUILineBreakModeWordWrap];
 }
 
-- (TUIFont *)font
+- (NSFont *)font
 {
 	return nil;
 }
 
-- (TUIColor *)color
+- (NSColor *)color
 {
 	return nil;
 }
@@ -229,7 +232,7 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	return 0.0;
 }
 
-- (TUIColor *)backgroundColor
+- (NSColor *)backgroundColor
 {
 	return nil;
 }
@@ -238,16 +241,28 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	return TUIBackgroundFillStyleInline;
 }
 
+- (NSString *)text {
+	return [self string];
+}
+
+- (void)setText:(NSString *)text {
+	text = text ? : @" ";
+	
+	[self beginEditing];
+	[self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[text copy]];
+	[self endEditing];
+}
+
 @end
 
 @implementation NSShadow (TUIAdditions)
 
-+ (NSShadow *)shadowWithRadius:(CGFloat)radius offset:(CGSize)offset color:(TUIColor *)color
++ (NSShadow *)shadowWithRadius:(CGFloat)radius offset:(CGSize)offset color:(NSColor *)color
 {
 	NSShadow *shadow = [[NSShadow alloc] init];
 	[shadow setShadowBlurRadius:radius];
 	[shadow setShadowOffset:offset];
-	[shadow setShadowColor:[color nsColor]];
+	[shadow setShadowColor:color];
 	return shadow;
 }
 

@@ -14,21 +14,51 @@
  limitations under the License.
  */
 
+//	Portions of this code were taken from Velvet,
+//	which is copyright (c) 2012 Bitswift, Inc.
+//	See LICENSE.txt for more information.
+
+#import "NSView+TUIExtensions.h"
+#import "TUIHostView.h"
 #import "TUIView.h"
 
-/*
- Stub class
- It would be nice to be able to embed NSView-based views inside of a 
- TUIView-based view. The only ways I can think to do it are incredibly hacky. 
- Plus, it still wouldn't work right if you apply CAAnimations.  Maybe someone
- smarter than me can figure out a good way to do it.
+/**
+ * A view that is responsible for displaying and handling an NSView within the
+ * normal TwUI view hierarchy.
+ *
+ * TUIViewNSViewContainer is powerful, but many of its interactions with AppKit rely upon
+ * assumptions, magic, or unspecified behavior. To that end, there are several
+ * restrictions on what you can do with TUIViewNSViewContainer:
+ *
+ * - A TUIViewNSViewContainer must always appear on top of TwUI views. A TUIViewNSViewContainer
+ * should always appear at the end of a subview list. You should not attempt to
+ * add TwUI subviews directly to a TUIViewNSViewContainer. Instead, if you need TwUI
+ * views to appear on top, nest an TUINSView within the NSView and start
+ * a new TwUI hierarchy.
+ *
+ * - You must not modify the geometry of the hosted NSView. If you need to
+ * rearrange or resize the NSView, modify the TUIViewNSViewContainer and it will perform
+ * the necessary updates.
+ *
+ * - You must not touch the layer of the hosted NSView. If you wish to
+ * perform animations or apply other Core Animation effects, use the layer of
+ * the TUIViewNSViewContainer. Note that not all Core Animation features may be available.
+ *
+ * - You should not subclass TUIViewNSViewContainer. If you need additional features,
+ * create a new view class which contains a TUIViewNSViewContainer instead.
  */
+@interface TUIViewNSViewContainer : TUIView <TUIHostView>
 
-@interface TUIViewNSViewContainer : TUIView
-{
-	NSView *nsView;
-}
+/**
+ * Initializes the receiver, setting its rootView to the given view.
+ *
+ * The frame of the receiver will automatically be set to that of the given view.
+ */
+- (id)initWithNSView:(NSView *)view;
 
-- (id)initWithNSView:(NSView *)v;
+/**
+ * The view displayed by the receiver.
+ */
+@property (nonatomic, strong) NSView *rootView;
 
 @end

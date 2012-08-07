@@ -15,12 +15,12 @@
  */
 
 #import "TUIResponder.h"
-#import "TUIColor.h"
 #import "TUIAccessibility.h"
 
 extern NSString * const TUIViewWillMoveToWindowNotification; // both notification's userInfo will contain the new window under the key TUIViewWindow
 extern NSString * const TUIViewDidMoveToWindowNotification;
 extern NSString * const TUIViewWindow;
+extern NSString * const TUIViewFrameDidChangeNotification;
 
 enum {
 	TUIViewAutoresizingNone                 = 0,
@@ -61,9 +61,9 @@ typedef enum {
     TUIViewContentModeScaleAspectFill,
 } TUIViewContentMode;
 
-@class TUIView;
 @class TUINSView;
 @class TUINSWindow;
+@class TUIView;
 
 typedef void(^TUIViewDrawRect)(TUIView *, CGRect);
 typedef CGRect(^TUIViewLayout)(TUIView *);
@@ -94,7 +94,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 	NSTimeInterval toolTipDelay;
 	
 	@public
-	TUINSView *_nsView; // keep this updated, fast way of getting .nsView
+	__unsafe_unretained TUINSView *_nsView; // keep this updated, fast way of getting .nsView
 	
 	struct {
 		NSInteger lastWidth;
@@ -147,7 +147,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 - (id)initWithFrame:(CGRect)frame;
 
 /**
- Default is YES. if set to NO, user events (touch, keys) are ignored and removed from the event queue.
+ Default is YES. if set to NO, user events (clicks, keys) are ignored and removed from the event queue.
  */
 @property (nonatomic,getter=isUserInteractionEnabled) BOOL userInteractionEnabled;
 
@@ -305,6 +305,12 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 - (void)didMoveToWindow;
 
 /**
+ * Returns the closest ancestor that is shared by the receiver and another view,
+ * or nil if there is no such view.
+ */
+- (TUIView *)ancestorSharedWithView:(TUIView *)view;
+
+/**
  Note: returns YES ff view == reciever
  */
 - (BOOL)isDescendantOfView:(TUIView *)view;
@@ -366,7 +372,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 /**
  default is nil.  Setting this with a color with <1.0 alpha will also set opaque=NO
  */
-@property (nonatomic,copy) TUIColor *backgroundColor;
+@property (nonatomic,copy) NSColor *backgroundColor;
 
 /**
  animatable. default is 1.0
@@ -460,6 +466,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 
 @interface TUIView (TUIViewAppKit)
 
+// TODO: deprecate this in favor of hostView or ancestorTUINSView
 @property (nonatomic, assign, setter=setNSView:) TUINSView *nsView;
 @property (nonatomic, readonly) TUINSWindow *nsWindow;
 
@@ -489,6 +496,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 
 @end
 
+#import "TUIView+Layout.h"
 #import "TUIView+Private.h"
 #import "TUIView+Event.h"
 #import "TUIView+PasteboardDragging.h"

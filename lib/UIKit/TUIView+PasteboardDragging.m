@@ -14,8 +14,9 @@
  limitations under the License.
  */
 
-#import "TUIKit.h"
 #import "TUIView+PasteboardDragging.h"
+#import "TUICGAdditions.h"
+#import "TUINSView.h"
 
 @implementation TUIView (PasteboardDragging)
 
@@ -62,11 +63,9 @@
 		TUIView *dragView = [self handleForPasteboardDragView];
 		id<NSPasteboardWriting> pasteboardObject = [dragView representedPasteboardObject];
 		
-		TUIImage *dragImage = TUIGraphicsDrawAsImage(dragView.frame.size, ^{
-			[TUIGraphicsGetImageForView(dragView) drawAtPoint:CGPointZero blendMode:kCGBlendModeNormal alpha:0.75];
+		NSImage *dragNSImage = TUIGraphicsDrawAsImage(dragView.frame.size, ^{
+			[TUIGraphicsGetImageForView(dragView) drawAtPoint:CGPointZero fromRect:CGRectZero operation:NSCompositeSourceOver fraction:0.75];
 		});
-		
-		NSImage *dragNSImage = [[NSImage alloc] initWithCGImage:dragImage.CGImage size:NSZeroSize];
 		
 		NSPasteboard *pasteboard = [NSPasteboard pasteboardWithName:NSDragPboard];
 		[pasteboard clearContents];

@@ -15,11 +15,9 @@
  */
 
 #import "TUIAttributedString.h"
+#import "TUICGAdditions.h"
 #import "TUIStringDrawing.h"
 #import "TUITextRenderer.h"
-#import "TUIColor.h"
-#import "TUIFont.h"
-#import "TUIKit.h"
 
 @implementation NSAttributedString (TUIStringDrawing)
 
@@ -69,28 +67,28 @@
 
 #if TARGET_OS_MAC
 
-- (CGSize)ab_sizeWithFont:(TUIFont *)font
+- (CGSize)ab_sizeWithFont:(NSFont *)font
 {
 	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
 	s.font = font;
 	return [s ab_size];
 }
 
-- (CGSize)ab_sizeWithFont:(TUIFont *)font constrainedToSize:(CGSize)size
+- (CGSize)ab_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size
 {
 	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
 	s.font = font;
 	return [s ab_sizeConstrainedToSize:size];
 }
 
-//- (CGSize)drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
+//- (CGSize)drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
 //{
 //	return [self ab_drawInRect:rect withFont:font lineBreakMode:lineBreakMode alignment:alignment];
 //}
 
 #endif
 
-- (CGSize)ab_drawInRect:(CGRect)rect color:(TUIColor *)color font:(TUIFont *)font
+- (CGSize)ab_drawInRect:(CGRect)rect color:(NSColor *)color font:(NSFont *)font
 {
 	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
 	s.color = color;
@@ -98,7 +96,7 @@
 	return [s ab_drawInRect:rect];
 }
 
-- (CGSize)ab_drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
+- (CGSize)ab_drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment
 {
 	TUIAttributedString *s = [TUIAttributedString stringWithString:self];
 	[s addAttribute:(NSString *)kCTForegroundColorFromContextAttributeName 

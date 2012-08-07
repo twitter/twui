@@ -15,7 +15,6 @@
  */
 
 #import "TUIScrollView.h"
-#import "TUIFastIndexPath.h"
 
 typedef enum {
 	TUITableViewStylePlain,              // regular table view
@@ -43,24 +42,24 @@ typedef enum {
 
 @protocol TUITableViewDelegate<NSObject, TUIScrollViewDelegate>
 
-- (CGFloat)tableView:(TUITableView *)tableView heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
+- (CGFloat)tableView:(TUITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @optional
 
-- (void)tableView:(TUITableView *)tableView willDisplayCell:(TUITableViewCell *)cell forRowAtIndexPath:(TUIFastIndexPath *)indexPath; // called after the cell's frame has been set but before it's added as a subview
-- (void)tableView:(TUITableView *)tableView didSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath; // happens on left/right mouse down, key up/down
-- (void)tableView:(TUITableView *)tableView didDeselectRowAtIndexPath:(TUIFastIndexPath *)indexPath;
-- (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event; // happens on left/right mouse up (can look at clickCount)
+- (void)tableView:(TUITableView *)tableView willDisplayCell:(TUITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath; // called after the cell's frame has been set but before it's added as a subview
+- (void)tableView:(TUITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath; // happens on left/right mouse down, key up/down
+- (void)tableView:(TUITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tableView:(TUITableView *)tableView didClickRowAtIndexPath:(NSIndexPath *)indexPath withEvent:(NSEvent *)event; // happens on left/right mouse up (can look at clickCount)
 
-- (BOOL)tableView:(TUITableView*)tableView shouldSelectRowAtIndexPath:(TUIFastIndexPath*)indexPath forEvent:(NSEvent*)event; // YES, if not implemented
-- (NSMenu *)tableView:(TUITableView *)tableView menuForRowAtIndexPath:(TUIFastIndexPath *)indexPath withEvent:(NSEvent *)event;
+- (BOOL)tableView:(TUITableView*)tableView shouldSelectRowAtIndexPath:(NSIndexPath*)indexPath forEvent:(NSEvent*)event; // YES, if not implemented
+- (NSMenu *)tableView:(TUITableView *)tableView menuForRowAtIndexPath:(NSIndexPath *)indexPath withEvent:(NSEvent *)event;
 
 // the following are good places to update or restore state (such as selection) when the table data reloads
 - (void)tableViewWillReloadData:(TUITableView *)tableView;
 - (void)tableViewDidReloadData:(TUITableView *)tableView;
 
 // the following is optional for row reordering
-- (TUIFastIndexPath *)tableView:(TUITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(TUIFastIndexPath *)fromPath toProposedIndexPath:(TUIFastIndexPath *)proposedPath;
+- (NSIndexPath *)tableView:(TUITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)fromPath toProposedIndexPath:(NSIndexPath *)proposedPath;
 
 @end
 
@@ -80,19 +79,19 @@ typedef enum {
 	NSMutableDictionary         * _visibleItems;
 	NSMutableDictionary         * _reusableTableCells;
 	
-	TUIFastIndexPath            * _selectedIndexPath;
-	TUIFastIndexPath            * _indexPathShouldBeFirstResponder;
+	NSIndexPath            * _selectedIndexPath;
+	NSIndexPath            * _indexPathShouldBeFirstResponder;
 	NSInteger                     _futureMakeFirstResponderToken;
-	TUIFastIndexPath            * _keepVisibleIndexPathForReload;
+	NSIndexPath            * _keepVisibleIndexPathForReload;
 	CGFloat                       _relativeOffsetForReload;
 	
 	// drag-to-reorder state
   TUITableViewCell            * _dragToReorderCell;
   CGPoint                       _currentDragToReorderLocation;
   CGPoint                       _currentDragToReorderMouseOffset;
-  TUIFastIndexPath            * _currentDragToReorderIndexPath;
+  NSIndexPath            * _currentDragToReorderIndexPath;
   TUITableViewInsertionMethod   _currentDragToReorderInsertionMethod;
-  TUIFastIndexPath            * _previousDragToReorderIndexPath;
+  NSIndexPath            * _previousDragToReorderIndexPath;
   TUITableViewInsertionMethod   _previousDragToReorderInsertionMethod;
   
 	struct {
@@ -121,7 +120,7 @@ typedef enum {
 /**
  The table view itself has mechanisms for maintaining scroll position. During a live resize the table view should automatically "do the right thing".  This method may be useful during a reload if you want to stay in the same spot.  Use it instead of -reloadData.
  */
-- (void)reloadDataMaintainingVisibleIndexPath:(TUIFastIndexPath *)indexPath relativeOffset:(CGFloat)relativeOffset;
+- (void)reloadDataMaintainingVisibleIndexPath:(NSIndexPath *)indexPath relativeOffset:(CGFloat)relativeOffset;
 
 // Forces a re-calculation and re-layout of the table. This is most useful for animating the relayout. It is potentially _more_ expensive than -reloadData since it has to allow for animating.
 - (void)reloadLayout;
@@ -131,35 +130,35 @@ typedef enum {
 
 - (CGRect)rectForHeaderOfSection:(NSInteger)section;
 - (CGRect)rectForSection:(NSInteger)section;
-- (CGRect)rectForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
+- (CGRect)rectForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSIndexSet *)indexesOfSectionsInRect:(CGRect)rect;
 - (NSIndexSet *)indexesOfSectionHeadersInRect:(CGRect)rect;
-- (TUIFastIndexPath *)indexPathForCell:(TUITableViewCell *)cell;                      // returns nil if cell is not visible
+- (NSIndexPath *)indexPathForCell:(TUITableViewCell *)cell;                      // returns nil if cell is not visible
 - (NSArray *)indexPathsForRowsInRect:(CGRect)rect;                                    // returns nil if rect not valid
-- (TUIFastIndexPath *)indexPathForRowAtPoint:(CGPoint)point;
-- (TUIFastIndexPath *)indexPathForRowAtVerticalOffset:(CGFloat)offset;
+- (NSIndexPath *)indexPathForRowAtPoint:(CGPoint)point;
+- (NSIndexPath *)indexPathForRowAtVerticalOffset:(CGFloat)offset;
 - (NSInteger)indexOfSectionWithHeaderAtPoint:(CGPoint)point;
 - (NSInteger)indexOfSectionWithHeaderAtVerticalOffset:(CGFloat)offset;
 
-- (void)enumerateIndexPathsUsingBlock:(void (^)(TUIFastIndexPath *indexPath, BOOL *stop))block;
-- (void)enumerateIndexPathsWithOptions:(NSEnumerationOptions)options usingBlock:(void (^)(TUIFastIndexPath *indexPath, BOOL *stop))block;
-- (void)enumerateIndexPathsFromIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath withOptions:(NSEnumerationOptions)options usingBlock:(void (^)(TUIFastIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateIndexPathsUsingBlock:(void (^)(NSIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateIndexPathsWithOptions:(NSEnumerationOptions)options usingBlock:(void (^)(NSIndexPath *indexPath, BOOL *stop))block;
+- (void)enumerateIndexPathsFromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath withOptions:(NSEnumerationOptions)options usingBlock:(void (^)(NSIndexPath *indexPath, BOOL *stop))block;
 
 - (TUIView *)headerViewForSection:(NSInteger)section;
-- (TUITableViewCell *)cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;            // returns nil if cell is not visible or index path is out of range
+- (TUITableViewCell *)cellForRowAtIndexPath:(NSIndexPath *)indexPath;            // returns nil if cell is not visible or index path is out of range
 - (NSArray *)visibleCells; // no particular order
 - (NSArray *)sortedVisibleCells; // top to bottom
 - (NSArray *)indexPathsForVisibleRows;
 
-- (void)scrollToRowAtIndexPath:(TUIFastIndexPath *)indexPath atScrollPosition:(TUITableViewScrollPosition)scrollPosition animated:(BOOL)animated;
+- (void)scrollToRowAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(TUITableViewScrollPosition)scrollPosition animated:(BOOL)animated;
 
-- (TUIFastIndexPath *)indexPathForSelectedRow;                                       // return nil or index path representing section and row of selection.
-- (TUIFastIndexPath *)indexPathForFirstRow;
-- (TUIFastIndexPath *)indexPathForLastRow;
+- (NSIndexPath *)indexPathForSelectedRow;                                       // return nil or index path representing section and row of selection.
+- (NSIndexPath *)indexPathForFirstRow;
+- (NSIndexPath *)indexPathForLastRow;
 
-- (void)selectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition;
-- (void)deselectRowAtIndexPath:(TUIFastIndexPath *)indexPath animated:(BOOL)animated;
+- (void)selectRowAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(TUITableViewScrollPosition)scrollPosition;
+- (void)deselectRowAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
 
 /**
  Above the top cell, only visible if you pull down (if you have scroll bouncing enabled)
@@ -183,19 +182,19 @@ typedef enum {
 
 - (NSInteger)tableView:(TUITableView *)table numberOfRowsInSection:(NSInteger)section;
 
-- (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath;
+- (TUITableViewCell *)tableView:(TUITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @optional
 
 - (TUIView *)tableView:(TUITableView *)tableView headerViewForSection:(NSInteger)section;
 
 // the following are required to support row reordering
-- (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath;
-- (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath;
+- (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
 
 // the following are required to support row reordering
-- (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(TUIFastIndexPath *)indexPath;
-- (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(TUIFastIndexPath *)fromIndexPath toIndexPath:(TUIFastIndexPath *)toIndexPath;
+- (BOOL)tableView:(TUITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tableView:(TUITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
 
 /**
  Default is 1 if not implemented

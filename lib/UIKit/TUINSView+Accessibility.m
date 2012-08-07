@@ -16,7 +16,7 @@
 {
 	NSPoint windowPoint = [[self window] convertScreenToBase:point];
 	NSPoint localPoint = [self convertPoint:windowPoint fromView:nil];
-	return [rootView accessibilityHitTest:localPoint];
+	return [self.rootView accessibilityHitTest:localPoint];
 }
 
 - (BOOL)accessibilityIsIgnored

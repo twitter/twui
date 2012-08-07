@@ -22,8 +22,8 @@
 	TUITableView *_tableView;
 	ExampleTabBar *_tabBar;
 	
-	TUIFont *exampleFont1;
-	TUIFont *exampleFont2;
+	NSFont *exampleFont1;
+	NSFont *exampleFont2;
 }
 
 @end

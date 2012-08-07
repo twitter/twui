@@ -31,6 +31,6 @@ int main(int argc, char *argv[])
 	if((major == 10 && minor >= 7) || major >= 11) {
 		AtLeastLion = YES;
 	}
-	
+
 	return NSApplicationMain(argc, (const char **)argv);
 }

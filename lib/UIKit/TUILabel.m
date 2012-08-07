@@ -15,12 +15,17 @@
  */
 
 #import "TUILabel.h"
-#import "TUIFont.h"
-#import "TUIColor.h"
 #import "TUINSView.h"
+#import "TUIStringDrawing.h"
+#import "TUITextRenderer.h"
 #import "TUIView+Private.h"
 
-@interface TUILabel ()
+@interface TUILabel () {
+	struct {
+		unsigned int selectable:1;
+	} _textLabelFlags;
+}
+
 - (void)_recreateAttributedString;
 @end
 
@@ -128,7 +133,7 @@
 	self.attributedString = nil;
 }
 
-- (void)setFont:(TUIFont *)font
+- (void)setFont:(NSFont *)font
 {
 	if(font == _font) return;
 	
@@ -137,7 +142,7 @@
 	self.attributedString = nil;
 }
 
-- (void)setTextColor:(TUIColor *)textColor
+- (void)setTextColor:(NSColor *)textColor
 {
 	if(textColor == _textColor) return;
 	

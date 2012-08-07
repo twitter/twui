@@ -14,8 +14,8 @@
  limitations under the License.
  */
 
-#import "TUIKit.h"
 #import "TUITextField.h"
+#import "TUIButton.h"
 #import "TUITextViewEditor.h"
 
 @interface TUITextFieldEditor : TUITextViewEditor
@@ -78,8 +78,8 @@ doClear:
 - (TUIButton *)clearButton
 {
 	TUIButton *b = [TUIButton button];
-	[b setImage:[TUIImage imageNamed:@"clear-button.png" cache:YES] forState:TUIControlStateNormal];
-	[b addTarget:self action:@selector(clear:) forControlEvents:TUIControlEventTouchUpInside];
+	[b setImage:[NSImage imageNamed:@"clear-button.png"] forState:TUIControlStateNormal];
+	[b addTarget:self action:@selector(clear:) forControlEvents:TUIControlEventMouseUpInside];
 	return b;
 }
 
@@ -100,7 +100,7 @@ doClear:
 - (void)insertNewline:(id)sender
 {
 	if([self _textField]->_textFieldFlags.delegateTextFieldShouldReturn)
-		[(id<TUITextFieldDelegate>)[self _textField].delegate textFieldShouldReturn:(id)self];
+		[(id<TUITextFieldDelegate>)[self _textField].delegate textFieldShouldReturn:[self _textField]];
 	[[self _textField] sendActionsForControlEvents:TUIControlEventEditingDidEndOnExit];
 }
 

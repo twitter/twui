@@ -59,6 +59,7 @@
   if(_controlFlags.disabled)        actual |= TUIControlStateDisabled;
   if(_controlFlags.selected)        actual |= TUIControlStateSelected;
 	if(_controlFlags.tracking)        actual |= TUIControlStateHighlighted;
+	if(_controlFlags.highlighted) actual |= TUIControlStateHighlighted;
 	if(![self.nsView isWindowKey])  actual |= TUIControlStateNotKey;
 	
 	return actual;
@@ -96,6 +97,17 @@
 	[self setNeedsDisplay];
 }
 
+- (BOOL)highlighted {
+	return _controlFlags.highlighted;
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+	[self _stateWillChange];
+	_controlFlags.highlighted = highlighted;
+	[self _stateDidChange];
+	[self setNeedsDisplay];
+}
+
 - (BOOL)acceptsFirstMouse
 {
 	return _controlFlags.acceptsFirstMouse;
@@ -122,9 +134,9 @@
 	
 	// handle touch down
 	if([event clickCount] < 2) {
-		[self sendActionsForControlEvents:TUIControlEventTouchDown];
+		[self sendActionsForControlEvents:TUIControlEventMouseDown];
 	} else {
-		[self sendActionsForControlEvents:TUIControlEventTouchDownRepeat];
+		[self sendActionsForControlEvents:TUIControlEventMouseDownRepeat];
 	}
   
 	// needs display
@@ -142,10 +154,10 @@
 	
 	if([self eventInside:event]) {
 		if(![self didDrag]) {
-			[self sendActionsForControlEvents:TUIControlEventTouchUpInside];
+			[self sendActionsForControlEvents:TUIControlEventMouseUpInside];
 		}
 	} else {
-		[self sendActionsForControlEvents:TUIControlEventTouchUpOutside];
+		[self sendActionsForControlEvents:TUIControlEventMouseUpOutside];
 	}
 	
 	// needs display

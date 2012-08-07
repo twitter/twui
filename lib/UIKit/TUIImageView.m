@@ -14,32 +14,29 @@
  limitations under the License.
  */
 
-#import "TUIKit.h"
 #import "TUIImageView.h"
-#import "TUIImage.h"
 
 @implementation TUIImageView
+@synthesize image = _image;
 
-- (id)initWithImage:(TUIImage *)image
-{
-	if((self = [self initWithFrame:(image != nil) ? CGRectMake(0, 0, image.size.width, image.size.height) : CGRectZero]) != nil)
-	{
-		self.userInteractionEnabled = NO;
-		_image = image;
-	}
-	return self;
-}
-
-
-- (TUIImage *)image
-{
-	return _image;
-}
-
-- (void)setImage:(TUIImage *)i
+- (void)setImage:(NSImage *)i
 {
 	_image = i;
 	[self setNeedsDisplay];
+}
+
+- (id)initWithImage:(NSImage *)image
+{
+	CGRect frame = CGRectZero;
+	if (image) frame = CGRectMake(0, 0, image.size.width, image.size.height);
+
+	self = [super initWithFrame:frame];
+	if (self == nil) return nil;
+
+	self.userInteractionEnabled = NO;
+	_image = image;
+
+	return self;
 }
 
 - (void)drawRect:(CGRect)rect
@@ -48,7 +45,11 @@
 	if (_image == nil)
 		return;
     
-    [_image drawInRect:rect];
+    [_image drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+	return _image.size;
 }
 
 @end

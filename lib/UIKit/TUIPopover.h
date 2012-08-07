@@ -18,7 +18,6 @@
 
 @class TUIPopover;
 @class TUIViewController;
-@class TUIColor;
 
 enum _TUIPopoverViewControllerBehaviour
 {
@@ -68,7 +67,7 @@ typedef void (^TUIPopoverDelegateBlock)(TUIPopover *popover);
 - (CGPathRef)newPopoverPathForEdge:(CGRectEdge)popoverEdge inFrame:(CGRect)frame; //override in subclasses to change the shape of the popover, but still use the default drawing.
 
 //Used in the default implementation
-@property (nonatomic, strong) TUIColor *strokeColor;
-@property (nonatomic, strong) TUIColor *fillColor;
+@property (nonatomic, strong) NSColor *strokeColor;
+@property (nonatomic, strong) NSColor *fillColor;
     
 @end

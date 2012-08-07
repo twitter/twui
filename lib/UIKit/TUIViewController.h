@@ -14,9 +14,10 @@
  limitations under the License.
  */
 
-#import "TUIView.h"
+#import "TUIResponder.h"
 
 @class TUINavigationItem;
+@class TUIView;
 
 @interface TUIViewController : TUIResponder <NSCopying>
 {

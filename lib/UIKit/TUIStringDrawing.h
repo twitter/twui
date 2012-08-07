@@ -17,8 +17,7 @@
 #import <Foundation/Foundation.h>
 #import "TUIAttributedString.h"
 
-@class TUIFont;
-@class TUIColor;
+@class NSFont;
 
 @interface NSAttributedString (TUIStringDrawing)
 
@@ -33,15 +32,15 @@
 
 @interface NSString (TUIStringDrawing)
 
-- (CGSize)ab_sizeWithFont:(TUIFont *)font;
-- (CGSize)ab_sizeWithFont:(TUIFont *)font constrainedToSize:(CGSize)size;
+- (CGSize)ab_sizeWithFont:(NSFont *)font;
+- (CGSize)ab_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size;
 
 #if TARGET_OS_MAC
 // for ABRowView
-//- (CGSize)drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
+//- (CGSize)drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
 #endif
 
-- (CGSize)ab_drawInRect:(CGRect)rect color:(TUIColor *)color font:(TUIFont *)font;
-- (CGSize)ab_drawInRect:(CGRect)rect withFont:(TUIFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
+- (CGSize)ab_drawInRect:(CGRect)rect color:(NSColor *)color font:(NSFont *)font;
+- (CGSize)ab_drawInRect:(CGRect)rect withFont:(NSFont *)font lineBreakMode:(TUILineBreakMode)lineBreakMode alignment:(TUITextAlignment)alignment;
 
 @end

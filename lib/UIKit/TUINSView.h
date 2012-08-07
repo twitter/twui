@@ -15,14 +15,16 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "TUIKit.h"
+#import "TUIHostView.h"
+#import "TUIView+TUIBridgedView.h"
+
+@class TUITextRenderer;
 
 /**
  TUINSView is the bridge that hosts a TUIView-based interface heirarchy. You may add it as the contentView of your window if you want to build a pure TwUI-based UI, or you can use it for a small part.
  */
-@interface TUINSView : NSView <NSTextInputClient>
+@interface TUINSView : NSView <TUIHostView>
 {
-	TUIView *rootView;
 	TUIView *_hoverView;
 
 	__unsafe_unretained TUIView *_trackingView; // dragging view, weak
@@ -65,5 +67,3 @@
 - (BOOL)isWindowKey;
 
 @end
-
-#import "TUINSView+Hyperfocus.h"

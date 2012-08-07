@@ -15,6 +15,7 @@
  */
 
 #import "TUIViewController.h"
+#import "TUIView.h"
 
 @implementation TUIViewController
 
@@ -105,7 +106,7 @@
 - (TUIView *)setupStandardView
 {
 	TUIView *v = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
-	v.backgroundColor = [TUIColor colorWithWhite:0.96 alpha:1.0];
+	v.backgroundColor = [NSColor colorWithCalibratedWhite:0.96 alpha:1.0];
 	self.view = v;
 	
 	return v;

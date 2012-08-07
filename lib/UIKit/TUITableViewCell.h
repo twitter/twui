@@ -15,7 +15,6 @@
  */
 
 #import "TUIView.h"
-#import "TUIFastIndexPath.h"
 
 typedef enum {
 	TUITableViewCellStyleDefault,
@@ -44,7 +43,7 @@ typedef enum {
 - (void)prepareForDisplay; // after frame is set, before it is brought onscreen
 
 @property (weak, nonatomic, readonly) TUITableView *tableView;
-@property (strong, nonatomic, readonly) TUIFastIndexPath *indexPath;
+@property (strong, nonatomic, readonly) NSIndexPath *indexPath;
 
 @property (nonatomic, readonly, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic, assign, getter=isSelected) BOOL selected;

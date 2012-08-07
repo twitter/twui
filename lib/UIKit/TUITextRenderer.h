@@ -15,12 +15,11 @@
  */
 
 #import "TUIResponder.h"
-#import "ABActiveRange.h"
 #import "CoreText+Additions.h"
 
-@class TUIColor;
-@class TUIFont;
+@class NSFont;
 @class TUIView;
+@protocol ABActiveTextRange;
 
 typedef enum {
 	TUITextSelectionAffinityCharacter = 0,
@@ -39,8 +38,7 @@ typedef enum {
 
 @protocol TUITextRendererDelegate;
 
-@interface TUITextRenderer : TUIResponder
-{
+@interface TUITextRenderer : TUIResponder {
 	NSAttributedString *attributedString;
 	CGRect frame;
 	TUIView *__unsafe_unretained view; // unsafe_unretained
@@ -58,7 +56,7 @@ typedef enum {
 	
 	CGSize shadowOffset;
 	CGFloat shadowBlur;
-	TUIColor *shadowColor;
+	NSColor *shadowColor;
 	
 	NSMutableDictionary *lineRects;
 	
@@ -83,7 +81,7 @@ typedef enum {
 
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
-@property (nonatomic, strong) TUIColor *shadowColor; // default = nil for no shadow
+@property (nonatomic, strong) NSColor *shadowColor; // default = nil for no shadow
 
 @property (nonatomic, assign) TUITextVerticalAlignment verticalAlignment;
 

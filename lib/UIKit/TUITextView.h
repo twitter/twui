@@ -19,21 +19,19 @@
 #import "TUIAttributedString.h"
 
 @class TUITextEditor;
-@class TUIFont;
-@class TUIColor;
+@class NSFont;
 
 @protocol TUITextViewDelegate;
 
-@interface TUITextView : TUIControl
-{
+@interface TUITextView : TUIControl {
 	id<TUITextViewDelegate> __unsafe_unretained delegate;
 	TUIViewDrawRect drawFrame;
 	
 	NSString *placeholder;
 	TUITextRenderer *placeholderRenderer;
 	
-	TUIFont *font;
-	TUIColor *textColor;
+	NSFont *font;
+	NSColor *textColor;
 	TUITextAlignment textAlignment;
 	BOOL editable;
 	
@@ -67,8 +65,8 @@
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSString *placeholder;
-@property (nonatomic, strong) TUIFont *font;
-@property (nonatomic, strong) TUIColor *textColor;
+@property (nonatomic, strong) NSFont *font;
+@property (nonatomic, strong) NSColor *textColor;
 @property (nonatomic, assign) TUITextAlignment textAlignment;
 @property (nonatomic, assign) TUIEdgeInsets contentInset;
 
@@ -103,3 +101,4 @@
 
 extern TUIViewDrawRect TUITextViewSearchFrame(void);
 extern TUIViewDrawRect TUITextViewSearchFrameOverDark(void);
+extern TUIViewDrawRect TUITextViewStandardFrame(void);

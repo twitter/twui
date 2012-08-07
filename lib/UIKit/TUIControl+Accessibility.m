@@ -31,7 +31,7 @@
 - (void)accessibilityPerformAction:(NSString *)action
 {
 	if([action isEqualToString:NSAccessibilityPressAction]) {
-		[self sendActionsForControlEvents:TUIControlEventAllTouchEvents];
+		[self sendActionsForControlEvents:TUIControlEventAllMouseEvents];
 	}
 }
 

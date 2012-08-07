@@ -15,6 +15,7 @@
  */
 
 #import "TUINSView.h"
+#import "TUICGAdditions.h"
 #import "TUINSView+Hyperfocus.h"
 
 @implementation TUINSView (Hyperfocus)
@@ -43,10 +44,10 @@
 	
 	CGRect focusRect = [focusView frameInNSView];
 	CGFloat startRadius = 1.0;
-	CGFloat endRadius = MAX(rootView.bounds.size.width, rootView.bounds.size.height);
+	CGFloat endRadius = MAX(self.rootView.bounds.size.width, self.rootView.bounds.size.height);
 	CGPoint center = CGPointMake(focusRect.origin.x + focusRect.size.width * 0.5, focusRect.origin.y + focusRect.size.height * 0.5);
 	
-	TUIView *fade = [[TUIView alloc] initWithFrame:rootView.bounds];
+	TUIView *fade = [[TUIView alloc] initWithFrame:self.rootView.bounds];
 	fade.userInteractionEnabled = NO;
 	fade.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 	fade.opaque = NO;
@@ -64,7 +65,7 @@
 		CGGradientRef gradient = CGGradientCreateWithColorComponents(space, components, locations, 3);
 		
 //		CGContextSaveGState(ctx);
-//		CGContextClipToRoundRect(ctx, rootView.bounds, 9);
+//		CGContextClipToRoundRect(ctx, self.rootView.bounds, 9);
 		CGContextDrawRadialGradient(ctx, gradient, center, startRadius, center, endRadius, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 //		CGContextRestoreGState(ctx);
 		
@@ -74,7 +75,7 @@
 	
 	[CATransaction begin];
 	fade.alpha = 0.0;
-	[rootView addSubview:fade];
+	[self.rootView addSubview:fade];
 	[CATransaction flush];
 	[CATransaction commit];
 	

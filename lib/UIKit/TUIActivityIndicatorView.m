@@ -25,7 +25,7 @@
 		_activityIndicatorViewStyle = style;
 		
 		spinner = [[TUIView alloc] initWithFrame:self.bounds];
-		spinner.backgroundColor = [TUIColor blackColor];
+		spinner.backgroundColor = [NSColor blackColor];
 		spinner.alpha = 0.2;
 		spinner.layer.cornerRadius = 10.0;
 		[self addSubview:spinner];

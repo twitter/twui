@@ -15,7 +15,9 @@
  */
 
 #import "TUITooltipWindow.h"
-#import "TUIKit.h"
+#import "TUIAttributedString.h"
+#import "TUICGAdditions.h"
+#import "TUIStringDrawing.h"
 
 #define TOOLTIP_HEIGHT 18
 #define SWITCH_DELAY 0.2
@@ -137,7 +139,7 @@ static BOOL ShowingTooltip = NO;
 		}
 		
 		CurrentTooltipString = [TUIAttributedString stringWithString:s];
-		CurrentTooltipString.font = [TUIFont fontWithName:@"HelveticaNeue" size:11];
+		CurrentTooltipString.font = [NSFont fontWithName:@"HelveticaNeue" size:11];
 		CurrentTooltipString.kerning = 0.2;
 		[CurrentTooltipString setAlignment:TUITextAlignmentCenter lineBreakMode:TUILineBreakModeClip];
 	} else {

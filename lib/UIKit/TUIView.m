@@ -15,13 +15,28 @@
  */
 
 #import "TUIView.h"
-#import "TUIKit.h"
+#import <pthread.h>
+#import "NSColor+TUIExtensions.h"
+#import "TUICGAdditions.h"
+#import "TUILayoutManager.h"
+#import "TUINSView.h"
+#import "TUINSWindow.h"
+#import "TUITextRenderer.h"
 #import "TUIView+Private.h"
+#import "TUIView+TUIBridgedView.h"
 #import "TUIViewController.h"
+
+/*
+ * Enable this to debug blending.
+ *
+ * Opaque views will be colored green, and blended views will be colored red.
+ */
+#define CA_COLOR_OVERLAY_DEBUG 0
 
 NSString * const TUIViewWillMoveToWindowNotification = @"TUIViewWillMoveToWindowNotification";
 NSString * const TUIViewDidMoveToWindowNotification = @"TUIViewDidMoveToWindowNotification";
 NSString * const TUIViewWindow = @"TUIViewWindow";
+NSString * const TUIViewFrameDidChangeNotification = @"TUIViewFrameDidChangeNotification";
 
 CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
@@ -57,6 +72,13 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 @interface TUIView ()
 @property (nonatomic, strong) NSMutableArray *subviews;
+
+/*
+ * Sets up the given view as a subview of the receiver. The given block is
+ * expected to perform the actual insertion into the subviews array or the
+ * layer.
+ */
+- (void)prepareSubview:(TUIView *)view insertionBlock:(void (^)(void))block;
 @end
 
 @implementation TUIView
@@ -82,9 +104,13 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 	}
 }
 
+static pthread_key_t TUICurrentContextScaleFactorTLSKey;
+
 + (void)initialize
 {
 	if(self == [TUIView class]) {
+		pthread_key_create(&TUICurrentContextScaleFactorTLSKey, free);
+
 		TUIViewCenteredLayout = [^(TUIView *v) {
 			TUIView *superview = v.superview;
 			CGRect b = superview.frame;
@@ -104,6 +130,9 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 - (void)dealloc
 {
+    [[TUILayoutManager sharedLayoutManager] removeLayoutConstraintsFromView:self];
+    [[TUILayoutManager sharedLayoutManager] setLayoutName:nil forView:self];
+    
 	[self setTextRenderers:nil];
 	_layer.delegate = nil;
 	if(_context.context) {
@@ -286,76 +315,105 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 	return _context.context;
 }
 
+CGFloat TUICurrentContextScaleFactor(void)
+{
+	/*
+	 Key is set up in +initialize
+	 Use TLS rather than a simple global so drawsInBackground should continue to work (views in the same process may be drawing destined for different windows on different screens with different scale factors).
+	 */
+	CGFloat *v = pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
+	if(v)
+		return *v;
+	return 1.0;
+}
+
+static void TUISetCurrentContextScaleFactor(CGFloat s)
+{
+	CGFloat *v = pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
+	if(!v) {
+		v = malloc(sizeof(CGFloat));
+		pthread_setspecific(TUICurrentContextScaleFactorTLSKey, v);
+	}
+	*v = s;
+}
+
 - (void)displayLayer:(CALayer *)layer
 {
-	if(_viewFlags.delegateWillDisplayLayer)
-		[_viewDelegate viewWillDisplayLayer:self];
-	
 	typedef void (*DrawRectIMP)(id,SEL,CGRect);
 	SEL drawRectSEL = @selector(drawRect:);
 	DrawRectIMP drawRectIMP = (DrawRectIMP)[self methodForSelector:drawRectSEL];
 	DrawRectIMP dontCallThisBasicDrawRectIMP = (DrawRectIMP)[TUIView instanceMethodForSelector:drawRectSEL];
 
-#if 0
-#define CA_COLOR_OVERLAY_DEBUG \
-if(self.opaque) CGContextSetRGBFillColor(context, 0, 1, 0, 0.3); \
-else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context, b);
-#else
-#define CA_COLOR_OVERLAY_DEBUG
-#endif
-
-#define PRE_DRAW \
-	CGRect b = self.bounds; \
-	CGContextRef context = [self _CGContext]; \
-	TUIGraphicsPushContext(context); \
-	if(_viewFlags.clearsContextBeforeDrawing) \
-		CGContextClearRect(context, b); \
-	CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f; \
-	CGContextScaleCTM(context, scale, scale); \
-	CGContextSetAllowsAntialiasing(context, true); \
-	CGContextSetShouldAntialias(context, true); \
-	CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
-	
-#define POST_DRAW \
-	CA_COLOR_OVERLAY_DEBUG \
-	TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext(); \
-	layer.contents = (id)image.CGImage; \
-	CGContextScaleCTM(context, 1.0f / scale, 1.0f / scale); \
-	TUIGraphicsPopContext(); \
-	if(self.drawInBackground) [CATransaction flush];
-
-	CGRect rectToDraw = self.bounds;
-	if(!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
-		rectToDraw = _context.dirtyRect;
-		_context.dirtyRect = CGRectZero;
+	if (!self.drawRect && (drawRectIMP == dontCallThisBasicDrawRectIMP || [self _disableDrawRect])) {
+		// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
+		return;
 	}
-	
+
 	void (^drawBlock)(void) = ^{
-		if(drawRect) {
-			// drawRect is implemented via a block
-			PRE_DRAW
-			drawRect(self, rectToDraw);
-			POST_DRAW
-		} else if((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
-			// drawRect is overridden by subclass
-			PRE_DRAW
-			drawRectIMP(self, drawRectSEL, rectToDraw);
-			POST_DRAW
-		} else {
-			// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
+		if (_viewFlags.delegateWillDisplayLayer) {
+			[_viewDelegate viewWillDisplayLayer:self];
 		}
+
+		CGRect rectToDraw = self.bounds;
+		if (!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
+			rectToDraw = _context.dirtyRect;
+			_context.dirtyRect = CGRectZero;
+		}
+
+		CGContextRef context = [self _CGContext];
+		TUIGraphicsPushContext(context);
+
+		CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f;
+		TUISetCurrentContextScaleFactor(scale);
+		CGContextScaleCTM(context, scale, scale);
+
+		if (_viewFlags.clearsContextBeforeDrawing) {
+			CGContextClearRect(context, rectToDraw);
+		}
+
+		CGContextSetAllowsAntialiasing(context, true);
+		CGContextSetShouldAntialias(context, true);
+		CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
+
+		if (self.drawRect) {
+			// drawRect is implemented via a block
+			self.drawRect(self, rectToDraw);
+		} else if ((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
+			// drawRect is overridden by subclass
+			drawRectIMP(self, drawRectSEL, rectToDraw);
+		}
+
+		#if CA_COLOR_OVERLAY_DEBUG
+		if (self.opaque) {
+			CGContextSetRGBFillColor(context, 0, 1, 0, 0.3);
+		} else {
+			CGContextSetRGBFillColor(context, 1, 0, 0, 0.3);
+			CGContextFillRect(context, rectToDraw);
+		}
+		#endif
+
+		layer.contents = TUIGraphicsGetImageFromCurrentImageContext();
+		CGContextScaleCTM(context, 1.0f / scale, 1.0f / scale);
+		TUIGraphicsPopContext();
+
+		if (self.drawInBackground) [CATransaction flush];
 	};
 	
-	if(self.drawInBackground) {
+	if (self.drawInBackground) {
 		layer.contents = nil;
 		
-		if(self.drawQueue != nil) {
+		if (self.drawQueue != nil) {
 			[self.drawQueue addOperationWithBlock:drawBlock];
 		} else {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), drawBlock);
 		}
-	} else {
+	} else if ([NSThread isMainThread] || dispatch_get_current_queue() == dispatch_get_main_queue()) {
 		drawBlock();
+	} else {
+		// On Mac OS X 10.6 (and possibly other versions), spinning a run loop in
+		// a background thread can result in -displayLayer: calls, so make sure we
+		// only invoke -drawRect: on the main thread.
+		dispatch_async(dispatch_get_main_queue(), drawBlock);
 	}
 }
 
@@ -379,6 +437,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 {
 	[self layoutSubviews];
 	[self _blockLayout];
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (BOOL)drawInBackground
@@ -454,8 +513,81 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	} else if(contentMode == TUIViewContentModeScaleAspectFill) {
 		_layer.contentsGravity = kCAGravityResizeAspectFill;
 	} else {
-		NSAssert1(NO, @"%lu is not a valid contentMode.", contentMode);
+		NSAssert1(NO, @"%u is not a valid contentMode.", contentMode);
 	}
+}
+
+- (NSArray *)textRenderers
+{
+	return _textRenderers;
+}
+
+- (void)setTextRenderers:(NSArray *)renderers
+{
+	_currentTextRenderer = nil;
+	
+	for(TUITextRenderer *renderer in _textRenderers) {
+		renderer.view = nil;
+		[renderer setNextResponder:nil];
+	}
+	
+	_textRenderers = renderers;
+
+	for(TUITextRenderer *renderer in _textRenderers) {
+		[renderer setNextResponder:self];
+		renderer.view = self;
+	}
+}
+
+- (TUITextRenderer *)textRendererAtPoint:(CGPoint)point
+{
+	for(TUITextRenderer *r in _textRenderers) {
+		if(CGRectContainsPoint(r.frame, point))
+			return r;
+	}
+	return nil;
+}
+
+- (void)_updateLayerScaleFactor
+{
+	if([self nsWindow] != nil) {
+		[self.subviews makeObjectsPerformSelector:_cmd];
+		
+		CGFloat scale = 1.0f;
+		if([[self nsWindow] respondsToSelector:@selector(backingScaleFactor)]) {
+			scale = [[self nsWindow] backingScaleFactor];
+		}
+		
+		if([self.layer respondsToSelector:@selector(setContentsScale:)]) {
+			self.layer.contentsScale = scale;
+			[self setNeedsDisplay];
+		}
+	}
+}
+
+- (void)prepareSubview:(TUIView *)view insertionBlock:(void (^)(void))block
+{
+	if (!_subviews) {
+		_subviews = [[NSMutableArray alloc] init];
+	}
+
+	TUINSView *originalNSView = view.ancestorTUINSView;
+
+	/* will call willAdd:nil and didAdd (nil) */
+	[view removeFromSuperview];
+
+	[view willMoveToTUINSView:_nsView];
+	[view willMoveToSuperview:self];
+	view.nsView = _nsView;
+
+	block();
+
+	[self didAddSubview:view];
+	[view didMoveToSuperview];
+	[view didMoveFromTUINSView:originalNSView];
+
+	[view setNextResponder:self];
+	[self _blockLayout];
 }
 
 @end
@@ -471,6 +603,8 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 - (void)setFrame:(CGRect)f
 {
 	self.layer.frame = f;
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TUIViewFrameDidChangeNotification object:self];
 }
 
 - (CGRect)bounds
@@ -481,6 +615,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 - (void)setBounds:(CGRect)b
 {
 	self.layer.bounds = b;
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (void)setCenter:(CGPoint)c
@@ -489,6 +624,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	f.origin.x = c.x - f.size.width / 2;
 	f.origin.y = c.y - f.size.height / 2;
 	self.frame = f;
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (CGPoint)center
@@ -621,6 +757,9 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	
 	TUIView *superview = [self superview];
 	if(superview) {
+		TUINSView *nsView = self.ancestorTUINSView;
+		[self willMoveToTUINSView:nil];
+
 		[superview willRemoveSubview:self];
 		[self willMoveToSuperview:nil];
 
@@ -629,6 +768,8 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 		self.nsView = nil;
 
 		[self didMoveToSuperview];
+		[self didMoveFromTUINSView:nsView];
+		[self viewHierarchyDidChange];
 	}
 }
 
@@ -686,39 +827,23 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	}
 }
 
-#define PRE_ADDSUBVIEW(index) \
-	if (!_subviews) \
-		_subviews = [[NSMutableArray alloc] init]; \
-	\
-	if (index == NSUIntegerMax) {\
-		[self.subviews addObject:view]; \
-	} else {\
-		[self.subviews insertObject:view atIndex:index];\
-	}\
- 	[view removeFromSuperview]; /* will call willAdd:nil and didAdd (nil) */ \
-	[view willMoveToSuperview:self]; \
-	view.nsView = _nsView;
-
-#define POST_ADDSUBVIEW \
-	[self didAddSubview:view]; \
-	[view didMoveToSuperview]; \
-	[view setNextResponder:self]; \
-	[self _blockLayout];
-
-- (void)addSubview:(TUIView *)view // everything should go through this
+- (void)addSubview:(TUIView *)view
 {
 	if(!view)
 		return;
-	PRE_ADDSUBVIEW(NSUIntegerMax)
-	[self.layer addSublayer:view.layer];
-	POST_ADDSUBVIEW
+
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews addObject:view];
+		[self.layer addSublayer:view.layer];
+	}];
 }
 
 - (void)insertSubview:(TUIView *)view atIndex:(NSInteger)index
 {
-	PRE_ADDSUBVIEW(index)
-	[self.layer insertSublayer:view.layer atIndex:(unsigned int)index];
-	POST_ADDSUBVIEW
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews insertObject:view atIndex:index];
+		[self.layer insertSublayer:view.layer atIndex:(unsigned)index];
+	}];
 }
 
 - (void)insertSubview:(TUIView *)view belowSubview:(TUIView *)siblingSubview
@@ -727,9 +852,10 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	if (siblingIndex == NSNotFound)
 		return;
 	
-	PRE_ADDSUBVIEW(siblingIndex + 1)
-	[self.layer insertSublayer:view.layer below:siblingSubview.layer];
-	POST_ADDSUBVIEW
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews insertObject:view atIndex:siblingIndex + 1];
+		[self.layer insertSublayer:view.layer below:siblingSubview.layer];
+	}];
 }
 
 - (void)insertSubview:(TUIView *)view aboveSubview:(TUIView *)siblingSubview
@@ -738,9 +864,10 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	if (siblingIndex == NSNotFound)
 		return;
 	
-	PRE_ADDSUBVIEW(siblingIndex)
-	[self.layer insertSublayer:view.layer above:siblingSubview.layer];
-	POST_ADDSUBVIEW
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews insertObject:view atIndex:siblingIndex];
+		[self.layer insertSublayer:view.layer above:siblingSubview.layer];
+	}];
 }
 
 - (TUIView *)_topSubview
@@ -806,6 +933,20 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	if(!SUBVIEW_VAR) continue;
 
 #define END_EACH_SUBVIEW }
+
+- (TUIView *)ancestorSharedWithView:(TUIView *)view
+{
+	TUIView *parentView = self;
+
+	do {
+		if ([view isDescendantOfView:parentView])
+			return parentView;
+
+		parentView = parentView.superview;
+	} while (parentView);
+
+	return nil;
+}
 
 - (BOOL)isDescendantOfView:(TUIView *)view
 {
@@ -942,16 +1083,17 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	self.layer.hidden = h;
 }
 
-- (TUIColor *)backgroundColor
+- (NSColor *)backgroundColor
 {
-	return [TUIColor colorWithCGColor:self.layer.backgroundColor];
+	return [NSColor tui_colorWithCGColor:self.layer.backgroundColor];
 }
 
-- (void)setBackgroundColor:(TUIColor *)color
+- (void)setBackgroundColor:(NSColor *)color
 {
-	self.layer.backgroundColor = color.CGColor;
+	self.layer.backgroundColor = color.tui_CGColor;
 	if(color.alphaComponent < 1.0)
 		self.opaque = NO;
+
 	[self setNeedsDisplay];
 }
 
