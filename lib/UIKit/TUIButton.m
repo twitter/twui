@@ -148,8 +148,21 @@ static CGRect ButtonRectRoundOrigin(CGRect f)
 
 static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 {
-	CGRect r;
-	r.size = a.size;
+    if (a.size.width > b.size.width || a.size.height > b.size.height) {
+        // scale "a" to fit "b" proportionally
+        CGFloat ra = a.size.width / a.size.height;
+        if (ra > 1) {
+            // "long" a
+            a.size.width = b.size.width;
+            a.size.height = a.size.width / ra;
+        } else {
+            // "tall" a
+            a.size.height = b.size.height;
+            a.size.width = a.size.height * ra;
+        }
+    }
+    CGRect r;
+    r.size = a.size;
 	r.origin.x = b.origin.x + (b.size.width - a.size.width) * 0.5;
 	r.origin.y = b.origin.y + (b.size.height - a.size.height) * 0.5;
 	return r;
