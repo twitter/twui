@@ -87,7 +87,7 @@
 		return nil;
 	}
 	
-	TUIImage *i = [TUIImage imageWithCGImage:image];
+	TUIImage *i = [self imageWithCGImage:image];
 	CGImageRelease(image);
 	CFRelease(imageSource);
 	return i;
@@ -133,7 +133,7 @@
   for(NSImageRep *rep in [image representations]){
     CGImageRef cgImage;
     if([rep isKindOfClass:[NSBitmapImageRep class]] && (cgImage = [(NSBitmapImageRep *)rep CGImage]) != nil){
-      return [[TUIImage alloc] initWithCGImage:cgImage];
+      return [[self alloc] initWithCGImage:cgImage];
     }
   }
 #endif
@@ -178,7 +178,8 @@
 
 - (CGSize)size
 {
-	return CGSizeMake(CGImageGetWidth(_imageRef), CGImageGetHeight(_imageRef));
+    CGImageRef imageRef = self.CGImage;
+	return CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
 }
 
 - (CGImageRef)CGImage
@@ -206,12 +207,13 @@
 
 - (void)drawInRect:(CGRect)rect blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha
 {
-	if(_imageRef) {
+    CGImageRef imageRef = self.CGImage;
+	if(imageRef) {
 		CGContextRef ctx = TUIGraphicsGetCurrentContext();
 		CGContextSaveGState(ctx);
 		CGContextSetAlpha(ctx, alpha);
 		CGContextSetBlendMode(ctx, blendMode);
-		CGContextDrawImage(ctx, rect, _imageRef);
+		CGContextDrawImage(ctx, rect, imageRef);
 		CGContextRestoreGState(ctx);
 	}
 }
@@ -228,7 +230,7 @@
 
 - (TUIImage *)stretchableImageWithLeftCapWidth:(NSInteger)leftCapWidth topCapHeight:(NSInteger)topCapHeight
 {
-	TUIStretchableImage *i = (TUIStretchableImage *)[TUIStretchableImage imageWithCGImage:_imageRef];
+	TUIStretchableImage *i = (TUIStretchableImage *)[TUIStretchableImage imageWithCGImage:self.CGImage];
 	i->leftCapWidth = leftCapWidth;
 	i->topCapHeight = topCapHeight;
 	return i;
@@ -236,12 +238,13 @@
 
 - (NSData *)dataRepresentationForType:(NSString *)type compression:(CGFloat)compressionQuality
 {
-	if(_imageRef) {
+    CGImageRef imageRef = self.CGImage;
+	if(imageRef) {
 		NSMutableData *mutableData = [NSMutableData data];
 		CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)mutableData, (__bridge CFStringRef)type, 1, NULL);
 		
 		NSDictionary *properties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:compressionQuality], kCGImageDestinationLossyCompressionQuality, nil];
-		CGImageDestinationAddImage(destination, _imageRef, (__bridge CFDictionaryRef)properties);
+		CGImageDestinationAddImage(destination, imageRef, (__bridge CFDictionaryRef)properties);
 		
 		CGImageDestinationFinalize(destination);
 		CFRelease(destination);
@@ -321,7 +324,8 @@
 	if(t*2 > s.height-1) t -= 1;
 	if(l*2 > s.width-1) l -= 1;
 	
-	if(_imageRef) {
+    CGImageRef imageRef = self.CGImage;
+	if(imageRef) {
 		if(!_flags.haveSlices) {
 			STRETCH_COORDS(0.0, 0.0, s.width, s.height, t, l, t, l)
 			#define X(I) slices[I] = [self upsideDownCrop:r[I]];
