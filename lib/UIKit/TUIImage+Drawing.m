@@ -33,7 +33,7 @@
 
 - (TUIImage *)scale:(CGSize)size
 {
-	return [TUIImage imageWithSize:size drawing:^(CGContextRef ctx) {
+	return [[self class] imageWithSize:size drawing:^(CGContextRef ctx) {
 		CGRect r;
 		r.origin = CGPointZero;
 		r.size = size;
@@ -56,12 +56,12 @@
 			NSLog(@"CGImageCreateWithImageInRect failed %@ %@", NSStringFromRect(cropRect), NSStringFromSize(s));
 			return nil;
 		}
-		TUIImage *i = [TUIImage imageWithCGImage:cgimage];
+		TUIImage *i = [[self class] imageWithCGImage:cgimage];
 		CGImageRelease(cgimage);
 		return i;
 	} else {
 		// slow crop - probably doing pad
-		return [TUIImage imageWithSize:cropRect.size drawing:^(CGContextRef ctx) {
+		return [[self class] imageWithSize:cropRect.size drawing:^(CGContextRef ctx) {
 			CGRect imageRect;
 			imageRect.origin.x = -cropRect.origin.x;
 			imageRect.origin.y = -cropRect.origin.y;
@@ -106,7 +106,7 @@
 	CGRect r;
 	r.origin = CGPointZero;
 	r.size = self.size;
-	return [TUIImage imageWithSize:r.size drawing:^(CGContextRef ctx) {
+	return [[self class] imageWithSize:r.size drawing:^(CGContextRef ctx) {
 		CGContextClipToRoundRect(ctx, r, radius);
 		CGContextDrawImage(ctx, r, self.CGImage);
 	}];
@@ -115,7 +115,7 @@
 - (TUIImage *)invertedMask
 {
 	CGSize s = self.size;
-	return [TUIImage imageWithSize:s drawing:^(CGContextRef ctx) {
+	return [[self class] imageWithSize:s drawing:^(CGContextRef ctx) {
 		CGRect rect = CGRectMake(0, 0, s.width, s.height);
 		CGContextSetRGBFillColor(ctx, 0, 0, 0, 1);
 		CGContextFillRect(ctx, rect);
@@ -130,7 +130,7 @@
 {
 	CGFloat padding = ceil(radius);
 	TUIImage *paddedImage = [self pad:padding];
-	TUIImage *shadowImage = [TUIImage imageWithSize:paddedImage.size drawing:^(CGContextRef ctx) {
+	TUIImage *shadowImage = [[self class] imageWithSize:paddedImage.size drawing:^(CGContextRef ctx) {
 		CGContextSaveGState(ctx);
 		CGRect r = CGRectMake(0, 0, paddedImage.size.width, paddedImage.size.height);
 		CGContextClipToMask(ctx, r, paddedImage.CGImage); // clip to image
@@ -153,7 +153,7 @@
 	CGFloat padding = MAX(offset.width, offset.height) + 1;
 	TUIImage *paddedImage = [self pad:padding];
 	CGSize s = paddedImage.size;
-	TUIImage *embossedImage = [TUIImage imageWithSize:s drawing:^(CGContextRef ctx) {
+	TUIImage *embossedImage = [[self class] imageWithSize:s drawing:^(CGContextRef ctx) {
 		CGContextSaveGState(ctx);
 		CGRect r = CGRectMake(0, 0, s.width, s.height);
 		CGContextClipToMask(ctx, r, [paddedImage CGImage]);
