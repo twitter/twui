@@ -308,10 +308,10 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	CGRect b = self.bounds; \
 	CGContextRef context = [self _CGContext]; \
 	TUIGraphicsPushContext(context); \
-	if(_viewFlags.clearsContextBeforeDrawing) \
-		CGContextClearRect(context, b); \
 	CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f; \
 	CGContextScaleCTM(context, scale, scale); \
+	if(_viewFlags.clearsContextBeforeDrawing) \
+		CGContextClearRect(context, b); \
 	CGContextSetAllowsAntialiasing(context, true); \
 	CGContextSetShouldAntialias(context, true); \
 	CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
