@@ -367,7 +367,7 @@ enum {
       vEffectiveVisible = _verticalScrollKnob.flashing;
       break;
     case TUIScrollViewIndicatorVisibleWhenScrolling:
-	  vEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _verticalScrollKnob.flashing);
+	  vEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _verticalScrollKnob.flashing || self.isDragging);
       break;
     case TUIScrollViewIndicatorVisibleWhenMouseInside:
       vEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _scrollViewFlags.mouseInside || _scrollViewFlags.mouseDownInScrollKnob || _verticalScrollKnob.flashing);
@@ -383,7 +383,7 @@ enum {
       hEffectiveVisible = FALSE;
       break;
     case TUIScrollViewIndicatorVisibleWhenScrolling:
-      hEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _horizontalScrollKnob.flashing);
+      hEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _horizontalScrollKnob.flashing || self.isDragging);
       break;
     case TUIScrollViewIndicatorVisibleWhenMouseInside:
       hEffectiveVisible = vVisible && (_scrollViewFlags.animationMode != AnimationModeNone || _scrollViewFlags.mouseInside || _scrollViewFlags.mouseDownInScrollKnob || _horizontalScrollKnob.flashing);
