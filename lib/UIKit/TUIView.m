@@ -454,7 +454,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	} else if(contentMode == TUIViewContentModeScaleAspectFill) {
 		_layer.contentsGravity = kCAGravityResizeAspectFill;
 	} else {
-		NSAssert1(NO, @"%lu is not a valid contentMode.", contentMode);
+		NSAssert1(NO, @"%ud is not a valid contentMode.", contentMode);
 	}
 }
 
