@@ -85,7 +85,7 @@ static struct TUIFastIndexPath_staticStruct {
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"[%d,%d]", section, row];
+	return [NSString stringWithFormat:@"[%ld,%ld]", section, row];
 }
 
 - (NSUInteger)section
